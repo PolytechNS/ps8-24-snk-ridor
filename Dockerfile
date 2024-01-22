@@ -13,14 +13,14 @@ RUN chown -R nonroot:nonroot /usr/src/app \
 USER nonroot
 
 # Install app dependencies
-COPY --chown=nonroot:nonroot package*.json ./
+COPY --chown=nonroot:nonroot --chmod=600 package*.json ./
 
 # Install dependencies
 RUN npm install --ignore-scripts
 
 # Bundle app source
-COPY --chown=nonroot:nonroot front ./front
-COPY --chown=nonroot:nonroot back ./back
+COPY --chown=nonroot:nonroot --chmod=600 front ./front
+COPY --chown=nonroot:nonroot --chmod=600 back ./back
 
 # Expose port
 EXPOSE 8000
