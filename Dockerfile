@@ -11,7 +11,8 @@ COPY package*.json ./
 RUN npm install
 
 # Bundle app source
-COPY . .
+COPY front ./front
+COPY back ./back
 
 # Expose port
 EXPOSE 8000
