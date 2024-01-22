@@ -1,4 +1,4 @@
-name: Continuous Delivery
+name: Docker Build and Push
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build and push Docker image to GitHub Container registry
+    name: Build
     runs-on: ubuntu-latest
     permissions:
       packages: write
