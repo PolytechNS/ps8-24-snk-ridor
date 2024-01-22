@@ -1,0 +1,8 @@
+.github
+.husky
+node_modules
+.gitignore
+.prettierignore
+.prettierrc
+README.md
+sonar-project.properties
