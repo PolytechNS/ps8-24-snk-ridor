@@ -8,19 +8,19 @@ RUN addgroup -S nonroot \
     && adduser -S nonroot -G nonroot
 
 RUN chown -R nonroot:nonroot /usr/src/app \
-    && chmod -R 755 /usr/src/app
+    && chmod -R 700 /usr/src/app
 
 USER nonroot
 
 # Install app dependencies
-COPY --chown=nonroot:nonroot --chmod=600 package*.json ./
+COPY --chmod=766 package*.json ./
 
 # Install dependencies
 RUN npm install --ignore-scripts
 
 # Bundle app source
-COPY --chown=nonroot:nonroot --chmod=600 front ./front
-COPY --chown=nonroot:nonroot --chmod=600 back ./back
+COPY --chmod=766 front ./front
+COPY --chmod=766 back ./back
 
 # Expose port
 EXPOSE 8000
