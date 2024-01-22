@@ -1,32 +1,32 @@
 {
-  "name": "ps8",
-  "version": "1.0.0",
-  "description": "",
-  "main": "back/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./back/index.js",
-    "prepare": "husky install"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/benjaminvella/ps8.git"
-  },
-  "author": "Benjamin Vella",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/benjaminvella/ps8/issues"
-  },
-  "homepage": "https://github.com/benjaminvella/ps8#readme",
-  "dependencies": {
-    "socket.io": "^4.7.4"
-  },
-  "devDependencies": {
-    "husky": "^8.0.3",
-    "lint-staged": "^15.2.0",
-    "prettier": "3.2.4"
-  },
-  "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
-  }
+    "name": "ps8",
+    "version": "1.0.0",
+    "description": "",
+    "main": "back/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node ./back/index.js",
+        "prepare": "husky install"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/benjaminvella/ps8.git"
+    },
+    "author": "Benjamin Vella",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/benjaminvella/ps8/issues"
+    },
+    "homepage": "https://github.com/benjaminvella/ps8#readme",
+    "dependencies": {
+        "socket.io": "^4.7.4"
+    },
+    "devDependencies": {
+        "husky": "^8.0.3",
+        "lint-staged": "^15.2.0",
+        "prettier": "3.2.4"
+    },
+    "lint-staged": {
+        "**/*": "prettier --write --ignore-unknown"
+    }
 }
