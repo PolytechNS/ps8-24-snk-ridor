@@ -4,6 +4,8 @@ const http = require('http')
 const fileQuery = require('./queryManagers/front.js')
 const apiQuery = require('./queryManagers/api.js')
 
+const PORT = 8000
+
 /* The http module contains a createServer function, which takes one argument, which is the function that
  ** will be called whenever a new request arrives to the server.
  */
@@ -28,4 +30,6 @@ http.createServer(function (request, response) {
         response.end(`Something in your request (${request.url}) is strange...`)
     }
     // For the server to be listening to request, it needs a port, which is set thanks to the listen function.
-}).listen(8000)
+}).listen(PORT)
+
+console.log(`Server running at http://localhost:${PORT}/`)
