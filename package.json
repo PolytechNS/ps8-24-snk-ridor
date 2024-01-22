@@ -10,14 +10,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/benjaminvella/ps8.git"
+        "url": "git+https://github.com/PolytechNS/ps8-24-snk-ridor.git"
     },
-    "author": "Benjamin Vella",
-    "license": "ISC",
+    "author": "Benjamin Vella, Brahim Akhyate, Tristan Larguier, Maxime Billy, Clement Chatelain",
+    "license": "MIT",
     "bugs": {
-        "url": "https://github.com/benjaminvella/ps8/issues"
+        "url": "https://github.com/PolytechNS/ps8-24-snk-ridor/issues"
     },
-    "homepage": "https://github.com/benjaminvella/ps8#readme",
+    "homepage": "https://github.com/PolytechNS/ps8-24-snk-ridor/issues#readme",
     "dependencies": {
         "socket.io": "^4.7.4"
     },
