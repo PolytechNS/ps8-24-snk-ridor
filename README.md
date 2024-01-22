@@ -40,7 +40,7 @@ TODO
 
 <div align="center">
   <span style="white-space:nowrap;">
-    <a href="https://github.com/TristanL06">@TristanL06</a> (<a href="https://www.linkedin.com/in/appadoo-apoorva-srinivas-481367207/">Linkedin</a>)
+    <a href="https://github.com/TristanL06">@TristanL06</a>
   </span>
   &nbsp;&middot;&nbsp;
   <span style="white-space:nowrap;">
@@ -48,10 +48,10 @@ TODO
   </span>
   &nbsp;&middot;&nbsp;
   <span style="white-space:nowrap;">
-      <a href="https://github.com/TODO">@TODO</a> (<a href="https://www.linkedin.com/in/tom-bedino-4741b01bb/">Linkedin</a>)
+      <a href="https://github.com/Akhyate-Brahim">@Akhyate-Brahim</a>
   </span>
   &nbsp;&middot;&nbsp;
   <span style="white-space:nowrap;">
-      <a href="https://github.com/TODO">@TODO</a> (<a href="https://www.linkedin.com/in/raphael-anjou/">Linkedin</a>)
+      <a href="https://github.com/TODO">@TODO</a>
   </span>
 </div>
