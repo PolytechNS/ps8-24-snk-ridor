@@ -16,7 +16,7 @@ USER nonroot
 COPY --chown=nonroot:nonroot package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --ignore-scripts
 
 # Bundle app source
 COPY --chown=nonroot:nonroot front ./front
