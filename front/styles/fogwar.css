@@ -1,0 +1,40 @@
+:root { /* do not remove, can be change on LOG value by JS in engine.js */
+    --j1: #000;
+    --j2: #000;
+    --casej1: #a52a2a;
+    --casej2: #a52a2a;
+    --neutre: #a52a2a;
+    --wallj1: #000;
+    --wallj2: #000;
+    --hover: #999;
+    --finish: #770505;
+}
+
+.visible {
+    background-color: var(--casej1)
+}
+
+.invisible {
+    background-color: var(--casej2)
+}
+
+.middle {
+    background-color: var(--neutre)
+}
+
+.wall-p1 {
+    background-color: var(--wallj1)
+}
+
+.wall-p2 {
+    background-color: var(--wallj2)
+}
+
+.wall-hover {
+    background-color: var(--hover)
+}
+
+.finish {
+    
+    background-color: var(--finish)
+}

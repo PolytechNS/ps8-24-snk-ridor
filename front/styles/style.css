@@ -1,0 +1,124 @@
+.game-infos {
+    text-align: center;
+}
+
+/* Chat CSS */
+
+#chat {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    align-items: flex-end;
+
+    box-sizing: border-box;
+    border: 2px solid red;
+}
+
+#chatbox {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    height: 100vh;
+}
+
+#chatbox .message {
+    background-color: grey;
+    padding: 5px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    width: fit-content;
+}
+
+#chatbox .self {
+    margin-left: auto;
+    background-color: lightblue;
+}
+
+#chatbox-input {
+    box-sizing: border-box;
+    border: 2px solid black;
+}
+
+/* Player CSS */
+
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80%;
+    width: 80%;
+    background-color: black;
+    border-radius: 40%;
+}
+
+/* Board CSS */
+
+.board {
+    display: grid;
+}
+
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: brown;
+    color: white;
+    box-sizing: border-box;
+    width: 7vh;
+    height: 7vh;
+    border-radius: 5px;
+}
+
+.finish {
+    background-color: #FF11BB;/*#DB2D2D;*/
+}
+
+.v-wall {
+    width: 1vh;
+}
+
+.h-wall {
+    height: 1vh;
+}
+
+.s-wall {
+    width: 1vh;
+    height: 1vh;
+}
+
+.wall {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.position_overview {
+    height: 70%;
+    width: 70%;
+    border: 5px solid rgba(255, 255, 255, 0.7);
+    border-radius: 5px;
+    margin: auto;
+}
+
+/* Players CSS */
+
+.player {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 80%;
+    width: 80%;
+    background-color: rgba(0, 0, 0, 1);
+    color: white;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 40%;
+}
+
+/* Deprecated */
+
+.line {
+    display: flex;
+    flex-direction: row;
+}
