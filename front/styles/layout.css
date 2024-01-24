@@ -1,0 +1,42 @@
+:root {
+    --navbar-height: 40px;
+    --footer-height: 40px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: var(--navbar-height) 1fr var(--footer-height);
+    grid-gap: 10px;
+}
+
+nav {
+    grid-column: 1 / 4;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: aliceblue;
+}
+
+main {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+footer {
+    grid-column: 1 / 4;
+
+    background-color: aliceblue;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
