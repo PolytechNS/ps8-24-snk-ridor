@@ -39,9 +39,10 @@ Goal :
 
 */
 
-import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event } from "./models.js";
+import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from "./models.js";
 import { LOG } from "./main.js";
 import { updateFogOfWar } from "./fogwar.js";
+import { updatePath } from "./pathFinding.js";
 
 const LINES = BOARD_HEIGHT;
 const COLUMNS = BOARD_WIDTH;
@@ -92,6 +93,8 @@ function initialise_game() {
 export function next_player(event = null) {
     if (LOG) console.log(`next_player() called`);
     updateFogOfWar(event);
+    //updatePath(getGame()['p' + getPlayerTurn().player + '_pos'], LINES - 1);
+    updatePath(getGame()['p1_pos'], 0);
     deleteOverview();
     turn++;
     document.getElementById('turn').textContent = turn+1;
@@ -99,7 +102,7 @@ export function next_player(event = null) {
     document.getElementById('player').textContent = ["","A","B"][getPlayerTurn().player];
 }
 
-function getCorridorPossiblePosition(line, column) {
+export function getCorridorPossiblePosition(line, column) {
     let cells = [];
     if (line > 0) {
         if (!document.getElementById('h-wall-' + (line - 1) + '-' + column).classList.contains("placed")) {
@@ -362,6 +365,7 @@ export function addPlayers(board_div, board) {
     player_a.addEventListener('click', onPlayerClick);
     if (LOG) player_a.textContent = 'A';
     let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
+    getGame().addPlayer(new Player());
     getGame()['p1_pos'] = [player_a.line, player_a.column];
     cell.appendChild(player_a);
 
