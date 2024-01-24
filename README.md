@@ -52,6 +52,6 @@ TODO
   </span>
   &nbsp;&middot;&nbsp;
   <span style="white-space:nowrap;">
-      <a href="https://github.com/TODO">@TODO</a>
+      <a href="https://github.com/ChatelainClement">@ChatelainClement</a>
   </span>
 </div>
