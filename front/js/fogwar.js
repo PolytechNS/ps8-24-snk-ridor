@@ -15,13 +15,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let clock = 0;
     let time = 0;
     setInterval(function() {
-        clock = parseInt(Date.now()/2000%12);
-        if (Date.now()/1000 % 2 > 1) {
+        clock = parseInt(Date.now()/1000%12);
+        if (Date.now()/500 % 2 > 1) {
             clock += 12;
         }
-        time = parseInt((Date.now() - gm.begin)/1000);
+        time = parseInt((Date.now() - gm.begin+500)/1000);
         document.getElementById("clock").innerHTML = "&#" + (128336 + clock) + ";" + " " + parseInt(time/60) + ":" + parseInt(time%60).toString().padStart(2, "0");
-    }, 1000 / 1);
+    }, 1000 / 2);
 });
 
 
