@@ -55,7 +55,7 @@ export class Player {
         this.id = game.players.length + 1;
         this.position = [(game.h_size - 1) * (this.id-1), 4];
         this.walls = 10;
-        this.goal = game.h_size - 1 - position[0];
+        this.goal = game.h_size - 1 - this.position[0];
         game.addPlayer(this);
     }
 

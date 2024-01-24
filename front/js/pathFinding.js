@@ -1,14 +1,6 @@
 import { getCorridorPossiblePosition } from "./engine.js";
 import { LOG } from "./main.js";
 
-function sleep(milliseconds) {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-      currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
-  }
-
 function getNearestPosition(positions, goal) {
     var nearest = positions[0];
     var min = Math.abs(nearest[0] - goal);
@@ -33,12 +25,12 @@ function sortByNearest(positions, goal) {
 }
 
 function recursivePF(position, goal, list) {
+    if (LOG) console.log(`recursivePF(${position}, ${goal}, ${list})`);
     if (position[0] == goal) {
         return list;
     }
     for (var a of sortByNearest(getCorridorPossiblePosition(position[0], position[1]), goal)) {
         if (list[a[0]][a[1]] == 0) {
-            console.log("a not in list");
             if (LOG) document.getElementById("cell-" + a[0] + "-" + a[1]).style.setProperty("border", "#44BB44 4px solid");
             list[a[0]][a[1]] = 1;
             var path = recursivePF(a, goal, list);
@@ -64,16 +56,23 @@ export function findPath(player, goal) {
     if (path == null) {
         alert("No path found");
     }
+    console.log(path);
     return path;
 }
 
 export function updatePath(player, goal) {
+    var path = findPath(player, goal);
+
+    if (!LOG) return;
     var cells = document.getElementsByClassName("cell");
     for (var i = 0; i < cells.length; i++) {
         cells[i].style.setProperty("border", "none");
     }
-    var path = findPath(player, goal);
     for (var i = 0; i < path.length; i++) {
-        if (LOG) document.getElementById("cell-" + path[i][0] + "-" + path[i][1]).style.setProperty("border", "#44BB44 4px solid");
+        for (var j = 0; j < path[i].length; j++) {
+            if (path[i][j] == 1) {
+                document.getElementById("cell-" + i + "-" + j).style.setProperty("border", "#44BB44 4px solid");
+            }
+        }
     }
 }

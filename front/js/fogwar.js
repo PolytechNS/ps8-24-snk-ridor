@@ -3,24 +3,17 @@ import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event } from "./models.js";
 
 let board_fow;
 
-document.addEventListener('DOMContentLoaded', function() {
-    if (LOG) {
-        setLogStyle();
-    }
-
-    let gm = getGame();
-    board_fow = gm.board_fow;
-    initFogOfWar("beginning", null);
-
+document.addEventListener('DOMContentLoaded', function () {
     let clock = 0;
     let time = 0;
-    setInterval(function() {
-        clock = parseInt(Date.now()/1000%12);
-        if (Date.now()/500 % 2 > 1) {
+    let begin = parseInt(Date.now());
+    setInterval(function () {
+        clock = parseInt(Date.now() / 1000 % 12);
+        if (Date.now() / 500 % 2 > 1) {
             clock += 12;
         }
-        time = parseInt((Date.now() - gm.begin+500)/1000);
-        document.getElementById("clock").innerHTML = "&#" + (128336 + clock) + ";" + " " + parseInt(time/60) + ":" + parseInt(time%60).toString().padStart(2, "0");
+        time = parseInt((Date.now() - begin + 500) / 1000);
+        document.getElementById("clock").innerHTML = "&#" + (128336 + clock) + ";" + " " + parseInt(time / 60) + ":" + parseInt(time % 60).toString().padStart(2, "0");
     }, 1000 / 2);
 });
 
@@ -35,7 +28,7 @@ function setLogStyle() {
     r.style.setProperty('--wallj2', '#F55');
     r.style.setProperty('--neutre', '#00B');
     r.style.setProperty('--hover', '#999');
-    }
+}
 
 export function updateFogOfWar(event) {
     if (LOG) console.log("Updating fog of war on event, event = ");
@@ -50,7 +43,7 @@ export function updateFogOfWar(event) {
         if (LOG) console.log(" - Wall placed");
         allBoardFogOfWar();
     } else if (event.type == "end") {
-        if (LOG)  console.log(" - End of the game");
+        if (LOG) console.log(" - End of the game");
         removeFogOfWar();
     } else {
         if (LOG) console.log(" - Unknown event");
@@ -60,14 +53,18 @@ export function updateFogOfWar(event) {
 
 /* function to initialize the fog of war */
 function initFogOfWar() {
+    if (LOG) setLogStyle();
     if (LOG) console.log("Initializing fog of war");
+
+    board_fow = getGame().board_fow;
+    console.log("BF : ", board_fow);
 
     // init the board with default values
     for (let i = 0; i < BOARD_HEIGHT; i++) {
         for (let j = 0; j < BOARD_WIDTH; j++) {
-            if (i < parseInt(BOARD_HEIGHT /2)) {
+            if (i < parseInt(BOARD_HEIGHT / 2)) {
                 board_fow[i][j] = -1;
-            } else if (i > parseInt(BOARD_HEIGHT /2)) {
+            } else if (i > parseInt(BOARD_HEIGHT / 2)) {
                 board_fow[i][j] = 1;
             } else {
                 board_fow[i][j] = 0;
@@ -113,14 +110,14 @@ function moveFogOfWar(player, old_position, new_position) {
         let j = a[1];
         if (x + i >= 0 && x + i < BOARD_HEIGHT) {
             if (y + j >= 0 && y + j < BOARD_WIDTH) {
-                board_fow[x + i][y + j] += player*2-3;
+                board_fow[x + i][y + j] += player * 2 - 3;
                 setVisibility(x + i, y + j, board_fow[x + i][y + j]);
             }
         }
         /* new position */
         if (new_x + i >= 0 && new_x + i < BOARD_HEIGHT) {
             if (new_y + j >= 0 && new_y + j < BOARD_WIDTH) {
-                board_fow[new_x + i][new_y + j] += player*-2+3;
+                board_fow[new_x + i][new_y + j] += player * -2 + 3;
                 setVisibility(new_x + i, new_y + j, board_fow[new_x + i][new_y + j]);
             }
         }
@@ -145,9 +142,9 @@ function allBoardFogOfWar() {
     // init the board with default values
     for (let i = 0; i < BOARD_HEIGHT; i++) {
         for (let j = 0; j < BOARD_WIDTH; j++) {
-            if (i < parseInt(BOARD_HEIGHT /2)) {
+            if (i < parseInt(BOARD_HEIGHT / 2)) {
                 board_fow[i][j] = -1;
-            } else if (i > parseInt(BOARD_HEIGHT /2)) {
+            } else if (i > parseInt(BOARD_HEIGHT / 2)) {
                 board_fow[i][j] = 1;
             } else {
                 board_fow[i][j] = 0;
@@ -233,7 +230,6 @@ function allBoardFogOfWar() {
 function setVisibility(x, y, value) {
     let cell = document.getElementById(`cell-${x}-${y}`);
     if (LOG) console.log(`Setting visibility of cell`);
-    if (LOG) cell.onmouseover += "\nFOW : " + value;
     if (value > 0) {
         if (!cell.classList.contains("visible")) {
             cell.classList.add("visible");
