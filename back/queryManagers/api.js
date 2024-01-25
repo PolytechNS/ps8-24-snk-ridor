@@ -186,7 +186,7 @@ function handleGame(request, response) {
         return
     }
 
-    let url = new URL(request.url, 'http://0.0.0.0:8000')
+    let url = new URL(request.url, 'https://0.0.0.0:8000')
 
     if (request.method === 'POST') {
         // Generate a game id
