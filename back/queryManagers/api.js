@@ -1,5 +1,6 @@
 const { getUsers, getUser, createUser } = require('../database/database.js')
 const bcrypt = require('bcrypt')
+const { sign } = require('../jwt/jwt.js')
 
 // Main method, exported at the end of the file. It's the one that will be called when a REST request is received.
 function manageRequest(request, response) {
@@ -153,8 +154,12 @@ function handleLogin(request, response) {
                 }
 
                 // Generate a JWT
+                let token = sign({ email: user.email }, 'todo-secret-key')
+
+                console.log(token)
+
                 response.writeHead(200, { 'Content-Type': 'application/json' })
-                response.end({ token: 'todo-jwt-token-ici' })
+                response.end({ token: token })
             })
         })
     })
