@@ -154,12 +154,12 @@ function handleLogin(request, response) {
                 }
 
                 // Generate a JWT
-                let token = sign({ email: user.email }, 'todo-secret-key')
+                let token = sign({ email: user.email })
 
                 console.log(token)
 
                 response.writeHead(200, { 'Content-Type': 'application/json' })
-                response.end({ token: token })
+                response.end(JSON.stringify({ token: token }))
             })
         })
     })

@@ -1,6 +1,11 @@
 var crypto = require('crypto')
 
-function sign(payload, secret) {
+// get secret from env
+let default_secret =
+    'Zo2yU9#sB9ZBtruAip*^XAEW4ectaXvfokK^D8sSdVwahBf*JuuJ2Jr$!jd!zE6eikA'
+let secret = process.env.JWT_SECRET || default_secret
+
+function _sign(payload, secret) {
     let header = {
         alg: 'HS256',
         typ: 'JWT',
@@ -24,7 +29,7 @@ function sign(payload, secret) {
     )
 }
 
-function verify(token, secret) {
+function _verify(token, secret) {
     let [header, payload, sig] = token.split('.')
 
     let hmac = crypto.createHmac('sha256', secret)
@@ -37,6 +42,24 @@ function verify(token, secret) {
     )
 
     return sig === sig2.digest('base64url')
+}
+
+function sign(payload) {
+    if (secret === default_secret) {
+        console.warn(
+            'Warning: JWT_SECRET is not set, using default secret. This is not secure!'
+        )
+    }
+    return _sign(payload, secret)
+}
+
+function verify(token) {
+    if (secret === default_secret) {
+        console.warn(
+            'Warning: JWT_SECRET is not set, using default secret. This is not secure!'
+        )
+    }
+    return _verify(token, secret)
 }
 
 exports.sign = sign
