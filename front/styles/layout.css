@@ -19,7 +19,6 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
-
     background-color: aliceblue;
 }
 
@@ -32,11 +31,20 @@ main {
 
 footer {
     grid-column: 1 / 4;
-
     background-color: aliceblue;
-
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+aside {
+    height: 100%;
+}
+
+#aside-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin: auto;
+    margin-left: 4vw;
+}

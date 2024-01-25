@@ -100,25 +100,69 @@
     margin: auto;
 }
 
-/* Players CSS */
+.game-infos {
+    display: flex;
+    flex-direction: row;
+}
 
-.player {
+.game-infos a.container:not(:first-child) {
+    margin-left: 5vw;
+    vertical-align: middle;
+}
+
+.game-infos br {
+    display: none;
+}
+
+/* profiles */
+
+.profile {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
-    height: 80%;
-    width: 80%;
-    background-color: rgba(0, 0, 0, 1);
+    background-color: brown;
     color: white;
     box-sizing: border-box;
     padding: 10px;
-    border-radius: 40%;
+    border-radius: 15px;
+    width: 15vw;
 }
 
-/* Deprecated */
+.avatar {
+    width: 10vw;
+    height: 10vw;
+    background-color: black;
+    border-radius: 50%;
+    margin-bottom: 1vh;
+}
 
-.line {
+.identity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 1.5vh;
+}
+
+.profile-game-infos {
+    background-color: #3a1f0f;
+    border-radius: 5px;
+    margin-top: 1vh;
+    padding: 1vh;
+    text-align: left;
+    width: 90%
+}
+
+#profile_adversaire .identity {
     display: flex;
     flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    vertical-align: middle;
+}
+
+#profile_adversaire .avatar {
+    margin-bottom: 0;
+    width: 5vw;
+    height: 5vw;
 }

@@ -17,28 +17,34 @@
     <nav>
         Shingeki no Korridor
     </nav>
-    <aside>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fermentum tristique vulputate. Aliquam consequat
-        felis
-        non eros luctus mattis. Praesent nibh purus, dictum sit amet semper sed, viverra at odio. Aenean eu lacinia
-        magna.
-        Integer consequat nibh in consectetur vehicula. Nullam tristique vestibulum feugiat. Maecenas quam arcu,
-        ullamcorper
-        malesuada volutpat in, venenatis accumsan felis. Morbi placerat ligula vitae mi pretium ullamcorper. Integer
-        libero
-        ante, eleifend ac egestas quis, vulputate sed lacus. Aenean aliquam massa velit, vel tristique lectus
-        ullamcorper
-        ut. Nullam enim nibh, blandit vel ipsum at, porttitor placerat mi. In hac habitasse platea dictumst. Cras
-        elementum,
-        orci quis auctor commodo, mauris augue bibendum mauris, vitae consectetur leo odio vel magna. Aenean in pharetra
-        diam.
+    <aside id="aside-left">
+        <div id="profile_adversaire" class="profile">
+            <div class="identity">
+            <image src="https://raw.githubusercontent.com/lieutenantX/api/main/data/SNK/humain_annie.png" alt="avatar" class="avatar" />
+            <a id="pseudo">Pseudo</a>
+        </div>
+            <a id="score">Score : 54 827</a>
+            <div class="profile-game-infos">
+                walls : <a id="walls">0</a><br>
+            </div>
+        </div>
+        <div id="profile_self" class="profile">
+            <div class="identity">
+            <image src="https://raw.githubusercontent.com/lieutenantX/api/main/data/SNK/titan_eren.png" alt="avatar" class="avatar" />
+            <a id="pseudo">Pseudo</a>   
+        </div>  
+            <a id="score">Score : 72 845</a>
+            <div class="profile-game-infos">
+                walls : <a id="walls">0</a><br>
+            </div>
+        </div>
     </aside>
     <main>
         <div id="board" class="board"></div>
         <div id="game-infos" class="game-infos">
-            <a>Au tour du joueur <a id="player">A</a></a><br>
-            <a>tour <a id="turn">1</a></a><br>
-            <a id="clock">&#128336; 0:00</a><br>
+            <a class="container">Au tour du joueur&nbsp;<a id="player">A</a><br></a>
+            <a class="container">tour&nbsp;<a id="turn">1</a><br></a>
+            <a  class="container" id="clock">&#128336; 0:00</a>
         </div>
     </main>
     <aside>
