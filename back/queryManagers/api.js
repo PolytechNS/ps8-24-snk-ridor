@@ -1,11 +1,18 @@
-const { getUsers, getUser, createUser } = require('../database/database.js')
+const {
+    getUser,
+    createUser,
+    getGame,
+    createGame,
+} = require('../database/database')
 const bcrypt = require('bcrypt')
-const { sign } = require('../jwt/jwt.js')
+const { verify, sign, parse } = require('../jwt/jwt')
 
 // Main method, exported at the end of the file. It's the one that will be called when a REST request is received.
 function manageRequest(request, response) {
     // Ici, nous extrayons la partie de l'URL qui indique l'endpoint
-    let endpoint = request.url.split('/')[2] // Supposant que l'URL est sous la forme /api/endpoint
+    let url = new URL(request.url, `http://0.0.0.0:${process.env.PORT || 8000}`)
+    let endpoint = url.pathname.split('/')[2] // Supposant que l'URL est sous la forme /api/endpoint
+    // let endpoint = request.url.split('/')[2] // Supposant que l'URL est sous la forme /api/endpoint
 
     switch (endpoint) {
         case 'signup':
@@ -156,8 +163,6 @@ function handleLogin(request, response) {
                 // Generate a JWT
                 let token = sign({ email: user.email })
 
-                console.log(token)
-
                 response.writeHead(200, { 'Content-Type': 'application/json' })
                 response.end(JSON.stringify({ token: token }))
             })
@@ -166,19 +171,99 @@ function handleLogin(request, response) {
 }
 
 function handleGame(request, response) {
-    if (request.method === 'POST') {
-        // Créer une nouvelle session de jeu
-        response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end(
-            JSON.stringify({ message: 'Nouvelle session de jeu créée' })
-        )
-    } else if (request.method === 'GET') {
-        // Récupérer l'état d'un jeu existant
-        response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end(JSON.stringify({ gameData: 'données du jeu ici' }))
-    } else {
+    if (request.method !== 'POST' && request.method !== 'GET') {
         response.writeHead(405, { 'Content-Type': 'application/json' })
         response.end(JSON.stringify({ error: 'Méthode non autorisée' }))
+        return
+    }
+
+    // If user is not authenticated, return an error
+    if (!request.headers.authorization) {
+        response.writeHead(401, { 'Content-Type': 'application/json' })
+        response.end(JSON.stringify({ error: 'Non authentifié' }))
+        return
+    }
+
+    // Get the user email from the token
+    let token = request.headers.authorization.split(' ')[1]
+
+    console.log(verify(token))
+
+    if (!verify(token)) {
+        response.writeHead(401, { 'Content-Type': 'application/json' })
+        response.end(JSON.stringify({ error: 'Non authentifié' }))
+        return
+    }
+
+    let email = parse(token).payload.email
+
+    let url = new URL(request.url, 'http://0.0.0.0:8000')
+
+    if (request.method === 'POST') {
+        // Generate a game id
+        let sessionId = Math.random().toString(36).substring(2, 15)
+
+        getJsonBody(request).then((body) => {
+            createGame({
+                _id: sessionId,
+                player: email,
+                data: body,
+            }).then((newGame) => {
+                if (!newGame) {
+                    response.writeHead(500, {
+                        'Content-Type': 'application/json',
+                    })
+                    response.end(
+                        JSON.stringify({
+                            error: 'Erreur lors de la création de la partie',
+                        })
+                    )
+                    return // Stop execution on creation error
+                }
+
+                response.writeHead(200, { 'Content-Type': 'application/json' })
+                response.end(
+                    JSON.stringify({
+                        message: 'Partie créée avec succès',
+                        gameId: sessionId,
+                    })
+                )
+            })
+        })
+    }
+
+    if (request.method === 'GET') {
+        // Get session id from url
+        let sessionId = url.searchParams.get('gameId')
+
+        if (!sessionId) {
+            response.writeHead(400, { 'Content-Type': 'application/json' })
+            response.end(JSON.stringify({ error: 'Données manquantes' }))
+            return
+        }
+
+        getGame(sessionId).then((game) => {
+            if (!game) {
+                response.writeHead(404, { 'Content-Type': 'application/json' })
+                response.end(
+                    JSON.stringify({ error: 'Session de jeu inexistante' })
+                )
+                return
+            }
+
+            if (game.player !== email) {
+                response.writeHead(403, { 'Content-Type': 'application/json' })
+                response.end(
+                    JSON.stringify({
+                        error: "Vous n'êtes pas autorisé à accéder à cette session de jeu",
+                    })
+                )
+                return
+            }
+
+            response.writeHead(200, { 'Content-Type': 'application/json' })
+            response.end(JSON.stringify({ gameData: game }))
+        })
     }
 }
 

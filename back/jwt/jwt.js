@@ -34,12 +34,7 @@ function _verify(token, secret) {
 
     let hmac = crypto.createHmac('sha256', secret)
 
-    let sig2 = hmac.update(
-        Buffer.from(header).toString('base64url') +
-            '.' +
-            Buffer.from(payload).toString('base64url'),
-        secret
-    )
+    let sig2 = hmac.update(header + '.' + payload, secret)
 
     return sig === sig2.digest('base64url')
 }
@@ -53,6 +48,16 @@ function sign(payload) {
     return _sign(payload, secret)
 }
 
+function parse(token) {
+    let [header, payload, sig] = token.split('.')
+
+    return {
+        header: JSON.parse(Buffer.from(header, 'base64url').toString('utf8')),
+        payload: JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')),
+        sig: sig,
+    }
+}
+
 function verify(token) {
     if (secret === default_secret) {
         console.warn(
@@ -64,3 +69,4 @@ function verify(token) {
 
 exports.sign = sign
 exports.verify = verify
+exports.parse = parse

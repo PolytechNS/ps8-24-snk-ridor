@@ -33,6 +33,20 @@ async function createUser(user) {
     return await users.insertOne(user)
 }
 
+async function getGame(gameId) {
+    const db = await getMongoDatabase()
+
+    return db.collection('games').findOne({ _id: gameId })
+}
+
+async function createGame(game) {
+    const db = await getMongoDatabase()
+
+    return await db.collection('games').insertOne(game)
+}
+
 exports.getUsers = getUsers
 exports.getUser = getUser
 exports.createUser = createUser
+exports.getGame = getGame
+exports.createGame = createGame
