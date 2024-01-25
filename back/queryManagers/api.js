@@ -12,7 +12,6 @@ function manageRequest(request, response) {
     // Ici, nous extrayons la partie de l'URL qui indique l'endpoint
     let url = new URL(request.url, `http://0.0.0.0:${process.env.PORT || 8000}`)
     let endpoint = url.pathname.split('/')[2] // Supposant que l'URL est sous la forme /api/endpoint
-    // let endpoint = request.url.split('/')[2] // Supposant que l'URL est sous la forme /api/endpoint
 
     switch (endpoint) {
         case 'signup':
@@ -177,25 +176,11 @@ function handleGame(request, response) {
         return
     }
 
-    // If user is not authenticated, return an error
-    if (!request.headers.authorization) {
-        response.writeHead(401, { 'Content-Type': 'application/json' })
-        response.end(JSON.stringify({ error: 'Non authentifié' }))
+    let email = requireLogin(request, response)
+
+    if (!email) {
         return
     }
-
-    // Get the user email from the token
-    let token = request.headers.authorization.split(' ')[1]
-
-    console.log(verify(token))
-
-    if (!verify(token)) {
-        response.writeHead(401, { 'Content-Type': 'application/json' })
-        response.end(JSON.stringify({ error: 'Non authentifié' }))
-        return
-    }
-
-    let email = parse(token).payload.email
 
     let url = new URL(request.url, 'http://0.0.0.0:8000')
 
@@ -279,17 +264,105 @@ function handleRank(request, response) {
 }
 
 function handleProfile(request, response) {
-    if (request.method === 'GET') {
-        // Logique pour récupérer le profil de l'utilisateur
-        response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end(JSON.stringify({ userProfile: 'données du profil ici' }))
-    } else if (request.method === 'PUT') {
-        // Logique pour mettre à jour le profil de l'utilisateur
-        response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end(JSON.stringify({ message: 'Profil mis à jour' }))
-    } else {
+    if (request.method !== 'GET' && request.method !== 'PUT') {
         response.writeHead(405, { 'Content-Type': 'application/json' })
         response.end(JSON.stringify({ error: 'Méthode non autorisée' }))
+        return
+    }
+
+    let email = requireLogin(request, response)
+
+    if (!email) {
+        return
+    }
+
+    if (request.method === 'GET') {
+        getUser(email).then((user) => {
+            if (!user) {
+                response.writeHead(404, { 'Content-Type': 'application/json' })
+                response.end(
+                    JSON.stringify({ error: 'Utilisateur inexistant' })
+                )
+                return
+            }
+
+            response.writeHead(200, { 'Content-Type': 'application/json' })
+            response.end(JSON.stringify({ userProfile: user }))
+        })
+        return
+    }
+
+    if (request.method === 'PUT') {
+        // We will require to send all fields, even if they are not modified see https://en.wikipedia.org/wiki/Create%2C_read%2C_update_and_delete#RESTful_APIs
+        getJsonBody(request).then((body) => {
+            if (!body.email || !body.username || !body.password) {
+                response.writeHead(400, { 'Content-Type': 'application/json' })
+                response.end(JSON.stringify({ error: 'Données manquantes' }))
+                return
+            }
+
+            if (body.email !== email) {
+                response.writeHead(403, { 'Content-Type': 'application/json' })
+                response.end(
+                    JSON.stringify({
+                        error: 'Vous ne pouvez pas modifier l email',
+                    })
+                )
+                return
+            }
+
+            getUser(email).then((user) => {
+                if (!user) {
+                    response.writeHead(404, {
+                        'Content-Type': 'application/json',
+                    })
+                    response.end(
+                        JSON.stringify({ error: 'Utilisateur inexistant' })
+                    )
+                    return
+                }
+
+                // Hash the password
+                bcrypt.hash(body.password, 10, (err, hash) => {
+                    if (err) {
+                        response.writeHead(500, {
+                            'Content-Type': 'application/json',
+                        })
+                        response.end(
+                            JSON.stringify({
+                                error: 'Erreur lors de la modification de l utilisateur',
+                            })
+                        )
+                        return // Stop execution on hash error
+                    }
+
+                    body.password = hash
+
+                    createUser(body).then((newUser) => {
+                        if (!newUser) {
+                            response.writeHead(500, {
+                                'Content-Type': 'application/json',
+                            })
+                            response.end(
+                                JSON.stringify({
+                                    error: 'Erreur lors de la modification de l utilisateur',
+                                })
+                            )
+                            return // Stop execution on creation error
+                        }
+
+                        response.writeHead(200, {
+                            'Content-Type': 'application/json',
+                        })
+                        response.end(
+                            JSON.stringify({
+                                message: 'Utilisateur modifié avec succès',
+                            })
+                        )
+                    })
+                })
+            })
+        })
     }
 }
 
@@ -373,6 +446,24 @@ function getJsonBody(request) {
             resolve(JSON.parse(body))
         })
     })
+}
+
+function requireLogin(request, response) {
+    if (!request.headers.authorization) {
+        response.writeHead(401, { 'Content-Type': 'application/json' })
+        response.end(JSON.stringify({ error: 'Non authentifié' }))
+        return false
+    }
+
+    let token = request.headers.authorization.split(' ')[1]
+
+    if (!verify(token)) {
+        response.writeHead(401, { 'Content-Type': 'application/json' })
+        response.end(JSON.stringify({ error: 'Non authentifié' }))
+        return false
+    }
+
+    return parse(token).payload.email
 }
 
 exports.manage = manageRequest
