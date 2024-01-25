@@ -4,13 +4,17 @@ const {
     getGame,
     createGame,
 } = require('../database/database')
+const crypto = require('crypto')
 const bcrypt = require('bcrypt')
 const { verify, sign, parse } = require('../jwt/jwt')
 
 // Main method, exported at the end of the file. It's the one that will be called when a REST request is received.
 function manageRequest(request, response) {
     // Ici, nous extrayons la partie de l'URL qui indique l'endpoint
-    let url = new URL(request.url, `http://0.0.0.0:${process.env.PORT || 8000}`)
+    let url = new URL(
+        request.url,
+        `https://0.0.0.0:${process.env.PORT || 8000}`
+    )
     let endpoint = url.pathname.split('/')[2] // Supposant que l'URL est sous la forme /api/endpoint
 
     switch (endpoint) {
@@ -186,7 +190,7 @@ function handleGame(request, response) {
 
     if (request.method === 'POST') {
         // Generate a game id
-        let sessionId = Math.random().toString(36).substring(2, 15)
+        let sessionId = crypto.randomBytes(16).toString('hex')
 
         getJsonBody(request).then((body) => {
             createGame({
