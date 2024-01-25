@@ -1,4 +1,4 @@
-var crypto = require('crypto')
+const crypto = require('crypto')
 
 // get secret from env
 let default_secret =
