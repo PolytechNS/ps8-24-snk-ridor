@@ -19,6 +19,8 @@
     },
     "homepage": "https://github.com/PolytechNS/ps8-24-snk-ridor/issues#readme",
     "dependencies": {
+        "bcrypt": "^5.1.1",
+        "mongodb": "^6.3.0",
         "socket.io": "^4.7.4"
     },
     "devDependencies": {

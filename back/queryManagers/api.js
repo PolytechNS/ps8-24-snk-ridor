@@ -1,3 +1,6 @@
+const { getUsers, getUser, createUser } = require('../database/database.js')
+const bcrypt = require('bcrypt')
+
 // Main method, exported at the end of the file. It's the one that will be called when a REST request is received.
 function manageRequest(request, response) {
     // Ici, nous extrayons la partie de l'URL qui indique l'endpoint
@@ -35,29 +38,126 @@ function manageRequest(request, response) {
 }
 
 function handleSignup(request, response) {
-    if (request.method === 'POST') {
-        // Ici, recueillez les données POST (email, nom d'utilisateur, mot de passe)
-        // Validez et enregistrez les données dans la base de données
-        response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end(
-            JSON.stringify({ message: 'Utilisateur enregistré avec succès' })
-        )
-    } else {
+    if (request.method !== 'POST') {
         response.writeHead(405, { 'Content-Type': 'application/json' })
         response.end(JSON.stringify({ error: 'Méthode non autorisée' }))
+        return
     }
+
+    // Get the data from the request body
+    getJsonBody(request).then((body) => {
+        // Validate the object
+        if (!body.email || !body.username || !body.password) {
+            response.writeHead(400, { 'Content-Type': 'application/json' })
+            response.end(JSON.stringify({ error: 'Données manquantes' }))
+            return
+        }
+
+        getUser(body.email).then((user) => {
+            if (user) {
+                response.writeHead(409, { 'Content-Type': 'application/json' })
+                response.end(
+                    JSON.stringify({ error: 'Utilisateur déjà existant' })
+                )
+                return // Stop execution if user already exists
+            }
+
+            // Hash the password
+            bcrypt.hash(body.password, 10, (err, hash) => {
+                if (err) {
+                    response.writeHead(500, {
+                        'Content-Type': 'application/json',
+                    })
+                    response.end(
+                        JSON.stringify({
+                            error: 'Erreur lors de la création de l utilisateur',
+                        })
+                    )
+                    return // Stop execution on hash error
+                }
+
+                body.password = hash
+
+                createUser(body).then((newUser) => {
+                    if (!newUser) {
+                        response.writeHead(500, {
+                            'Content-Type': 'application/json',
+                        })
+                        response.end(
+                            JSON.stringify({
+                                error: 'Erreur lors de la création de l utilisateur',
+                            })
+                        )
+                        return // Stop execution on creation error
+                    }
+
+                    response.writeHead(200, {
+                        'Content-Type': 'application/json',
+                    })
+                    response.end(
+                        JSON.stringify({
+                            message: 'Utilisateur enregistré avec succès',
+                        })
+                    )
+                })
+            })
+        })
+    })
 }
 
 function handleLogin(request, response) {
-    if (request.method === 'POST') {
-        // Collectez et validez les données de connexion
-        // Si valide, générez un JWT
-        response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end(JSON.stringify({ token: 'jwt-token-ici' }))
-    } else {
+    if (request.method !== 'POST') {
         response.writeHead(405, { 'Content-Type': 'application/json' })
         response.end(JSON.stringify({ error: 'Méthode non autorisée' }))
+        return
     }
+
+    // Get the data from the request body
+    getJsonBody(request).then((body) => {
+        // Validate the object
+        if (!body.email || !body.password) {
+            response.writeHead(400, { 'Content-Type': 'application/json' })
+            response.end(JSON.stringify({ error: 'Données manquantes' }))
+            return
+        }
+
+        getUser(body.email).then((user) => {
+            if (!user) {
+                response.writeHead(404, { 'Content-Type': 'application/json' })
+                response.end(
+                    JSON.stringify({ error: 'Utilisateur inexistant' })
+                )
+                return // Stop execution if user doesn't exist
+            }
+
+            // Compare the password with the hash
+            bcrypt.compare(body.password, user.password, (err, result) => {
+                if (err) {
+                    response.writeHead(500, {
+                        'Content-Type': 'application/json',
+                    })
+                    response.end(
+                        JSON.stringify({ error: 'Erreur lors de la connexion' })
+                    )
+                    return // Stop execution on hash error
+                }
+
+                if (!result) {
+                    response.writeHead(401, {
+                        'Content-Type': 'application/json',
+                    })
+                    response.end(
+                        JSON.stringify({ error: 'Mot de passe incorrect' })
+                    )
+                    return // Stop execution on wrong password
+                }
+
+                // Generate a JWT
+                response.writeHead(200, { 'Content-Type': 'application/json' })
+                response.end({ token: 'todo-jwt-token-ici' })
+            })
+        })
+    })
 }
 
 function handleGame(request, response) {
@@ -170,6 +270,19 @@ function addCors(response) {
     )
     // Set to true if you need the website to include cookies in the requests sent to the API.
     response.setHeader('Access-Control-Allow-Credentials', true)
+}
+
+function getJsonBody(request) {
+    return new Promise((resolve, reject) => {
+        let body = ''
+        request.on('data', (chunk) => {
+            body += chunk.toString()
+        })
+
+        request.on('end', () => {
+            resolve(JSON.parse(body))
+        })
+    })
 }
 
 exports.manage = manageRequest

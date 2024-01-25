@@ -20,6 +20,10 @@ You can download Node.js [here](https://nodejs.org/en/download/).
 
 Run `npm install` in the root folder of the project.
 
+### Launching the Database
+
+Run `docker run -it --rm -p 27017:27017 mongo` to launch the MongoDB. (You can stop it later with `docker stop mongo`)
+
 ### Running the Project
 
 Run `npm start` in the root folder of the project. This will start the server, you will then be able to access it at http://localhost:8000.
