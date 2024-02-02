@@ -9,7 +9,7 @@ body {
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
-    grid-template-rows: var(--navbar-height) 1fr var(--footer-height);
+    grid-template-rows: var(--navbar-height-1) 1fr var(--footer-height);
     grid-gap: 10px;
 }
 

@@ -1,6 +1,7 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, Event, getGame } from "./models.js";
 import { onCellClick, next_player } from "./engine.js";
 import { LOG } from "./main.js";
+import { findPath } from "./pathFinding.js";
 
 export function init_board(board_div, board) {
     board_div.style.gridTemplateColumns = `repeat(${board.h_size * 2 - 1}, min-content)`
@@ -22,7 +23,6 @@ export function init_board(board_div, board) {
 
             // Create Vertical Wall
             if (j < board.h_size - 1) {
-                if (LOG) console.log(j);
                 let wall = document.createElement("div");
                 wall.classList.add("v-wall", "wall");
                 wall.id = `v-wall-${i}-${j}`;
@@ -62,6 +62,19 @@ export function init_board(board_div, board) {
     
 }
 
+// display message and dismiss it after 3 seconds
+export function display_message(message, category = "dev_message") {
+    if (LOG) console.log(message);
+    let message_div = document.createElement("div");
+    message_div.classList.add("alert");
+    message_div.classList.add(category); // category can be "dev_message", "forbidden_message", "info_message" or "final_message"
+    message_div.textContent = message;
+    document.getElementById("game-infos").appendChild(message_div);
+    setTimeout(() => {
+        message_div.remove();
+    }, 4000); // display message for 4 seconds
+}
+
 // Callback functions for visuals only
 
 function on_wall_over(event) {
@@ -99,6 +112,16 @@ function on_wall_click(event) {
     }
     
     let wall_player = getGame().current_player;
+    // TODO : gérer le cas où le joueur n'a plus de murs
+
+    // gérer qu'un chemin doit toujours exister
+    if (findPath(getGame().getCurrentPlayer().position, getGame().getCurrentPlayer().goal) == null) {
+        if (LOG) {
+            console.log("No path found from " + getGame().getCurrentPlayer().position + " to " + getGame().getCurrentPlayer().goal);
+        }
+        display_message("Impossible de bloquer le chemin avec un mur !", "forbidden_message");
+        return;
+    }
     for (let wall of walls) {
         wall.classList.remove("wall-hover");
         wall.classList.add("placed");

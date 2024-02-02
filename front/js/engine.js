@@ -43,6 +43,7 @@ import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from "./models.js";
 import { LOG } from "./main.js";
 import { updateFogOfWar } from "./fogwar.js";
 import { updatePath } from "./pathFinding.js";
+import { display_message } from "./board.js";
 
 const LINES = BOARD_HEIGHT;
 const COLUMNS = BOARD_WIDTH;
@@ -93,12 +94,11 @@ function initialise_game() {
 export function next_player(event = null) {
     if (LOG) console.log(`next_player() called`);
     updateFogOfWar(event);
-    //updatePath(getGame()['p' + getPlayerTurn().player + '_pos'], LINES - 1);
-    updatePath(getGame()['p1_pos'], 0);
     deleteOverview();
     turn++;
     document.getElementById('turn').textContent = turn+1;
-    getGame().current_player = turn % 2 + 1;
+    getGame().nextPlayer();
+    updatePath(getGame().getCurrentPlayer().position, getGame().getCurrentPlayer().goal);
     document.getElementById('player').textContent = ["","A","B"][getPlayerTurn().player];
 }
 
@@ -151,15 +151,72 @@ export function getCorridorPossiblePosition(line, column) {
     return cells;
 }
 
+
+export function getCorridorPossiblePositionForPath(line, column) {
+    let cells = [];
+    let wall;
+    if (line > 0) {
+        wall = document.getElementById('h-wall-' + (line - 1) + '-' + column);
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
+            if (document.getElementById('cell-' + (line - 1) + '-' + column).childElementCount == 0) {
+                cells.push([line - 1, column]);
+            } else {
+                if (line > 1 && !document.getElementById('h-wall-' + (line - 2) + '-' + column).classList.contains("placed")) { 
+                    cells.push([line - 2, column]);
+                }
+            }
+        }
+    }
+    if (line < LINES - 1) {
+        wall = document.getElementById('h-wall-' + line + '-' + column);
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
+            if (document.getElementById('cell-' + (line + 1) + '-' + column).childElementCount == 0) {
+                cells.push([line + 1, column]);
+            } else {
+                if (line < LINES - 2 && !document.getElementById('h-wall-' + (line + 1) + '-' + column).classList.contains("placed")) {
+                    cells.push([line + 2, column]);
+                }
+            }
+        }
+    }
+    if (column > 0) {
+        wall = document.getElementById('v-wall-' + line + '-' + (column - 1));
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
+            if (document.getElementById('cell-' + line + '-' + (column - 1)).childElementCount == 0) {
+                cells.push([line, column - 1]);
+            } else {
+                if (column > 1 && !document.getElementById('v-wall-' + line + '-' + (column - 2)).classList.contains("placed")) {
+                    cells.push([line, column - 2]);
+                }
+            }
+        }
+    }
+    if (column < COLUMNS - 1) {
+        wall = document.getElementById('v-wall-' + line + '-' + column);
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
+            if (document.getElementById('cell-' + line + '-' + (column + 1)).childElementCount == 0) {
+                cells.push([line, column + 1]);
+            } else {
+                if (column < COLUMNS - 2 && !document.getElementById('v-wall-' + line + '-' + (column + 1)).classList.contains("placed")) {
+                    cells.push([line, column + 2]);
+                }
+            }
+        }
+    }
+    return cells;
+}
+
 function checkVictory(player) {
     if (LOG) console.log(`checkVictory(${player}) called`);
     if (player == player_b && player.line == PLAYER_A_START_LINE) {
         updateFogOfWar(new Event("end", player.player, [player.line, player.column]));
-        alert('Player B won'); // TODO : change this to a better way to display the victory
+        display_message('Player B won', 'final_message');
+        //alert('Player B won'); // TODO : change this to a better way to display the victory
         return true;
     } else if (player == player_a && player.line == PLAYER_B_START_LINE) {
         updateFogOfWar(new Event("end", player.player, [player.line, player.column]));
-        alert('Player A won'); // TODO : change this to a better way to display the victory
+        display_message('Player A won', 'final_message');
+        //alert('Player A won'); // TODO : change this to a better way to display the victory
         return true;
     }
     return false;
@@ -178,6 +235,7 @@ function move_player(player, line, column) {
     cell = document.getElementById('cell-' + line + '-' + column);
     cell.appendChild(player);
     getGame()['p' + player.player + '_pos'] = [line, column];
+    getGame().getCurrentPlayer().move([line, column]);
 
     if (checkVictory(player)) {
         updateFogOfWar(new Event("end", player.player, [player.line, player.column]));
@@ -380,5 +438,6 @@ export function addPlayers(board_div, board) {
     if (LOG) player_b.textContent = 'B';
     cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
     getGame()['p2_pos'] = [player_b.line, player_b.column];
+    getGame().addPlayer(new Player());
     cell.appendChild(player_b);
 }

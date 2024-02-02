@@ -37,6 +37,14 @@ export class Game {
     addPlayer(player) {
         this.players.push(player);
     }
+
+    getCurrentPlayer() {
+        return this.players[this.current_player - 1];
+    }
+
+    nextPlayer() {
+        this.current_player = this.current_player % 2 + 1;
+    }
 }
 
 export class Event {
@@ -53,17 +61,19 @@ export class Player {
     constructor() {
         let game = getGame();
         this.id = game.players.length + 1;
-        this.position = [(game.h_size - 1) * (this.id-1), 4];
+        this.position = [(game.h_size - 1) * (this.id%2), 4];
         this.walls = 10;
         this.goal = game.h_size - 1 - this.position[0];
         game.addPlayer(this);
+        console.log(`Player ${this.id} created at ${this.position} with ${this.walls} walls`);
     }
 
     move(position) {
+        console.log(`Player ${this.id} moved from ${this.position} to ${position}`);
         this.position = position;
     }
 
-    placeWall(wall) {
+    placeWall() {
         if (this.walls == 0) {
             return false;
         }

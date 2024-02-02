@@ -11,6 +11,7 @@
     <script type="module" src="js/main.js"></script>
     <script type="module" src="js/models.js"></script>
     <script type="module" src="js/board.js"></script>
+    <script type="module" src="js/sugar.js"></script>
 </head>
 
 <body>
@@ -48,20 +49,25 @@
         </div>
     </main>
     <aside>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fermentum tristique vulputate. Aliquam consequat
-        felis
-        non eros luctus mattis. Praesent nibh purus, dictum sit amet semper sed, viverra at odio. Aenean eu lacinia
-        magna.
-        Integer consequat nibh in consectetur vehicula. Nullam tristique vestibulum feugiat. Maecenas quam arcu,
-        ullamcorper
-        malesuada volutpat in, venenatis accumsan felis. Morbi placerat ligula vitae mi pretium ullamcorper. Integer
-        libero
-        ante, eleifend ac egestas quis, vulputate sed lacus. Aenean aliquam massa velit, vel tristique lectus
-        ullamcorper
-        ut. Nullam enim nibh, blandit vel ipsum at, porttitor placerat mi. In hac habitasse platea dictumst. Cras
-        elementum,
-        orci quis auctor commodo, mauris augue bibendum mauris, vitae consectetur leo odio vel magna. Aenean in pharetra
-        diam.
+        <div id="chat">
+            <div id="chatbox">
+                <div id="chatbox-content">
+
+                    <!-- démo provisoire des messages, à supprimer quand on aura implémenté la messagerie -->
+                    <div class="message self">
+                        coucou le monde
+                    </div>
+                    <div class="message">
+                        hello world
+                    </div>
+
+                </div>
+            </div>
+            <div id="chatbox-input">
+                <input type="text" id="chatbox-input-text" placeholder="Message...">
+                <button id="chatbox-input-send">Envoyer</button>
+            </div>
+        </div>
     </aside>
     <footer>
         this is copyright
