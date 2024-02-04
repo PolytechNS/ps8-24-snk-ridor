@@ -64,7 +64,11 @@ export function init_board(board_div, board) {
 
 // display message and dismiss it after 3 seconds
 export function display_message(message, category = "dev_message") {
-    if (LOG) console.log(message);
+    if (LOG) {
+        console.log(message);
+    } else if (category == "dev_message") {
+        return;
+    }
     let message_div = document.createElement("div");
     message_div.classList.add("alert");
     message_div.classList.add(category); // category can be "dev_message", "forbidden_message", "info_message" or "final_message"
@@ -104,6 +108,11 @@ function on_wall_out(event) {
 }
 
 function on_wall_click(event) {
+    let wall_player = getGame().current_player;
+    if (wall_player.remaining_walls == 0) {
+        display_message("Vous n'avez plus de murs !", "forbidden_message");
+        return;
+    }
     let walls = get_walls(event);
 
     // If any of the walls is black, we do nothing
@@ -111,16 +120,17 @@ function on_wall_click(event) {
         return;
     }
     
-    let wall_player = getGame().current_player;
     // TODO : gérer le cas où le joueur n'a plus de murs
 
     // gérer qu'un chemin doit toujours exister
-    if (findPath(getGame().getCurrentPlayer().position, getGame().getCurrentPlayer().goal) == null) {
-        if (LOG) {
-            console.log("No path found from " + getGame().getCurrentPlayer().position + " to " + getGame().getCurrentPlayer().goal);
+    for (let p of getGame().players) {
+        if (findPath(p) == null) {
+            if (LOG) {
+                console.log("No path found from " + getGame().getCurrentPlayer().position + " to " + getGame().getCurrentPlayer().goal);
+            }
+            display_message("Impossible de bloquer le chemin avec un mur !", "forbidden_message");
+            return;
         }
-        display_message("Impossible de bloquer le chemin avec un mur !", "forbidden_message");
-        return;
     }
     for (let wall of walls) {
         wall.classList.remove("wall-hover");
@@ -128,6 +138,8 @@ function on_wall_click(event) {
         wall.classList.add(`wall-p${wall_player}`);
         wall.player = wall_player;
     }
+    wall_player.place_wall;
+    display_message(`il reste ${wall_player.remaining_walls} murs`, "dev_message");
     let wall_event = new Event("wall", wall_player, event.walls);
     next_player(wall_event);
 }

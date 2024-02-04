@@ -43,7 +43,7 @@ function recursivePF(position, goal, list) {
     return null;
 }
 
-export function findPath(player, goal) {
+export function findPath(player) {
     var list = [];
     for (var i = 0; i < 9; i++) {
         list.push([]);
@@ -51,8 +51,7 @@ export function findPath(player, goal) {
             list[i].push(0);
         }
     }
-    var position = player;
-    var path = recursivePF(position, goal, list);
+    var path = recursivePF(player.position, player.goal, list);
     if (path == null) {
         if (LOG) display_message("No path found", "dev_message");
     }
@@ -60,8 +59,8 @@ export function findPath(player, goal) {
     return path;
 }
 
-export function updatePath(player, goal) {
-    var path = findPath(player, goal);
+export function updatePath(player) {
+    var path = findPath(player);
 
     if (!LOG) return;
     var cells = document.getElementsByClassName("cell");

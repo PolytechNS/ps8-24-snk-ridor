@@ -98,7 +98,7 @@ export function next_player(event = null) {
     turn++;
     document.getElementById('turn').textContent = turn+1;
     getGame().nextPlayer();
-    updatePath(getGame().getCurrentPlayer().position, getGame().getCurrentPlayer().goal);
+    updatePath(getGame().getCurrentPlayer());
     document.getElementById('player').textContent = ["","A","B"][getPlayerTurn().player];
 }
 
@@ -423,7 +423,8 @@ export function addPlayers(board_div, board) {
     player_a.addEventListener('click', onPlayerClick);
     if (LOG) player_a.textContent = 'A';
     let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
-    getGame().addPlayer(new Player());
+    new Player();
+    // do not add the player to the board, this is done in the Player class
     getGame()['p1_pos'] = [player_a.line, player_a.column];
     cell.appendChild(player_a);
 
@@ -438,6 +439,7 @@ export function addPlayers(board_div, board) {
     if (LOG) player_b.textContent = 'B';
     cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
     getGame()['p2_pos'] = [player_b.line, player_b.column];
-    getGame().addPlayer(new Player());
+    new Player();
+    // do not add the player to the board, this is done in the Player class
     cell.appendChild(player_b);
 }

@@ -1,4 +1,4 @@
-import { Game } from "./models.js";
+import { Game, Player, getGame } from "./models.js";
 import { init_board } from "./board.js";
 import { addPlayers, display } from "./engine.js";
 import { findPath, updatePath } from "./pathFinding.js";
@@ -18,7 +18,9 @@ function onload() {
     if (LOG) console.log("Players initialized");
     updateFogOfWar(new Event("beginning"));
 
-    updatePath(board.p1_pos, board.p2_pos[0]);
+    board = getGame();
+    console.log(board.getCurrentPlayer());
+    updatePath(board.getCurrentPlayer());
 }
 
 document.addEventListener("DOMContentLoaded", onload);
