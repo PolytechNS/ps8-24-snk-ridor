@@ -108,8 +108,8 @@ function on_wall_out(event) {
 }
 
 function on_wall_click(event) {
-    let wall_player = getGame().current_player;
-    if (wall_player.remaining_walls == 0) {
+    let wall_player = getGame().getCurrentPlayer();
+    if (wall_player.remainingWalls() == 0) {
         display_message("Vous n'avez plus de murs !", "forbidden_message");
         return;
     }
@@ -135,10 +135,10 @@ function on_wall_click(event) {
     for (let wall of walls) {
         wall.classList.remove("wall-hover");
         wall.classList.add("placed");
-        wall.classList.add(`wall-p${wall_player}`);
-        wall.player = wall_player;
+        wall.classList.add(`wall-p${wall_player.id}`);
+        wall.player = wall_player.id;
     }
-    wall_player.place_wall;
+    wall_player.placeWall();
     display_message(`il reste ${wall_player.remaining_walls} murs`, "dev_message");
     let wall_event = new Event("wall", wall_player, event.walls);
     next_player(wall_event);

@@ -93,6 +93,7 @@ function initialise_game() {
 
 export function next_player(event = null) {
     if (LOG) console.log(`next_player() called`);
+    getGame().getCurrentPlayer().updateProfile();
     updateFogOfWar(event);
     deleteOverview();
     turn++;

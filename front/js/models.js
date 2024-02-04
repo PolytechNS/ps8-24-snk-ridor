@@ -85,10 +85,19 @@ export class Player {
     }
 
     placeWall() {
+        console.log(`Player ${this.id} placed a wall`);
+        console.log(`Player ${this.id} has ${this.walls} walls left`);
+        console.log(`Player ${this.id} will have ${this.walls - 1} walls left`);
         if (this.walls == 0) {
             return false;
         }
         this.walls -= 1;
         return true;
+    }
+
+    updateProfile() {
+        if (LOG) console.log(`Player ${this.id} updated his profile`);
+        let profile = document.getElementById(`player-${this.id}-profile`);      
+        profile.getElementsByClassName("walls")[0].textContent = this.walls;
     }
 }

@@ -209,7 +209,7 @@
     width: 90%
 }
 
-#profile_adversaire .identity {
+.profile_adversaire .identity {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -217,7 +217,7 @@
     vertical-align: middle;
 }
 
-#profile_adversaire .avatar {
+.profile_adversaire .avatar {
     margin-bottom: 0;
     width: 5vw;
     height: 5vw;
