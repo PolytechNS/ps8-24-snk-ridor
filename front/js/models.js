@@ -73,11 +73,11 @@ export class Player {
         this.goal = game.h_size - 1 - this.position[0];
         game.addPlayer(this);
         this.updateProfile();
-        console.log(`Player ${this.id} created at ${this.position} with ${this.walls} walls`);
+        if (LOG) console.log(`Player ${this.id} created at ${this.position} with ${this.walls} walls`);
     }
 
     move(position) {
-        console.log(`Player ${this.id} moved from ${this.position} to ${position}`);
+        if (LOG) console.log(`Player ${this.id} moved from ${this.position} to ${position}`);
         this.position = position;
     }
 
@@ -86,9 +86,6 @@ export class Player {
     }
 
     placeWall() {
-        console.log(`Player ${this.id} placed a wall`);
-        console.log(`Player ${this.id} has ${this.walls} walls left`);
-        console.log(`Player ${this.id} will have ${this.walls - 1} walls left`);
         if (this.walls == 0) {
             return false;
         }

@@ -57,7 +57,7 @@ function initFogOfWar() {
     if (LOG) console.log("Initializing fog of war");
 
     board_fow = getGame().board_fow;
-    console.log("BF : ", board_fow);
+    if (LOG) console.log("BF : ", board_fow);
 
     // init the board with default values
     for (let i = 0; i < BOARD_HEIGHT; i++) {

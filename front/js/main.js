@@ -19,7 +19,6 @@ function onload() {
     updateFogOfWar(new Event("beginning"));
 
     board = getGame();
-    console.log(board.getCurrentPlayer());
     updatePath(board.getCurrentPlayer());
 }
 
