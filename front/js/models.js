@@ -72,6 +72,7 @@ export class Player {
         this.walls = 10;
         this.goal = game.h_size - 1 - this.position[0];
         game.addPlayer(this);
+        this.updateProfile();
         console.log(`Player ${this.id} created at ${this.position} with ${this.walls} walls`);
     }
 
