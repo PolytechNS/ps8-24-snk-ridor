@@ -5,8 +5,17 @@ const {
     createGame,
 } = require('../database/database')
 const crypto = require('crypto')
-const bcrypt = require('bcrypt')
-const { verify, sign, parse } = require('../jwt/jwt')
+const jwt = require('jsonwebtoken')
+
+let default_secret =
+    'Zo2yU9#sB9ZBtruAip*^XAEW4ectaXvfokK^D8sSdVwahBf*JuuJ2Jr$!jd!zE6eikA'
+let secret = process.env.JWT_SECRET || default_secret
+
+if (secret === default_secret) {
+    console.warn(
+        'Warning: JWT_SECRET is not set, using default secret. This is not secure!'
+    )
+}
 
 // Main method, exported at the end of the file. It's the one that will be called when a REST request is received.
 function manageRequest(request, response) {
@@ -145,7 +154,7 @@ function handleLogin(request, response) {
             }
 
             // Generate a JWT
-            let token = sign({ email: user.email })
+            let token = jwt.sign({ email: user.email }, secret)
 
             response.writeHead(200, { 'Content-Type': 'application/json' })
             response.end(JSON.stringify({ token: token }))
@@ -430,13 +439,14 @@ function requireLogin(request, response) {
 
     let token = request.headers.authorization.split(' ')[1]
 
-    if (!verify(token)) {
+    try {
+        var decoded = jwt.verify(token, secret)
+        return decoded.email
+    } catch (err) {
         response.writeHead(401, { 'Content-Type': 'application/json' })
         response.end(JSON.stringify({ error: 'Non authentifié' }))
         return false
     }
-
-    return parse(token).payload.email
 }
 
 exports.manage = manageRequest
