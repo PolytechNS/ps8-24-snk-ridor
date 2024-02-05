@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+    snk-ridor:
+        build: .
+        ports:
+            - '8000:8000'
+        environment:
+            - MONGO_URL=mongodb://mongo-snk-ridor:27017/snk-ridor
+            # - JWT_SECRET=secret   # Uncomment this line to set the JWT_SECRET environment variable
+
+    mongo-snk-ridor:
+        image: mongo:latest
+        volumes:
+            - mongo-data:/data/db
+
+volumes:
+    mongo-data:
