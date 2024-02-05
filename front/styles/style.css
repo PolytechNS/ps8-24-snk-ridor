@@ -1,0 +1,320 @@
+.game-infos {
+    text-align: center;
+}
+
+/* Chat CSS */
+
+#chat {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: flex-end;
+
+    box-sizing: border-box;
+    background-color: brown;
+}
+
+#chatbox {
+    margin : 5px;
+    display: flex;
+    width: -webkit-fill-available;
+    flex-direction: column;
+    height: 100%;
+}
+
+#chatbox-content {
+    overflow-y: scroll;
+    height: 80vh;
+}
+
+#chatbox .message {
+    background-color: grey;
+    padding: 5px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    width: fit-content;
+}
+
+#chatbox .self {
+    margin-left: auto;
+    background-color: lightblue;
+}
+
+#chatbox-input {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#chatbox-input-text {
+    height: 100%;
+    background-color: #3a1f0f;
+    color: white;
+    border: none;
+    outline: none;
+    resize: none;
+    font-size: 1.2em;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+#chatbox-input-send {
+    background-color: #3a1f0f;
+    color: white;
+    border: none;
+    outline: none;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 5px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin-left: 5px;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    border: solid 3px transparent;
+    background: #3a1f0f;
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #301505; 
+  }
+
+/* Player CSS */
+
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80%;
+    width: 80%;
+    background-color: black;
+    border-radius: 40%;
+}
+
+/* Board CSS */
+
+.board {
+    display: grid;
+}
+
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: brown;
+    color: white;
+    box-sizing: border-box;
+    width: 7vh;
+    height: 7vh;
+    border-radius: 5px;
+}
+
+.finish {
+    background-color: #FF11BB;/*#DB2D2D;*/
+}
+
+.v-wall {
+    width: 1vh;
+}
+
+.h-wall {
+    height: 1vh;
+}
+
+.s-wall {
+    width: 1vh;
+    height: 1vh;
+}
+
+.wall {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.position_overview {
+    height: 70%;
+    width: 70%;
+    border: 5px solid rgba(255, 255, 255, 0.7);
+    border-radius: 5px;
+    margin: auto;
+}
+
+.game-infos {
+    display: flex;
+    flex-direction: row;
+}
+
+.game-infos a.container:not(:first-child) {
+    margin-left: 5vw;
+    vertical-align: middle;
+}
+
+.game-infos br {
+    display: none;
+}
+
+/* profiles */
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: brown;
+    color: white;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 15px;
+    width: 15vw;
+}
+
+.avatar {
+    width: 10vw;
+    height: 10vw;
+    background-color: black;
+    border-radius: 50%;
+    margin-bottom: 1vh;
+}
+
+.identity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 1.5vh;
+}
+
+.profile-game-infos {
+    background-color: #3a1f0f;
+    border-radius: 5px;
+    margin-top: 1vh;
+    padding: 1vh;
+    text-align: left;
+    width: 90%
+}
+
+.profile_adversaire .identity {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    vertical-align: middle;
+}
+
+.profile_adversaire .avatar {
+    margin-bottom: 0;
+    width: 5vw;
+    height: 5vw;
+}
+
+/* alert messages */
+
+.alert {
+    position: absolute;
+    vertical-align: middle;
+    text-align: center;
+    top: 5px;
+    left: 5px;
+    width: 10%;
+    max-height: 20%;
+    border-radius: 5px;
+}
+
+.dev_message {
+    top: 80%;
+    background-color: greenyellow;
+    color: black;
+    border: 5px solid green;
+}
+
+.forbidden_message {
+    background-color: brown;
+    color: white;
+    border: 5px solid red;
+}
+
+.info_message {
+    background-color: #3a1f0f;
+    color: white;
+    border: 5px solid #301505;
+}
+
+/* final message */
+
+.final_message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    transform: translate(-50%, -50%);
+    background-color: brown;
+    color: white;
+    border: 5px solid #301505;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: space-around;
+}
+
+.final_message button {
+    background-color: #3a1f0f;
+    color: white;
+    border: none;
+    outline: none;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 5px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 400px;
+    margin: 5px auto 0 auto;
+    height: 10%;
+}
+
+.final_message button:hover {
+    background-color: #301505;
+}
+
+.final_message p {
+    margin: 0;
+    padding: 0;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+
+.final_blocker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    display: none;
+}
+
+/* fin final message */

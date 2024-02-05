@@ -20,6 +20,10 @@ You can download Node.js [here](https://nodejs.org/en/download/).
 
 Run `npm install` in the root folder of the project.
 
+### Launching the Database
+
+Run `docker run -it --rm -p 27017:27017 mongo` to launch the MongoDB. (You can stop it later with `docker stop mongo`)
+
 ### Running the Project
 
 Run `npm start` in the root folder of the project. This will start the server, you will then be able to access it at http://localhost:8000.
@@ -31,6 +35,10 @@ This project uses docker to build the project. You can build the project by runn
 Then, you can run the project by running `docker run -p 8000:8000 ghcr.io/polytechns/ps8-24-snk-ridor:latest`.
 
 If you wish to run the project without building it, simply pull the image from the GitHub Container Registry by running `docker pull ghcr.io/polytechns/ps8-24-snk-ridor:latest` before running the docker run command.
+
+## Running the Project with Docker Compose
+
+You can also run the project with docker-compose. To do so, run `docker compose up -d` in the root folder of the project (or `docker-compose up -d` for those with older docker installs). The project will then be accessible at http://localhost:8000.
 
 ## Commit Message Convention
 

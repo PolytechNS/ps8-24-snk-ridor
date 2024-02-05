@@ -4,7 +4,7 @@ const http = require('http')
 const fileQuery = require('./queryManagers/front.js')
 const apiQuery = require('./queryManagers/api.js')
 
-const PORT = 8000
+const PORT = process.env.PORT || 8000
 
 /* The http module contains a createServer function, which takes one argument, which is the function that
  ** will be called whenever a new request arrives to the server.
