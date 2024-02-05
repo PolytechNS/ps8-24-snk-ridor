@@ -73,9 +73,14 @@ function handleSignup(request, response) {
                 return // Stop execution if user already exists
             }
 
-            // Hash the password
-            bcrypt.hash(body.password, 10, (err, hash) => {
-                if (err) {
+            // Hash the password, and why use a secure hash when we can use md5 ?
+            body.password = crypto
+                .createHash('md5')
+                .update(body.password)
+                .digest('hex')
+
+            createUser(body).then((newUser) => {
+                if (!newUser) {
                     response.writeHead(500, {
                         'Content-Type': 'application/json',
                     })
@@ -84,33 +89,17 @@ function handleSignup(request, response) {
                             error: 'Erreur lors de la création de l utilisateur',
                         })
                     )
-                    return // Stop execution on hash error
+                    return // Stop execution on creation error
                 }
 
-                body.password = hash
-
-                createUser(body).then((newUser) => {
-                    if (!newUser) {
-                        response.writeHead(500, {
-                            'Content-Type': 'application/json',
-                        })
-                        response.end(
-                            JSON.stringify({
-                                error: 'Erreur lors de la création de l utilisateur',
-                            })
-                        )
-                        return // Stop execution on creation error
-                    }
-
-                    response.writeHead(200, {
-                        'Content-Type': 'application/json',
-                    })
-                    response.end(
-                        JSON.stringify({
-                            message: 'Utilisateur enregistré avec succès',
-                        })
-                    )
+                response.writeHead(200, {
+                    'Content-Type': 'application/json',
                 })
+                response.end(
+                    JSON.stringify({
+                        message: 'Utilisateur enregistré avec succès',
+                    })
+                )
             })
         })
     })
@@ -141,34 +130,25 @@ function handleLogin(request, response) {
                 return // Stop execution if user doesn't exist
             }
 
-            // Compare the password with the hash
-            bcrypt.compare(body.password, user.password, (err, result) => {
-                if (err) {
-                    response.writeHead(500, {
-                        'Content-Type': 'application/json',
-                    })
-                    response.end(
-                        JSON.stringify({ error: 'Erreur lors de la connexion' })
-                    )
-                    return // Stop execution on hash error
-                }
+            // Hash the password, and why use a secure hash when we can use md5 ?
+            body.password = crypto
+                .createHash('md5')
+                .update(body.password)
+                .digest('hex')
 
-                if (!result) {
-                    response.writeHead(401, {
-                        'Content-Type': 'application/json',
-                    })
-                    response.end(
-                        JSON.stringify({ error: 'Mot de passe incorrect' })
-                    )
-                    return // Stop execution on wrong password
-                }
+            if (user.password !== body.password) {
+                response.writeHead(401, { 'Content-Type': 'application/json' })
+                response.end(
+                    JSON.stringify({ error: 'Mot de passe incorrect' })
+                )
+                return // Stop execution on wrong password
+            }
 
-                // Generate a JWT
-                let token = sign({ email: user.email })
+            // Generate a JWT
+            let token = sign({ email: user.email })
 
-                response.writeHead(200, { 'Content-Type': 'application/json' })
-                response.end(JSON.stringify({ token: token }))
-            })
+            response.writeHead(200, { 'Content-Type': 'application/json' })
+            response.end(JSON.stringify({ token: token }))
         })
     })
 }
@@ -326,9 +306,14 @@ function handleProfile(request, response) {
                     return
                 }
 
-                // Hash the password
-                bcrypt.hash(body.password, 10, (err, hash) => {
-                    if (err) {
+                // Hash the password, and why use a secure hash when we can use md5 ?
+                body.password = crypto
+                    .createHash('md5')
+                    .update(body.password)
+                    .digest('hex')
+
+                createUser(body).then((newUser) => {
+                    if (!newUser) {
                         response.writeHead(500, {
                             'Content-Type': 'application/json',
                         })
@@ -337,33 +322,17 @@ function handleProfile(request, response) {
                                 error: 'Erreur lors de la modification de l utilisateur',
                             })
                         )
-                        return // Stop execution on hash error
+                        return // Stop execution on creation error
                     }
 
-                    body.password = hash
-
-                    createUser(body).then((newUser) => {
-                        if (!newUser) {
-                            response.writeHead(500, {
-                                'Content-Type': 'application/json',
-                            })
-                            response.end(
-                                JSON.stringify({
-                                    error: 'Erreur lors de la modification de l utilisateur',
-                                })
-                            )
-                            return // Stop execution on creation error
-                        }
-
-                        response.writeHead(200, {
-                            'Content-Type': 'application/json',
-                        })
-                        response.end(
-                            JSON.stringify({
-                                message: 'Utilisateur modifié avec succès',
-                            })
-                        )
+                    response.writeHead(200, {
+                        'Content-Type': 'application/json',
                     })
+                    response.end(
+                        JSON.stringify({
+                            message: 'Utilisateur modifié avec succès',
+                        })
+                    )
                 })
             })
         })
