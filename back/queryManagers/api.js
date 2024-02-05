@@ -3,6 +3,7 @@ const {
     createUser,
     getGame,
     createGame,
+    getGames,
 } = require('../database/database');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
@@ -150,31 +151,41 @@ function handleGame(request, response) {
         // Generate a game id
         let sessionId = crypto.randomBytes(16).toString('hex');
 
-        getJsonBody(request).then((body) => {
-            createGame({
-                _id: sessionId,
-                player: email,
-                data: body,
-            }).then((newGame) => {
-                if (!newGame) {
-                    response.writeHead(500, {
+        // Get all games
+        getGames().then((games) => {
+            // if sessionId already exists, generate a new one
+            while (games.find((game) => game._id === sessionId)) {
+                sessionId = crypto.randomBytes(16).toString('hex');
+            }
+
+            getJsonBody(request).then((body) => {
+                createGame({
+                    _id: sessionId,
+                    player: email,
+                    data: body,
+                }).then((newGame) => {
+                    if (!newGame) {
+                        response.writeHead(500, {
+                            'Content-Type': 'application/json',
+                        });
+                        response.end(
+                            JSON.stringify({
+                                error: 'Erreur lors de la création de la partie',
+                            })
+                        );
+                        return; // Stop execution on creation error
+                    }
+
+                    response.writeHead(200, {
                         'Content-Type': 'application/json',
                     });
                     response.end(
                         JSON.stringify({
-                            error: 'Erreur lors de la création de la partie',
+                            message: 'Partie créée avec succès',
+                            gameId: sessionId,
                         })
                     );
-                    return; // Stop execution on creation error
-                }
-
-                response.writeHead(200, { 'Content-Type': 'application/json' });
-                response.end(
-                    JSON.stringify({
-                        message: 'Partie créée avec succès',
-                        gameId: sessionId,
-                    })
-                );
+                });
             });
         });
     }
