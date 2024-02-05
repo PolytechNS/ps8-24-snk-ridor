@@ -248,3 +248,73 @@
     color: white;
     border: 5px solid red;
 }
+
+.info_message {
+    background-color: #3a1f0f;
+    color: white;
+    border: 5px solid #301505;
+}
+
+/* final message */
+
+.final_message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    transform: translate(-50%, -50%);
+    background-color: brown;
+    color: white;
+    border: 5px solid #301505;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: space-around;
+}
+
+.final_message button {
+    background-color: #3a1f0f;
+    color: white;
+    border: none;
+    outline: none;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 5px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 400px;
+    margin: 5px auto 0 auto;
+    height: 10%;
+}
+
+.final_message button:hover {
+    background-color: #301505;
+}
+
+.final_message p {
+    margin: 0;
+    padding: 0;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+
+.final_blocker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    display: none;
+}
+
+/* fin final message */

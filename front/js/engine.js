@@ -97,6 +97,13 @@ export function next_player(event = null) {
     updateFogOfWar(event);
     deleteOverview();
     turn++;
+    if (turn == 200) {
+        display_message('Égalité', 'final_message');
+        //alert('Draw'); // TODO : change this to a better way to display the victory
+        return;
+    } else if (turn == 190) {
+        display_message('10 derniers tours !', 'info_message');
+    }
     document.getElementById('turn').textContent = turn+1;
     getGame().nextPlayer();
     updatePath(getGame().getCurrentPlayer());
@@ -209,15 +216,27 @@ export function getCorridorPossiblePositionForPath(line, column) {
 
 function checkVictory(player) {
     if (LOG) console.log(`checkVictory(${player}) called`);
-    if (player == player_b && player.line == PLAYER_A_START_LINE) {
-        updateFogOfWar(new Event("end", player.player, [player.line, player.column]));
-        display_message('Player B won', 'final_message');
-        //alert('Player B won'); // TODO : change this to a better way to display the victory
-        return true;
-    } else if (player == player_a && player.line == PLAYER_B_START_LINE) {
-        updateFogOfWar(new Event("end", player.player, [player.line, player.column]));
-        display_message('Player A won', 'final_message');
-        //alert('Player A won'); // TODO : change this to a better way to display the victory
+    // if the player is on the opposite line, it remains one move for the other player to win
+    // if the other player place himself on the opposite line, it is a draw
+    // on the other case, the first player wins
+    let wins = [];
+    for (let p of getGame().players) {
+        if (p.position[0] == p.goal) { // if the player has reach the opposite line
+            wins.push(p);
+        }
+    }
+    
+
+    if (wins.length == 1) {
+        if (1 == turn % 2) { // if it is an odd turn, it is player A's turn, so player B has won
+            display_message(`Victoire du joueur ${wins[0].id}`, 'final_message');
+            return true;
+        } else { // if it is an even turn, it is player B's turn, so player B has one move to make a draw
+            display_message(`Dernier tour\nLe joueur ${wins[0].id} a atteint son objectif`, 'info_message');
+            return false;
+        }
+    } else if (wins.length == 2) { // if both players have reached the opposite line, it is a draw
+        display_message(`Égalité`, 'final_message');
         return true;
     }
     return false;

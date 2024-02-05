@@ -56,6 +56,7 @@ export class Game {
 
 export class Event {
     constructor(type, player, position , new_position = null) {
+        if (LOG) console.log(`Event ${type} created for player ${player.id} at ${position} with new position ${new_position}`);
         this.type = type;
         this.player = player;
         this.position = position;

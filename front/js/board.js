@@ -69,6 +69,14 @@ export function display_message(message, category = "dev_message") {
     } else if (category == "dev_message") {
         return;
     }
+    if (category == "final_message") { // si la partie est terminée, on ajoute event et on affiche le message de fin
+        document.getElementById("reload").addEventListener("click", () => {
+            window.location.reload();
+        });
+        document.getElementById("final_message").textContent = message;
+        document.getElementById("final_div").style.display = "block";
+        return;
+    }
     let message_div = document.createElement("div");
     message_div.classList.add("alert");
     message_div.classList.add(category); // category can be "dev_message", "forbidden_message", "info_message" or "final_message"
