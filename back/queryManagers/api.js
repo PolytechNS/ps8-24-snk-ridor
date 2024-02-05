@@ -82,9 +82,9 @@ function handleSignup(request, response) {
                 return // Stop execution if user already exists
             }
 
-            // Hash the password, and why use a secure hash when we can use md5 ?
+            // Hash the password
             body.password = crypto
-                .createHash('md5')
+                .createHash('sha512')
                 .update(body.password)
                 .digest('hex')
 
@@ -139,9 +139,9 @@ function handleLogin(request, response) {
                 return // Stop execution if user doesn't exist
             }
 
-            // Hash the password, and why use a secure hash when we can use md5 ?
+            // Hash the password
             body.password = crypto
-                .createHash('md5')
+                .createHash('sha512')
                 .update(body.password)
                 .digest('hex')
 
@@ -315,9 +315,9 @@ function handleProfile(request, response) {
                     return
                 }
 
-                // Hash the password, and why use a secure hash when we can use md5 ?
+                // Hash the password
                 body.password = crypto
-                    .createHash('md5')
+                    .createHash('sha512')
                     .update(body.password)
                     .digest('hex')
 
