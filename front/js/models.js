@@ -1,3 +1,6 @@
+import { display_message } from "./board.js";
+import { LOG } from "./main.js";
+
 export let BOARD_HEIGHT = 9;
 export let BOARD_WIDTH = 9;
 
@@ -35,12 +38,25 @@ export class Game {
     }
 
     addPlayer(player) {
+        if (LOG) console.log(`Player ${player.id} created at ${player.position} with ${player.walls} walls`, "dev_message");
         this.players.push(player);
+        if (LOG) console.log("list of players", this.players);
+    }
+
+    getCurrentPlayer() {
+        if (LOG) console.log(`Player ${this.current_player}'s turn`);
+        return this.players[this.current_player - 1];
+    }
+
+    nextPlayer() {
+        this.current_player = this.current_player % 2 + 1;
+        if (LOG) console.log(`next player, Player ${this.current_player}'s turn`);        
     }
 }
 
 export class Event {
     constructor(type, player, position , new_position = null) {
+        if (LOG) console.log(`Event ${type} created for player ${player.id} at ${position} with new position ${new_position}`);
         this.type = type;
         this.player = player;
         this.position = position;
@@ -53,21 +69,34 @@ export class Player {
     constructor() {
         let game = getGame();
         this.id = game.players.length + 1;
-        this.position = [(game.h_size - 1) * (this.id-1), 4];
+        this.position = [(game.h_size - 1) * (this.id%2), 2];
         this.walls = 10;
         this.goal = game.h_size - 1 - this.position[0];
         game.addPlayer(this);
+        this.updateProfile();
+        if (LOG) console.log(`Player ${this.id} created at ${this.position} with ${this.walls} walls`);
     }
 
     move(position) {
+        if (LOG) console.log(`Player ${this.id} moved from ${this.position} to ${position}`);
         this.position = position;
     }
 
-    placeWall(wall) {
+    remainingWalls() {
+        return this.walls;
+    }
+
+    placeWall() {
         if (this.walls == 0) {
             return false;
         }
         this.walls -= 1;
         return true;
+    }
+
+    updateProfile() {
+        if (LOG) console.log(`Player ${this.id} updated his profile`);
+        let profile = document.getElementById(`player-${this.id}-profile`);      
+        profile.getElementsByClassName("walls")[0].textContent = this.walls;
     }
 }

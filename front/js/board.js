@@ -1,6 +1,7 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, Event, getGame } from "./models.js";
 import { onCellClick, next_player } from "./engine.js";
 import { LOG } from "./main.js";
+import { findPath } from "./pathFinding.js";
 
 export function init_board(board_div, board) {
     board_div.style.gridTemplateColumns = `repeat(${board.h_size * 2 - 1}, min-content)`
@@ -22,7 +23,6 @@ export function init_board(board_div, board) {
 
             // Create Vertical Wall
             if (j < board.h_size - 1) {
-                if (LOG) console.log(j);
                 let wall = document.createElement("div");
                 wall.classList.add("v-wall", "wall");
                 wall.id = `v-wall-${i}-${j}`;
@@ -62,9 +62,35 @@ export function init_board(board_div, board) {
     
 }
 
+// display message and dismiss it after 3 seconds
+export function display_message(message, category = "dev_message") {
+    if (LOG) {
+        console.log(message);
+    } else if (category == "dev_message") {
+        return;
+    }
+    if (category == "final_message") { // si la partie est terminée, on ajoute event et on affiche le message de fin
+        document.getElementById("reload").addEventListener("click", () => {
+            window.location.reload();
+        });
+        document.getElementById("final_message").textContent = message;
+        document.getElementById("final_div").style.display = "block";
+        return;
+    }
+    let message_div = document.createElement("div");
+    message_div.classList.add("alert");
+    message_div.classList.add(category); // category can be "dev_message", "forbidden_message", "info_message" or "final_message"
+    message_div.textContent = message;
+    document.getElementById("game-infos").appendChild(message_div);
+    setTimeout(() => {
+        message_div.remove();
+    }, 4000); // display message for 4 seconds
+}
+
 // Callback functions for visuals only
 
 function on_wall_over(event) {
+    if (getGame().getCurrentPlayer().remainingWalls() == 0) return;
     let walls = get_walls(event);
 
     // If any of the walls is black, we do nothing
@@ -91,6 +117,11 @@ function on_wall_out(event) {
 }
 
 function on_wall_click(event) {
+    let wall_player = getGame().getCurrentPlayer();
+    if (wall_player.remainingWalls() == 0) {
+        display_message("Vous n'avez plus de murs !", "forbidden_message");
+        return;
+    }
     let walls = get_walls(event);
 
     // If any of the walls is black, we do nothing
@@ -98,13 +129,26 @@ function on_wall_click(event) {
         return;
     }
     
-    let wall_player = getGame().current_player;
+    // TODO : gérer le cas où le joueur n'a plus de murs
+
+    // gérer qu'un chemin doit toujours exister
+    for (let p of getGame().players) {
+        if (findPath(p) == null) {
+            if (LOG) {
+                console.log("No path found from " + getGame().getCurrentPlayer().position + " to " + getGame().getCurrentPlayer().goal);
+            }
+            display_message("Impossible de bloquer le chemin avec un mur !", "forbidden_message");
+            return;
+        }
+    }
     for (let wall of walls) {
         wall.classList.remove("wall-hover");
         wall.classList.add("placed");
-        wall.classList.add(`wall-p${wall_player}`);
-        wall.player = wall_player;
+        wall.classList.add(`wall-p${wall_player.id}`);
+        wall.player = wall_player.id;
     }
+    wall_player.placeWall();
+    display_message(`il reste ${wall_player.remaining_walls} murs`, "dev_message");
     let wall_event = new Event("wall", wall_player, event.walls);
     next_player(wall_event);
 }
