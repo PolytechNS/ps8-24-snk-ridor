@@ -90,6 +90,7 @@ export function display_message(message, category = "dev_message") {
 // Callback functions for visuals only
 
 function on_wall_over(event) {
+    if (getGame().getCurrentPlayer().remainingWalls() == 0) return;
     let walls = get_walls(event);
 
     // If any of the walls is black, we do nothing
