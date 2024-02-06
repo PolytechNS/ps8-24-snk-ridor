@@ -159,58 +159,35 @@ export function getCorridorPossiblePosition(line, column) {
     return cells;
 }
 
-
 export function getCorridorPossiblePositionForPath(line, column) {
+    if (LOG) console.log(`getCorridorPossiblePositionForPath(${line}, ${column}) called`);
     let cells = [];
     let wall;
-    if (line > 0) {
+    if (line > 0) { // if the player is not on the first line, check the left cell
         wall = document.getElementById('h-wall-' + (line - 1) + '-' + column);
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
-            if (document.getElementById('cell-' + (line - 1) + '-' + column).childElementCount == 0) {
-                cells.push([line - 1, column]);
-            } else {
-                if (line > 1 && !document.getElementById('h-wall-' + (line - 2) + '-' + column).classList.contains("placed")) { 
-                    cells.push([line - 2, column]);
-                }
-            }
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+            cells.push([line - 1, column]);
         }
     }
-    if (line < LINES - 1) {
+    if (line < LINES - 1) { // if the player is not on the last line, check the right cell
         wall = document.getElementById('h-wall-' + line + '-' + column);
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
-            if (document.getElementById('cell-' + (line + 1) + '-' + column).childElementCount == 0) {
-                cells.push([line + 1, column]);
-            } else {
-                if (line < LINES - 2 && !document.getElementById('h-wall-' + (line + 1) + '-' + column).classList.contains("placed")) {
-                    cells.push([line + 2, column]);
-                }
-            }
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+            cells.push([line + 1, column]);
         }
     }
-    if (column > 0) {
+    if (column > 0) { // if the player is not on the first column, check the upper cell
         wall = document.getElementById('v-wall-' + line + '-' + (column - 1));
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
-            if (document.getElementById('cell-' + line + '-' + (column - 1)).childElementCount == 0) {
-                cells.push([line, column - 1]);
-            } else {
-                if (column > 1 && !document.getElementById('v-wall-' + line + '-' + (column - 2)).classList.contains("placed")) {
-                    cells.push([line, column - 2]);
-                }
-            }
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+            cells.push([line, column - 1]);
         }
     }
-    if (column < COLUMNS - 1) {
+    if (column < COLUMNS - 1) { // if the player is not on the last column, check the lower cell
         wall = document.getElementById('v-wall-' + line + '-' + column);
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
-            if (document.getElementById('cell-' + line + '-' + (column + 1)).childElementCount == 0) {
-                cells.push([line, column + 1]);
-            } else {
-                if (column < COLUMNS - 2 && !document.getElementById('v-wall-' + line + '-' + (column + 1)).classList.contains("placed")) {
-                    cells.push([line, column + 2]);
-                }
-            }
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+            cells.push([line, column + 1]);
         }
     }
+    if (LOG) console.log(`getCorridorPossiblePositionForPath(${line}, ${column}) returns ${cells}`);
     return cells;
 }
 
