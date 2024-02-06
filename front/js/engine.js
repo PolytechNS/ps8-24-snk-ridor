@@ -39,11 +39,11 @@ Goal :
 
 */
 
-import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from "./models.js";
-import { LOG } from "./main.js";
-import { updateFogOfWar } from "./fogwar.js";
-import { updatePath } from "./pathFinding.js";
-import { display_message } from "./board.js";
+import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from './models.js';
+import { LOG } from './main.js';
+import { updateFogOfWar } from './fogwar.js';
+import { updatePath } from './pathFinding.js';
+import { display_message } from './board.js';
 
 const LINES = BOARD_HEIGHT;
 const COLUMNS = BOARD_WIDTH;
@@ -88,7 +88,7 @@ function initialise_game() {
             }
         }
     }
-    updateFogOfWar("beginning", null);
+    updateFogOfWar('beginning', null);
 }
 
 export function next_player(event = null) {
@@ -104,53 +104,103 @@ export function next_player(event = null) {
     } else if (turn == 190) {
         display_message('10 derniers tours !', 'info_message');
     }
-    document.getElementById('turn').textContent = turn+1;
+    document.getElementById('turn').textContent = turn + 1;
     getGame().nextPlayer();
     updatePath(getGame().getCurrentPlayer());
-    document.getElementById('player').textContent = ["","A","B"][getPlayerTurn().player];
+    document.getElementById('player').textContent = ['', 'A', 'B'][
+        getPlayerTurn().player
+    ];
 }
 
 export function getCorridorPossiblePosition(line, column) {
     let cells = [];
     if (line > 0) {
-        if (!document.getElementById('h-wall-' + (line - 1) + '-' + column).classList.contains("placed")) {
-            if (document.getElementById('cell-' + (line - 1) + '-' + column).childElementCount == 0) {
+        if (
+            !document
+                .getElementById('h-wall-' + (line - 1) + '-' + column)
+                .classList.contains('placed')
+        ) {
+            if (
+                document.getElementById('cell-' + (line - 1) + '-' + column)
+                    .childElementCount == 0
+            ) {
                 cells.push([line - 1, column]);
             } else {
-                if (line > 1 && !document.getElementById('h-wall-' + (line - 2) + '-' + column).classList.contains("placed")) { 
+                if (
+                    line > 1 &&
+                    !document
+                        .getElementById('h-wall-' + (line - 2) + '-' + column)
+                        .classList.contains('placed')
+                ) {
                     cells.push([line - 2, column]);
                 }
             }
         }
     }
     if (line < LINES - 1) {
-        if (!document.getElementById('h-wall-' + line + '-' + column).classList.contains("placed")) {
-            if (document.getElementById('cell-' + (line + 1) + '-' + column).childElementCount == 0) {
+        if (
+            !document
+                .getElementById('h-wall-' + line + '-' + column)
+                .classList.contains('placed')
+        ) {
+            if (
+                document.getElementById('cell-' + (line + 1) + '-' + column)
+                    .childElementCount == 0
+            ) {
                 cells.push([line + 1, column]);
             } else {
-                if (line < LINES - 2 && !document.getElementById('h-wall-' + (line + 1) + '-' + column).classList.contains("placed")) {
+                if (
+                    line < LINES - 2 &&
+                    !document
+                        .getElementById('h-wall-' + (line + 1) + '-' + column)
+                        .classList.contains('placed')
+                ) {
                     cells.push([line + 2, column]);
                 }
             }
         }
     }
     if (column > 0) {
-        if (!document.getElementById('v-wall-' + line + '-' + (column - 1)).classList.contains("placed")) {
-            if (document.getElementById('cell-' + line + '-' + (column - 1)).childElementCount == 0) {
+        if (
+            !document
+                .getElementById('v-wall-' + line + '-' + (column - 1))
+                .classList.contains('placed')
+        ) {
+            if (
+                document.getElementById('cell-' + line + '-' + (column - 1))
+                    .childElementCount == 0
+            ) {
                 cells.push([line, column - 1]);
             } else {
-                if (column > 1 && !document.getElementById('v-wall-' + line + '-' + (column - 2)).classList.contains("placed")) {
+                if (
+                    column > 1 &&
+                    !document
+                        .getElementById('v-wall-' + line + '-' + (column - 2))
+                        .classList.contains('placed')
+                ) {
                     cells.push([line, column - 2]);
                 }
             }
         }
     }
     if (column < COLUMNS - 1) {
-        if (!document.getElementById('v-wall-' + line + '-' + column).classList.contains("placed")) {
-            if (document.getElementById('cell-' + line + '-' + (column + 1)).childElementCount == 0) {
+        if (
+            !document
+                .getElementById('v-wall-' + line + '-' + column)
+                .classList.contains('placed')
+        ) {
+            if (
+                document.getElementById('cell-' + line + '-' + (column + 1))
+                    .childElementCount == 0
+            ) {
                 cells.push([line, column + 1]);
             } else {
-                if (column < COLUMNS - 2 && !document.getElementById('v-wall-' + line + '-' + (column + 1)).classList.contains("placed")) {
+                if (
+                    column < COLUMNS - 2 &&
+                    !document
+                        .getElementById('v-wall-' + line + '-' + (column + 1))
+                        .classList.contains('placed')
+                ) {
                     cells.push([line, column + 2]);
                 }
             }
@@ -160,34 +210,60 @@ export function getCorridorPossiblePosition(line, column) {
 }
 
 export function getCorridorPossiblePositionForPath(line, column) {
-    if (LOG) console.log(`getCorridorPossiblePositionForPath(${line}, ${column}) called`);
+    if (LOG)
+        console.log(
+            `getCorridorPossiblePositionForPath(${line}, ${column}) called`
+        );
     let cells = [];
     let wall;
-    if (line > 0) { // if the player is not on the first line, check the left cell
+    if (line > 0) {
+        // if the player is not on the first line, check the left cell
         wall = document.getElementById('h-wall-' + (line - 1) + '-' + column);
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+        if (
+            !wall.classList.contains('placed') &&
+            !wall.classList.contains('wall-hover')
+        ) {
+            // if there is a wall on the way
             cells.push([line - 1, column]);
         }
     }
-    if (line < LINES - 1) { // if the player is not on the last line, check the right cell
+    if (line < LINES - 1) {
+        // if the player is not on the last line, check the right cell
         wall = document.getElementById('h-wall-' + line + '-' + column);
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+        if (
+            !wall.classList.contains('placed') &&
+            !wall.classList.contains('wall-hover')
+        ) {
+            // if there is a wall on the way
             cells.push([line + 1, column]);
         }
     }
-    if (column > 0) { // if the player is not on the first column, check the upper cell
+    if (column > 0) {
+        // if the player is not on the first column, check the upper cell
         wall = document.getElementById('v-wall-' + line + '-' + (column - 1));
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+        if (
+            !wall.classList.contains('placed') &&
+            !wall.classList.contains('wall-hover')
+        ) {
+            // if there is a wall on the way
             cells.push([line, column - 1]);
         }
     }
-    if (column < COLUMNS - 1) { // if the player is not on the last column, check the lower cell
+    if (column < COLUMNS - 1) {
+        // if the player is not on the last column, check the lower cell
         wall = document.getElementById('v-wall-' + line + '-' + column);
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+        if (
+            !wall.classList.contains('placed') &&
+            !wall.classList.contains('wall-hover')
+        ) {
+            // if there is a wall on the way
             cells.push([line, column + 1]);
         }
     }
-    if (LOG) console.log(`getCorridorPossiblePositionForPath(${line}, ${column}) returns ${cells}`);
+    if (LOG)
+        console.log(
+            `getCorridorPossiblePositionForPath(${line}, ${column}) returns ${cells}`
+        );
     return cells;
 }
 
@@ -198,21 +274,30 @@ function checkVictory(player) {
     // on the other case, the first player wins
     let wins = [];
     for (let p of getGame().players) {
-        if (p.position[0] == p.goal) { // if the player has reach the opposite line
+        if (p.position[0] == p.goal) {
+            // if the player has reach the opposite line
             wins.push(p);
         }
     }
-    
 
     if (wins.length == 1) {
-        if (1 == turn % 2) { // if it is an odd turn, it is player A's turn, so player B has won
-            display_message(`Victoire du joueur ${wins[0].id}`, 'final_message');
+        if (1 == turn % 2) {
+            // if it is an odd turn, it is player A's turn, so player B has won
+            display_message(
+                `Victoire du joueur ${wins[0].id}`,
+                'final_message'
+            );
             return true;
-        } else { // if it is an even turn, it is player B's turn, so player B has one move to make a draw
-            display_message(`Dernier tour\nLe joueur ${wins[0].id} a atteint son objectif`, 'info_message');
+        } else {
+            // if it is an even turn, it is player B's turn, so player B has one move to make a draw
+            display_message(
+                `Dernier tour\nLe joueur ${wins[0].id} a atteint son objectif`,
+                'info_message'
+            );
             return false;
         }
-    } else if (wins.length == 2) { // if both players have reached the opposite line, it is a draw
+    } else if (wins.length == 2) {
+        // if both players have reached the opposite line, it is a draw
         display_message(`Égalité`, 'final_message');
         return true;
     }
@@ -235,11 +320,18 @@ function move_player(player, line, column) {
     getGame().getCurrentPlayer().move([line, column]);
 
     if (checkVictory(player)) {
-        updateFogOfWar(new Event("end", player.player, [player.line, player.column]));
+        updateFogOfWar(
+            new Event('end', player.player, [player.line, player.column])
+        );
         deleteOverview();
         return;
     }
-    let event = new Event("move", player.player, [old_line, old_column], [line, column]);
+    let event = new Event(
+        'move',
+        player.player,
+        [old_line, old_column],
+        [line, column]
+    );
     next_player(event);
 }
 
@@ -248,8 +340,8 @@ export function display() {
     let board = document.getElementById('board');
     board.innerHTML = '';
 
-    board.style.gridTemplateColumns = `repeat(${COLUMNS * 2 - 1}, min-content)`
-    board.style.gridTemplateRows = `repeat(${LINES * 2 - 1}, min-content)`
+    board.style.gridTemplateColumns = `repeat(${COLUMNS * 2 - 1}, min-content)`;
+    board.style.gridTemplateRows = `repeat(${LINES * 2 - 1}, min-content)`;
 
     for (let i = 0; i < LINES; i++) {
         for (let j = 0; j < COLUMNS; j++) {
@@ -276,7 +368,6 @@ export function display() {
         // Create horizontal wall
         for (let j = 0; j < COLUMNS; j++) {
             if (i < LINES - 1) {
-
                 // Create horizontal wall
                 let wall = document.createElement('div');
                 wall.classList.add('wall', 'h-wall');
@@ -300,7 +391,7 @@ export function display() {
 
 function isPlayerTurn(player) {
     if (LOG) console.log(`isPlayerTurn(${player}) called`);
-    let retour = turn % 2 == player-1;
+    let retour = turn % 2 == player - 1;
     if (LOG) console.log(`isPlayerTurn(${player}) returns ${retour}`);
     return retour;
 }
@@ -315,7 +406,7 @@ function getPlayerTurn() {
 function deleteOverview() {
     if (LOG) console.log(`deleteOverview() called`);
     let overviewes = document.querySelectorAll('.position_overview');
-    overviewes.forEach(element => {
+    overviewes.forEach((element) => {
         element.parentElement.overviewed = false;
         element.remove();
     });
@@ -327,7 +418,7 @@ export function onCellClick(event) {
     let id = cell.id.split('-');
     let line = parseInt(id[1]);
     let column = parseInt(id[2]);
-    
+
     if (event.target.className == 'position_overview') {
         cell = event.target.parentElement;
     } else {
@@ -343,41 +434,64 @@ export function onCellClick(event) {
         cell.selected = false;
     }
     if (cell.overviewed) {
+        getPlayerTurn().classList.toggle('border-active');
         move_player(getPlayerTurn(), line, column);
     } else {
         deleteOverview();
-    };
+    }
 }
 
 function onOverviewClick(event) {
     if (LOG) console.log(`onOverviewClick(${event}) called`);
 }
 
-
 export function onPlayerClick(event) {
     if (LOG) console.log(`onPlayerClick(${event}) called`);
+
     let cell = event.target.parentElement;
     let id = cell.id.split('-');
     let player = event.target.player;
+
+    if (!isPlayerTurn(player)) return;
+
+    // Toggle the 'border-active' class on the clicked element
+    event.target.classList.toggle('border-active');
+
+    // Check if the border is now active
+    let isBorderActive = event.target.classList.contains('border-active');
+
     // reset the board
     deleteOverview();
-    // display the possible moves
-    let cells = getCorridorPossiblePosition(parseInt(id[1]), parseInt(id[2]));
-    let overview;
-    for (let cell of cells) {
-        let cellElement = document.getElementById('cell-' + cell[0] + '-' + cell[1]);
-        overview  = document.createElement('div');
-        overview.addEventListener('click', onOverviewClick);
-        overview.className = 'position_overview';
-        overview.line = cell[0];
-        overview.column = cell[1];
-        overview.id = 'overview-' + cell[0] + '-' + cell[1];
-        cellElement.appendChild(overview);
-        if (isPlayerTurn(player)) cellElement.overviewed = true;
-    }
-    cell.selected = true;
-}
 
+    // If border is active, display the possible moves, otherwise hide them
+    if (isBorderActive) {
+        let cells = getCorridorPossiblePosition(
+            parseInt(id[1]),
+            parseInt(id[2])
+        );
+        for (let cell of cells) {
+            let cellElement = document.getElementById(
+                'cell-' + cell[0] + '-' + cell[1]
+            );
+            let overview = document.createElement('div');
+            overview.addEventListener('click', onOverviewClick);
+            overview.className = 'position_overview';
+            overview.line = cell[0];
+            overview.column = cell[1];
+            overview.id = 'overview-' + cell[0] + '-' + cell[1];
+            cellElement.appendChild(overview);
+            if (isPlayerTurn(player)) cellElement.overviewed = true;
+        }
+    } else {
+        // Hide or remove the elements if the border is not active
+        let overviews = document.querySelectorAll('.position_overview');
+        overviews.forEach((overview) => {
+            overview.style.display = 'none'; // or overview.remove() to completely remove the element
+        });
+    }
+
+    cell.selected = true; // This line seems to set a property 'selected' on the cell. Ensure this is managed as intended based on border toggle.
+}
 /*
 function addPlayers() {
     // Display players
@@ -419,7 +533,9 @@ export function addPlayers(board_div, board) {
     player_a.player = PLAYER_A;
     player_a.addEventListener('click', onPlayerClick);
     if (LOG) player_a.textContent = 'A';
-    let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
+    let cell = document.getElementById(
+        'cell-' + player_a.line + '-' + player_a.column
+    );
     new Player();
     // do not add the player to the board, this is done in the Player class
     getGame()['p1_pos'] = [player_a.line, player_a.column];
@@ -434,7 +550,9 @@ export function addPlayers(board_div, board) {
     player_b.player = PLAYER_B;
     player_b.addEventListener('click', onPlayerClick);
     if (LOG) player_b.textContent = 'B';
-    cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
+    cell = document.getElementById(
+        'cell-' + player_b.line + '-' + player_b.column
+    );
     getGame()['p2_pos'] = [player_b.line, player_b.column];
     new Player();
     // do not add the player to the board, this is done in the Player class
