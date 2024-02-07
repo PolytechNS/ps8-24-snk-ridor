@@ -356,16 +356,31 @@ function onOverviewClick(event) {
 
 export function onPlayerClick(event) {
     if (LOG) console.log(`onPlayerClick(${event}) called`);
-    let cell = event.target.parentElement;
+    console.log(`OnPlayerClick called`);
+    let cell;
+    if (event.target instanceof HTMLImageElement) {
+        cell = event.target.parentElement.parentElement;
+    } else {
+        cell = event.target.parentElement;
+    }
     let id = cell.id.split('-');
-    let player = event.target.player;
+    let player;
+    if (event.target instanceof HTMLImageElement) {
+        player = event.target.parentElement.player;
+    } else {
+        player = event.target.player;
+    }
+    console.log(`cell : ${cell.id}`);
+    console.log(`Player ${player} clicked`);
     // reset the board
     deleteOverview();
     // display the possible moves
     let cells = getCorridorPossiblePosition(parseInt(id[1]), parseInt(id[2]));
     let overview;
     for (let cell of cells) {
+        console.log(`cell : ${cell}`);
         let cellElement = document.getElementById('cell-' + cell[0] + '-' + cell[1]);
+        console.log(`cellElement : ${cellElement}, ${cellElement.id}`);
         overview  = document.createElement('div');
         overview.addEventListener('click', onOverviewClick);
         overview.className = 'position_overview';
@@ -373,6 +388,7 @@ export function onPlayerClick(event) {
         overview.column = cell[1];
         overview.id = 'overview-' + cell[0] + '-' + cell[1];
         cellElement.appendChild(overview);
+        console.log(cellElement.contains(overview));
         if (isPlayerTurn(player)) cellElement.overviewed = true;
     }
     cell.selected = true;
@@ -417,8 +433,15 @@ export function addPlayers(board_div, board) {
     player_a.line = PLAYER_A_START_LINE;
     player_a.column = 2;
     player_a.player = PLAYER_A;
-    player_a.addEventListener('click', onPlayerClick);
     if (LOG) player_a.textContent = 'A';
+    /*if (!LOG) {
+        let img = document.createElement('img');
+        img.src = 'rcs/persons/titan_eren.png';
+        img.alt = 'Annie';
+        img.classList.add('pawn-avatar');
+        player_a.appendChild(img);
+    }*/
+    player_a.addEventListener('click', onPlayerClick);
     let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
     new Player();
     // do not add the player to the board, this is done in the Player class
@@ -432,8 +455,15 @@ export function addPlayers(board_div, board) {
     player_b.line = PLAYER_B_START_LINE;
     player_b.column = 2;
     player_b.player = PLAYER_B;
-    player_b.addEventListener('click', onPlayerClick);
     if (LOG) player_b.textContent = 'B';
+    if (!LOG) {
+        let img = document.createElement('img');
+        img.src = 'rcs/persons/humain_annie.png';
+        img.alt = 'Annie';
+        img.classList.add('pawn-avatar');
+        player_b.appendChild(img);
+    }
+    player_b.addEventListener('click', onPlayerClick);
     cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
     getGame()['p2_pos'] = [player_b.line, player_b.column];
     new Player();

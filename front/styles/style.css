@@ -223,6 +223,14 @@
     height: 5vw;
 }
 
+/* board pawn */
+
+.pawn-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
 /* alert messages */
 
 .alert {
@@ -333,4 +341,5 @@
     margin: 15px auto 0 auto;
     text-align: center;
     text-decoration: none;
+    cursor: pointer;
 }
