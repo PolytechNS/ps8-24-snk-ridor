@@ -28,7 +28,7 @@ function manageRequest(request, response) {
     let endpoint = url.pathname.split('/')[2]; // Supposant que l'URL est sous la forme /api/endpoint
 
     switch (endpoint) {
-        case 'signup':
+        case 'login':
             handleSignup(request, response);
             break;
         case 'login':
