@@ -394,35 +394,6 @@ export function onPlayerClick(event) {
     cell.selected = true;
 }
 
-/*
-function addPlayers() {
-    // Display players
-    player_a = document.createElement('div');
-    player_a.className = 'player';
-    player_a.id = 'player-a';
-    player_a.backgroundColor = PLAYER_A_COLOR;
-    player_a.line = PLAYER_A_START_LINE;
-    player_a.column = 2;
-    player_a.player = PLAYER_A;
-    player_a.addEventListener('click', onPlayerClick);
-    if (LOG) player_a.textContent = 'A';
-    let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
-    cell.appendChild(player_a);
-
-    player_b = document.createElement('div');
-    player_b.className = 'player';
-    player_b.id = 'player-b';
-    player_b.backgroundColor = PLAYER_B_COLOR;
-    player_b.line = PLAYER_B_START_LINE;
-    player_b.column = 2;
-    player_b.player = PLAYER_B;
-    player_b.addEventListener('click', onPlayerClick);
-    if (LOG) player_b.textContent = 'B';
-    cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
-    cell.appendChild(player_b);
-}
-*/
-
 export function addPlayers(board_div, board) {
     if (LOG) console.log(`addPlayers(${board_div}, ${board}) called`);
     // Display players
@@ -434,13 +405,13 @@ export function addPlayers(board_div, board) {
     player_a.column = 2;
     player_a.player = PLAYER_A;
     if (LOG) player_a.textContent = 'A';
-    /*if (!LOG) {
+    if (!LOG) {
         let img = document.createElement('img');
         img.src = 'rcs/persons/titan_eren.png';
         img.alt = 'Annie';
         img.classList.add('pawn-avatar');
         player_a.appendChild(img);
-    }*/
+    }
     player_a.addEventListener('click', onPlayerClick);
     let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
     new Player();
