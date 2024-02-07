@@ -16,7 +16,12 @@
 
 <body>
     <nav>
-        Shingeki no Korridor
+        <a href="home.html"><img src="rcs/icon_home.jpg"></a>
+        <p>Shingeki No Korridor</p>
+        <div id="nav-login">
+            <a class="nav-button" id="login-button" onclick="alert('login button')">Login</a>
+            <a class="nav-button" id="register-button" onclick="alert('register button')">Register</a>
+        </div>
     </nav>
     <aside id="aside-left">
         <div id="player-2-profile" class="profile profile_adversaire">
@@ -40,7 +45,7 @@
             </div>
         </div>
     </aside>
-    <main>
+    <main class="game">
         <div id="board" class="board"></div>
         <div id="game-infos" class="game-infos">
             <a class="container">Au tour du joueur&nbsp;<a id="player">A</a><br></a>
