@@ -113,6 +113,7 @@
 
 .board {
     display: grid;
+    grid-template-columns: repeat(calc(var(--number-of-columns)*2 - 1), min-content);
 }
 
 .cell {

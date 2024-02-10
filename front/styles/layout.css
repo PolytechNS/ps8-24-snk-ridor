@@ -3,6 +3,8 @@
     --footer-height: 40px;
     --nav-login-width: 176px;
     --nav-img-width: 30px;
+
+    --number-of-columns: 9;
 }
 
 body {

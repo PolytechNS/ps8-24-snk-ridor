@@ -44,7 +44,7 @@ class Player {
     }
 }
 
-class Board {
+export class Board {
     players;
     walls; // list of int (0 or 1 or 2) representing no wall, wall placed by player 1, wall placed by player 2
     history; // list of Events
@@ -52,9 +52,8 @@ class Board {
 
     constructor(x_size = 9, y_size = 9) {
         this.players = [new Player(1), new Player(2)];
-        this.walls = Array().fill(
-            Array().fill(0, (x_size - 1) * 2),
-            y_size - 1
+        this.walls = Array(y_size - 1).fill(
+            Array((x_size - 1) * 2).fill(0)
         );
         this.history = [];
         this.gameState = GameState.PENDING;
@@ -118,6 +117,7 @@ class Board {
      * @return {int[2]} the size of the board
      */
     getSize() {
+        console.log(this.walls)
         return [this.walls.length, this.walls[0].length];
     }
 
@@ -161,6 +161,23 @@ class Board {
      */
     checkEnd() {
         return null;
+    }
+
+    /*
+     * Calculate the height of the board
+     * @return {int} the height of the board
+     */
+    getHeight() {
+        return this.getSize()[0] + 1;
+    }
+
+    /*
+     * Calculate the width of the board
+     * @return {int} the width of the board
+     */
+    getWidth() {
+        return (this.getSize()[1])/2 + 1;
+        // each cell is 2 units wide, one for the horizontal wall and one for the vertical wall
     }
 
     toJson() {
