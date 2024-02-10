@@ -1,3 +1,13 @@
+let board;
+
+export function getBoard() {
+    if (!board  || board === undefined) {
+        board = new Board();
+    }
+    return board;
+}
+
+
 const Action = {
     INIT: 0,
     MOVE: 1,
@@ -11,17 +21,29 @@ const GameState = {
     LAST_MOVE: 3,
 };
 
-class Position {
+export class Position {
     x;
     y;
 
     constructor(x, y) {
-        this.x = x;
-        this.y = y;
+        this.x = parseInt(x);
+        this.y = parseInt(y);
+    }
+
+    getX() {
+        return this.x;
+    }
+
+    getY() {
+        return this.y;
+    }
+
+    equals(position) {
+        return this.x === position.x && this.y === position.y;
     }
 }
 
-class Player {
+export class Player {
     id;
     position;
     avatar;
@@ -52,11 +74,18 @@ export class Board {
 
     constructor(x_size = 9, y_size = 9) {
         this.players = [new Player(1), new Player(2)];
-        this.walls = Array(y_size - 1).fill(
+        this.walls = Array(y_size).fill(
             Array((x_size - 1) * 2).fill(0)
         );
         this.history = [];
         this.gameState = GameState.PENDING;
+
+        /* ======================== */
+        this.placePlayer(this.players[0], new Position(0, 0));
+        this.players[0].avatar = "titan_eren";
+        this.placePlayer(this.players[1], new Position(x_size - 1, y_size - 1));
+        this.players[1].avatar = "humain_annie";
+        /* ======================== */
     }
 
     /*
@@ -81,10 +110,14 @@ export class Board {
 
     /*
      * @param {Player}
-     * @return {Position} the position of the player
+     * @param {Position} the wanted absolute position of the player
+     * change the position of the player
+     * must be called at the beginning of the game
+     * to let the player place his pawn
      */
     placePlayer(player, position) {
-        return null;
+        // TODO : check if the position is valid
+        player.setPosition(position);
     }
 
     /*
@@ -93,7 +126,8 @@ export class Board {
      * @return {Position} the new absolute position of the player
      */
     movePlayer(player, position) {
-        return null;
+        // TODO : check if the position is valid
+        player.setPosition(position);
     }
 
     /*
@@ -102,7 +136,8 @@ export class Board {
      * @return {Position} the new absolute position of the wall
      */
     placeWall(player, position) {
-        return null;
+        // TODO : check if the position is valid
+        this.walls[position.y][position.x] = player.id;
     }
 
     /*
@@ -117,7 +152,6 @@ export class Board {
      * @return {int[2]} the size of the board
      */
     getSize() {
-        console.log(this.walls)
         return [this.walls.length, this.walls[0].length];
     }
 
@@ -176,7 +210,7 @@ export class Board {
      * @return {int} the width of the board
      */
     getWidth() {
-        return (this.getSize()[1])/2 + 1;
+        return (this.getSize()[1]) / 2 + 1;
         // each cell is 2 units wide, one for the horizontal wall and one for the vertical wall
     }
 
@@ -184,10 +218,10 @@ export class Board {
         return JSON.stringify({});
     }
 
-    fromJson() {}
+    fromJson() { }
 }
 
-class Event {
+export class Event {
     player;
     action;
     position;

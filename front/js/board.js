@@ -128,8 +128,6 @@ function on_wall_click(event) {
     if (walls.some(wall => wall.classList.contains("placed"))) {
         return;
     }
-    
-    // TODO : gérer le cas où le joueur n'a plus de murs
 
     // gérer qu'un chemin doit toujours exister
     for (let p of getGame().players) {
