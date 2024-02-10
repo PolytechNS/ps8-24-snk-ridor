@@ -12,7 +12,10 @@ export function onCellClick(event) {
     if (isPlayerOnPosition(position)) {
         display_overviews(getCorridorPossiblePositions(position));
     } else {
-        console.log("No player on this cell");
+        if (isItMyTurn() && getCorridorPossiblePositions(myPlayer().getPosition()).contains(position)) {
+            let move_event = new Event("move", myPlayer(), position);
+            send_event(move_event);
+        }
     }
 }
 
@@ -32,8 +35,24 @@ export function onPlayerClick(event) {
     console.log("player click");
 }
 
-export function onPlayerMove(event) {
-    console.log("player move");
+export function send_event(event) {
+    console.log("event sent");
+}
+
+/*
+ * Check if it is the turn of the player
+ * @return {boolean} true if it is the turn of the player, false otherwise
+ */
+function isItMyTurn() {
+    return true;
+}
+
+/*
+ * Get the player
+ * @return {Player} the player
+ */
+function myPlayer() {
+    return getBoard().getPlayer(0);
 }
 
 
@@ -56,7 +75,7 @@ export function getCorridorPossiblePositions(position) {
                     positions.push(new Position(position.x - 2, position.y));
                 }
             }
-            
+
         }
     }
     if (position.y < board.getSize()[0] - 1) { // if the player is not on the right border
