@@ -9,7 +9,7 @@ import { onCellClick, onWallClick, onWallOut, onWallOver } from "./engine_final.
  * @side-effect: display the board
  * @side-effect: add event listeners to the cells and walls
  */
-function display_board(board) {
+export function display_board(board) {
 
     let BOARD_HEIGHT = board.getHeight();
     let BOARD_WIDTH = board.getWidth();
@@ -90,7 +90,7 @@ function display_board(board) {
             player.appendChild(img);
 
 
-            let cell = document.getElementById("cell-" + position.y + "-" + position.x);
+            let cell = document.getElementById("cell-" + position.x + "-" + position.y);
             cell.appendChild(player);
         }
     }

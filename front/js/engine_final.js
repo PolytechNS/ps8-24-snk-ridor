@@ -1,6 +1,14 @@
 import { getBoard, Board, Position } from "./board_final.js";
-import { display_overviews } from "./display.js";
+import { display_board, display_overviews } from "./display.js";
 
+
+/*
+ * When a cell is clicked, check if there is a player on the cell
+ * or if this is a possible move to trigger the right action
+ * @param {Event} the click event
+ * @return {void}
+ * @side-effect: trigger the right action
+ */
 export function onCellClick(event) {
     let cell = event.target;
     // if the event target is not a cell, it must be a child of a cell
@@ -12,9 +20,19 @@ export function onCellClick(event) {
     if (isPlayerOnPosition(position)) {
         display_overviews(getCorridorPossiblePositions(position));
     } else {
-        if (isItMyTurn() && getCorridorPossiblePositions(myPlayer().getPosition()).contains(position)) {
-            let move_event = new Event("move", myPlayer(), position);
-            send_event(move_event);
+        // if it is the turn of the player, we check if the position is a possible move
+        // then we send the move event
+        if (isItMyTurn()) {
+            for (let p of getCorridorPossiblePositions(myPlayer().getPosition())) {
+                if (p.equals(position)) {
+                    let move_event = new Event("move", myPlayer(), position);
+                    send_event(move_event);
+                    
+                    // change the position of the player
+                    myPlayer().setPosition(position);
+                    display_board(getBoard());
+                }
+            }
         }
     }
 }
@@ -44,6 +62,7 @@ export function send_event(event) {
  * @return {boolean} true if it is the turn of the player, false otherwise
  */
 function isItMyTurn() {
+    // TODO : implement the function
     return true;
 }
 
@@ -52,6 +71,7 @@ function isItMyTurn() {
  * @return {Player} the player
  */
 function myPlayer() {
+    // TODO : implement the function
     return getBoard().getPlayer(0);
 }
 
@@ -120,6 +140,11 @@ export function getCorridorPossiblePositions(position) {
     return positions;
 }
 
+/*
+ * Check if there is a player on a position
+ * @param {Position} the position to check
+ * @return {boolean} true if there is a player on the position, false otherwise
+ */
 function isPlayerOnPosition(position) {
     for (let i = 0; i < 2; i++) {
         if (position.equals(getBoard().getPlayer(i).getPosition())) {
