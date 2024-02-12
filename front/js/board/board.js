@@ -45,6 +45,67 @@ export class Board {
      * @return {int[][]} the fog of war for the board
      */
     getFogOfWar() {
+        let fogOfWar = Array.from(
+            { length: this.getSize()[0] },
+            (_, rowIndex) => {
+                return Array.from(
+                    { length: this.getSize()[1] },
+                    (_, colIndex) =>
+                        rowIndex === Math.ceil(this.getSize()[0] / 2)
+                            ? 0
+                            : rowIndex < this.getSize()[0] / 2
+                              ? 1
+                              : -1
+                );
+            }
+        );
+
+        // Apply filter of each wall
+        this.walls.forEach((row, rowIndex) => {
+            row.forEach((wall, colIndex) => {
+                let modifier = wall === 1 ? 1 : wall === 2 ? -1 : 0;
+
+                // If colIndex is even, it's a vertical wall
+                if (colIndex % 2 === 0) {
+                    // Left cells
+                    fogOfWar[rowIndex][colIndex / 2] += modifier * 2;
+                    fogOfWar[rowIndex][colIndex / 2 + 1] += modifier * 2;
+                    if (colIndex > 0) {
+                        fogOfWar[rowIndex - 1][colIndex / 2] += modifier;
+                        fogOfWar[rowIndex - 1][colIndex / 2 + 1] += modifier;
+                    }
+
+                    // Right cells
+                    fogOfWar[rowIndex + 1][colIndex / 2] += modifier * 2;
+                    fogOfWar[rowIndex + 1][colIndex / 2 + 1] += modifier * 2;
+                    if (colIndex < this.getSize()[1] - 1) {
+                        fogOfWar[rowIndex + 2][colIndex / 2] += modifier;
+                        fogOfWar[rowIndex + 2][colIndex / 2 + 1] += modifier;
+                    }
+                } else {
+                    // Else, it's a horizontal wall
+                    // Top cells
+                    fogOfWar[rowIndex][(colIndex - 1) / 2] += modifier * 2;
+                    fogOfWar[rowIndex + 1][(colIndex - 1) / 2] += modifier * 2;
+                    if (rowIndex > 0) {
+                        fogOfWar[rowIndex][(colIndex - 1) / 2 - 1] += modifier;
+                        fogOfWar[rowIndex + 1][(colIndex - 1) / 2 - 1] +=
+                            modifier;
+                    }
+
+                    // Bottom cells
+                    fogOfWar[rowIndex][(colIndex - 1) / 2 + 1] += modifier * 2;
+                    fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 1] +=
+                        modifier * 2;
+                    if (rowIndex < this.getSize()[0] - 1) {
+                        fogOfWar[rowIndex][(colIndex - 1) / 2 + 2] += modifier;
+                        fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 2] +=
+                            modifier;
+                    }
+                }
+            });
+        });
+
         return null;
     }
 
@@ -349,6 +410,15 @@ export class Board {
     getWidth() {
         return this.getSize()[1] / 2 + 1;
         // each cell is 2 units wide, one for the horizontal wall and one for the vertical wall
+    }
+
+    copy() {
+        let b = new Board();
+        b.players = this.players.map((p) => p.copy());
+        b.walls = this.walls.map((row) => row.slice());
+        b.history = this.history.map((e) => e.copy());
+        b.gameState = this.gameState;
+        return b;
     }
 
     toJson() {

@@ -1,4 +1,4 @@
-import { getBoard } from '../board_final';
+import { getBoard } from './board.js';
 
 export class Player {
     id;
