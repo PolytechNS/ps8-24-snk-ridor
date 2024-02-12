@@ -4,7 +4,7 @@ import { addPlayers, display } from './engine.js';
 import { findPath, updatePath } from './pathFinding.js';
 import { updateFogOfWar } from './fogwar.js';
 
-export const LOG = true;
+export const LOG = false;
 
 function onload() {
     if (LOG) console.log('Loaded');

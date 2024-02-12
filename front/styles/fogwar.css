@@ -1,4 +1,5 @@
-:root { /* do not remove, can be change on LOG value by JS in engine.js */
+:root {
+    /* do not remove, can be change on LOG value by JS in engine.js */
     --j1: #000;
     --j2: #000;
     --casej1: #a52a2a;
@@ -11,30 +12,32 @@
 }
 
 .visible {
-    background-color: var(--casej1)
+    background-color: var(--casej1);
 }
 
 .invisible {
-    background-color: var(--casej2)
+    background-image: url('../resources/svg/fog.svg');
+    background-size: cover;
+    background-position: center;
+    /*filter : url(../resources/svg/fog.svg#fogFilter);*/
 }
 
 .middle {
-    background-color: var(--neutre)
+    background-color: var(--neutre);
 }
 
 .wall-p1 {
-    background-color: var(--wallj1)
+    background-color: var(--wallj1);
 }
 
 .wall-p2 {
-    background-color: var(--wallj2)
+    background-color: var(--wallj2);
 }
 
 .wall-hover {
-    background-color: var(--hover)
+    background-color: var(--hover);
 }
 
 .finish {
-    
-    background-color: var(--finish)
+    background-color: var(--finish);
 }
