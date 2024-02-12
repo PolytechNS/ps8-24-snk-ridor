@@ -113,7 +113,10 @@
 
 .board {
     display: grid;
-    grid-template-columns: repeat(calc(var(--number-of-columns)*2 - 1), min-content);
+    grid-template-columns: repeat(
+        calc(var(--number-of-columns) * 2 - 1),
+        min-content
+    );
 }
 
 .cell {
@@ -151,6 +154,21 @@
 
 .wall {
     background-color: rgba(0, 0, 0, 0);
+}
+
+.placed.h-wall {
+    background-image: url('../resources/svg/h-wall.svg');
+    background-size: cover;
+}
+
+.placed.v-wall {
+    background-image: url('../resources/svg/v-wall.svg');
+    background-size: cover;
+}
+
+.placed.s-wall {
+    background-image: url('../resources/svg/s-wall.svg');
+    background-size: cover;
 }
 
 .wall-over {
@@ -235,9 +253,10 @@
 /* board pawn */
 
 .pawn-avatar {
-    width: 100%;
-    height: 100%;
+    width: 4vh;
+    height: 4vh;
     border-radius: 50%;
+    pointer-events: none;
 }
 
 /* alert messages */
@@ -291,7 +310,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: space-around;
 }
 
 .final_message button {
@@ -334,8 +352,6 @@
     display: none;
 }
 
-/* fin final message */
-
 /* homepage buttons */
 
 .play_button {
@@ -351,8 +367,4 @@
     text-align: center;
     text-decoration: none;
     cursor: pointer;
-}
-
-.pawn-avatar {
-    pointer-events: none;
 }
