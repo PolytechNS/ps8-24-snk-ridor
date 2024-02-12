@@ -18,16 +18,20 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify(loginData),
         })
-            .then((response) => {
-                if (!response.ok) {
-                    console.log(`Login failed with status: ${response.status}`);
-                    throw new Error('Login failed. Please try again later.');
+            .then((response) =>
+                response
+                    .json()
+                    .then((data) => ({ status: response.status, body: data }))
+            )
+            .then(({ status, body }) => {
+                if (status !== 200) {
+                    console.log(`Login failed with status: ${status}`, body);
+                    throw new Error(
+                        'Invalid login credentials. Please try again.'
+                    );
                 }
-                return response.json();
-            })
-            .then((data) => {
-                console.log('Login successful with data:', data);
-                window.location.href = '/ps8-24-snk-ridor/index/';
+                console.log('Login successful with data:', body);
+                window.location.href = '/ps8-24-snk-ridor/front/';
             })
             .catch((error) => {
                 console.error('Error during login:', error);
@@ -37,6 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const signupButton = document.getElementById('signup-login');
     signupButton.addEventListener('click', function () {
-        window.location.href = '/ps8-24-snk-ridor/front/signup/'; // Ensure this path is correct
+        window.location.href = '/ps8-24-snk-ridor/front/signup/';
     });
 });

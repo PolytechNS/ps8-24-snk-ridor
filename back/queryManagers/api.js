@@ -94,10 +94,15 @@ function handleSignup(request, response) {
                 return;
             }
 
+            // Hash the password before storing
+            body.password = crypto
+                .createHash('sha512')
+                .update(body.password)
+                .digest('hex');
+
             createUser(body)
                 .then((user) => {
                     if (!user) {
-                        console.log('first');
                         response.writeHead(500, {
                             'Content-Type': 'application/json',
                         });
@@ -134,11 +139,21 @@ function handleSignup(request, response) {
 }
 
 function handleLogin(request, response) {
-    if (request.method !== 'POST') {
-        response.writeHead(405, { 'Content-Type': 'application/json' });
-        response.end(JSON.stringify({ error: 'Méthode non autorisée' }));
+    if (request.method === 'OPTIONS') {
+        addCors(response);
+        response.writeHead(200);
+        response.end();
         return;
     }
+
+    if (request.method !== 'POST') {
+        addCors(response);
+        response.writeHead(405, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify({ error: 'Method not allowed' }));
+        return;
+    }
+
+    addCors(response);
 
     // Get the data from the request body
     getJsonBody(request).then((body) => {
@@ -155,7 +170,7 @@ function handleLogin(request, response) {
                 response.end(
                     JSON.stringify({ error: 'Utilisateur inexistant' })
                 );
-                return; // Stop execution if user doesn't exist
+                return;
             }
 
             // Hash the password
