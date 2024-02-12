@@ -12,7 +12,7 @@ async function getMongoDatabase() {
         await client.connect();
     }
 
-    return client.db('chess');
+    return client.db('quoridor');
 }
 
 async function getUsers() {

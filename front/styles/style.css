@@ -113,6 +113,7 @@
 
 .board {
     display: grid;
+    grid-template-columns: repeat(calc(var(--number-of-columns)*2 - 1), min-content);
 }
 
 .cell {
@@ -125,6 +126,10 @@
     width: 7vh;
     height: 7vh;
     border-radius: 5px;
+}
+
+.cell.possible {
+    background-color: #3a1f0f;
 }
 
 .finish {
@@ -173,6 +178,9 @@
 .placed.s-wall {
     background-image: url('../resources/svg/s-wall.svg');
     background-size: cover;
+
+.wall-over {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .position_overview {
@@ -248,6 +256,14 @@
     margin-bottom: 0;
     width: 5vw;
     height: 5vw;
+}
+
+/* board pawn */
+
+.pawn-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
 }
 
 /* alert messages */
@@ -344,4 +360,23 @@
     display: none;
 }
 
-/* fin final message */
+/* homepage buttons */
+
+.play_button {
+    background-color: #3a1f0f;
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 2vh;
+    box-sizing: border-box;
+    border-radius: 5px;
+    min-width: 300px;
+    margin: 15px auto 0 auto;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pawn-avatar {
+    pointer-events: none;
+}
