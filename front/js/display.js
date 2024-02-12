@@ -14,14 +14,12 @@ import {
  * @side-effect: add event listeners to the cells and walls
  */
 export function display_board(board) {
-
     let BOARD_HEIGHT = board.getHeight();
     let BOARD_WIDTH = board.getWidth();
 
-    console.log("display_board", board);
-    console.log("display_board", BOARD_HEIGHT);
-    console.log("display_board", BOARD_WIDTH);
-
+    console.log('display_board', board);
+    console.log('display_board', BOARD_HEIGHT);
+    console.log('display_board', BOARD_WIDTH);
 
     // reset the board
     let board_div = document.getElementById('board');
@@ -32,21 +30,21 @@ export function display_board(board) {
         // for each row, create a line of cells and vertical walls
         for (let j = 0; j < BOARD_WIDTH; j++) {
             // create a cell and add it to the board
-            let cell = document.createElement("div");
-            cell.className = "cell";
-            cell.id = "cell-" + k + "-" + j;
-            cell.addEventListener("click", onCellClick);
+            let cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.id = 'cell-' + k + '-' + j;
+            cell.addEventListener('click', onCellClick);
             board_div.appendChild(cell);
 
             // create a vertical wall and add it to the board
             // if this is not the last column
             if (j < BOARD_WIDTH - 1) {
-                let wall = document.createElement("div");
-                wall.classList.add("v-wall", "wall");
-                wall.id = "v-wall-" + k + "-" + j;
-                wall.addEventListener("mouseover", onWallOver);
-                wall.addEventListener("mouseout", onWallOut);
-                wall.addEventListener("click", onWallClick);
+                let wall = document.createElement('div');
+                wall.classList.add('v-wall', 'wall');
+                wall.id = 'v-wall-' + k + '-' + j;
+                wall.addEventListener('mouseover', onWallOver);
+                wall.addEventListener('mouseout', onWallOut);
+                wall.addEventListener('click', onWallClick);
                 board_div.appendChild(wall);
             }
         }
@@ -56,43 +54,49 @@ export function display_board(board) {
             // create a horizontal wall and add it to the board
             // if this is not the last row
             if (k < BOARD_HEIGHT - 1) {
-                let wall = document.createElement("div");
-                wall.classList.add("h-wall", "wall");
-                wall.id = "h-wall-" + k + "-" + j;
-                wall.addEventListener("mouseover", onWallOver);
-                wall.addEventListener("mouseout", onWallOut);
-                wall.addEventListener("click", onWallClick);
+                let wall = document.createElement('div');
+                wall.classList.add('h-wall', 'wall');
+                wall.id = 'h-wall-' + k + '-' + j;
+                wall.addEventListener('mouseover', onWallOver);
+                wall.addEventListener('mouseout', onWallOut);
+                wall.addEventListener('click', onWallClick);
                 board_div.appendChild(wall);
             }
 
             // create a "small wall" and add it to the board
             // if this is not the last row and the last column
             if (k < BOARD_HEIGHT - 1 && j < BOARD_WIDTH - 1) {
-                let wall = document.createElement("div");
-                wall.classList.add("s-wall", "wall");
-                wall.id = "s-wall-" + k + "-" + j;
-                wall.addEventListener("mouseover", onWallOver);
-                wall.addEventListener("mouseout", onWallOut);
-                wall.addEventListener("click", onWallClick);
+                let wall = document.createElement('div');
+                wall.classList.add('s-wall', 'wall');
+                wall.id = 's-wall-' + k + '-' + j;
+                wall.addEventListener('mouseover', onWallOver);
+                wall.addEventListener('mouseout', onWallOut);
+                wall.addEventListener('click', onWallClick);
                 board_div.appendChild(wall);
             }
         }
 
         // display placed walls
         let walls = board.getWalls();
-        console.log(walls)
+        console.log(walls);
         for (let i = 0; i < walls.length; i++) {
             for (let j = 0; j < walls[i].length; j++) {
                 if (walls[i][j] != 0) {
-                    if (j%2 == 1) {
+                    if (j % 2 == 1) {
                         if (walls[i][j] != 0) {
-                            console.log("v-wall-" + (j+1)/2 + "-" + i);
-                            document.getElementById("v-wall-" + (j+1)/2 + "-" + i).classList.add("wall-placed");
-                        } 
+                            console.log('v-wall-' + (j + 1) / 2 + '-' + i);
+                            document
+                                .getElementById(
+                                    'v-wall-' + (j + 1) / 2 + '-' + i
+                                )
+                                .classList.add('wall-placed');
+                        }
                     } else {
                         if (walls[i][j] != 0) {
-                            console.log("h-wall-" + j/2 + "-" + i);
-                            document.getElementById("h-wall-" + j/2 + "-" + i).classList.add("wall-placed");
+                            console.log('h-wall-' + j / 2 + '-' + i);
+                            document
+                                .getElementById('h-wall-' + j / 2 + '-' + i)
+                                .classList.add('wall-placed');
                         }
                     }
                 }
@@ -113,7 +117,7 @@ export function display_board(board) {
             player.id = 'player-' + i;
 
             let img = document.createElement('img');
-            img.src = 'rcs/persons/' + board.getPlayer(i).avatar + '.png';
+            img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
             img.alt = 'paw ' + i;
             img.classList.add('pawn-avatar');
             player.appendChild(img);
@@ -135,7 +139,7 @@ export function display_board(board) {
 
         // change the profile picture
         let img = player_profile.getElementsByClassName('avatar')[0];
-        img.src = 'rcs/persons/' + board.getPlayer(i).avatar + '.png';
+        img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
     }
 }
 
