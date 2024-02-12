@@ -28,7 +28,7 @@ function manageRequest(request, response) {
     let endpoint = url.pathname.split('/')[2]; // Supposant que l'URL est sous la forme /api/endpoint
 
     switch (endpoint) {
-        case 'login':
+        case 'signup':
             handleSignup(request, response);
             break;
         case 'login':
@@ -57,31 +57,80 @@ function manageRequest(request, response) {
             response.end(JSON.stringify({ error: 'Endpoint non trouvé' }));
     }
 }
+function addCors(response) {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader(
+        'Access-Control-Allow-Methods',
+        'GET, POST, OPTIONS, PUT, PATCH, DELETE'
+    );
+    response.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+    );
+    response.setHeader('Access-Control-Allow-Credentials', true);
+}
 
 function handleSignup(request, response) {
-    if (request.method !== 'POST') {
-        response.writeHead(405, { 'Content-Type': 'application/json' });
-        response.end(JSON.stringify({ error: 'Méthode non autorisée' }));
+    if (request.method === 'OPTIONS') {
+        addCors(response);
+        response.writeHead(200);
+        response.end();
         return;
     }
 
-    // Get the data from the request body
-    getJsonBody(request).then((body) => {
-        // Validate the object
-        if (!body.email || !body.username || !body.password) {
-            response.writeHead(400, { 'Content-Type': 'application/json' });
-            response.end(JSON.stringify({ error: 'Données manquantes' }));
-            return;
-        }
+    if (request.method !== 'POST') {
+        response.writeHead(405, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify({ error: 'Method not allowed' }));
+        return;
+    }
 
-        createOrUpdateUser(
-            body.email,
-            body.username,
-            body.password,
-            response,
-            true
-        );
-    });
+    addCors(response);
+
+    getJsonBody(request)
+        .then((body) => {
+            if (!body.email || !body.username || !body.password) {
+                response.writeHead(400, { 'Content-Type': 'application/json' });
+                response.end(JSON.stringify({ error: 'Missing data' }));
+                return;
+            }
+
+            createUser(body)
+                .then((user) => {
+                    if (!user) {
+                        console.log('first');
+                        response.writeHead(500, {
+                            'Content-Type': 'application/json',
+                        });
+                        response.end(
+                            JSON.stringify({ error: 'Internal server error' })
+                        );
+                        return;
+                    }
+
+                    response.writeHead(201, {
+                        'Content-Type': 'application/json',
+                    });
+                    response.end(
+                        JSON.stringify({
+                            message: 'User created successfully',
+                            userId: user._id,
+                        })
+                    );
+                })
+                .catch((err) => {
+                    console.log('second');
+                    response.writeHead(500, {
+                        'Content-Type': 'application/json',
+                    });
+                    response.end(
+                        JSON.stringify({ error: 'Internal server error' })
+                    );
+                });
+        })
+        .catch((err) => {
+            response.writeHead(400, { 'Content-Type': 'application/json' });
+            response.end(JSON.stringify({ error: 'Bad request' }));
+        });
 }
 
 function handleLogin(request, response) {
@@ -349,22 +398,6 @@ function handleCheckAction(request, response) {
  ** (for instance, some of your api urls may accept GET and POST request whereas some others will only accept PUT).
  ** Access-Control-Allow-Headers is an example of how to authorize some headers, the ones given in this example
  ** are probably not the ones you will need. */
-function addCors(response) {
-    // Website you wish to allow to connect to your server.
-    response.setHeader('Access-Control-Allow-Origin', '*');
-    // Request methods you wish to allow.
-    response.setHeader(
-        'Access-Control-Allow-Methods',
-        'GET, POST, OPTIONS, PUT, PATCH, DELETE'
-    );
-    // Request headers you wish to allow.
-    response.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-Requested-With,content-type'
-    );
-    // Set to true if you need the website to include cookies in the requests sent to the API.
-    response.setHeader('Access-Control-Allow-Credentials', true);
-}
 
 function getJsonBody(request) {
     return new Promise((resolve) => {
