@@ -1,5 +1,7 @@
 import { Action } from './action.js';
 import { GameState } from './gameState.js';
+import { Position } from './position';
+import { Player } from './player';
 
 let board;
 
@@ -28,17 +30,11 @@ export class Board {
 
     constructor(x_size = 9, y_size = 9) {
         this.players = [new Player(1), new Player(2)];
-        this.walls = create2DArray(x_size, y_size * 2 - 2);
+        this.walls = Array.from({ length: x_size - 1 }, () =>
+            Array(y_size * 2 - 1).fill(0)
+        );
         this.history = [];
         this.gameState = GameState.PENDING;
-
-        /* ======================== */
-        // TODO Remove this
-        this.placePlayer(this.players[0], new Position(0, 0));
-        this.players[0].avatar = 'titan_eren';
-        this.placePlayer(this.players[1], new Position(x_size - 1, y_size - 1));
-        this.players[1].avatar = 'humain_annie';
-        /* ======================== */
     }
 
     /*
@@ -208,6 +204,16 @@ export class Board {
      * @side-effect change the walls of the board
      */
     placeWall(player, position) {
+        // Check that the position is valid
+        if (
+            position.getX() < 0 ||
+            position.getX() >= this.getSize()[0] ||
+            position.getY() < 0 ||
+            position.getY() >= this.getSize()[1]
+        ) {
+            throw new Error('Invalid position');
+        }
+
         this.walls[position.getX()][position.getY()] = player.getId();
     }
 
@@ -446,13 +452,4 @@ export class Board {
     }
 
     fromJson() {}
-}
-
-// TODO move this to a utils file of remove it altogether
-function create2DArray(x, y, fill = 0) {
-    let arr = [];
-    for (let i = 0; i < x; i++) {
-        arr.push(Array(y).fill(fill));
-    }
-    return arr;
 }
