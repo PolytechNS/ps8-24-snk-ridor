@@ -153,6 +153,10 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
+.wall-over {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
 .position_overview {
     height: 70%;
     width: 70%;

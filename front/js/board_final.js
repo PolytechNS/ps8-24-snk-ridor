@@ -64,6 +64,24 @@ export class Player {
     setPosition(position) {
         this.position = position;
     }
+
+    /*
+     * @return {int} the number of remaining walls for the player
+     */
+    remainingWalls() {
+        // dinamically calculate the remaining walls from the board
+        let b = getBoard();
+        let placed_walls = 0;
+        for (let i = 0; i < b.getSize()[0]; i++) {
+            for (let j = 0; j < b.getSize()[1]; j++) {
+                if (b.getWalls()[i][j] === this.id) {
+                    placed_walls++;
+                }
+            }
+        }
+        return 10 - placed_walls/2;
+        // we divide by 2 because each wall is represented by 2 semi-walls
+    }
 }
 
 export class Board {
@@ -74,9 +92,7 @@ export class Board {
 
     constructor(x_size = 9, y_size = 9) {
         this.players = [new Player(1), new Player(2)];
-        this.walls = Array(y_size).fill(
-            Array((x_size - 1) * 2).fill(0)
-        );
+        this.walls = create2DArray(x_size, y_size*2 - 2);
         this.history = [];
         this.gameState = GameState.PENDING;
 
@@ -132,12 +148,14 @@ export class Board {
 
     /*
      * @param {Player}
-     * @param {Position} the wanted absolute position of the wall
-     * @return {Position} the new absolute position of the wall
+     * @param {int[][]} the wanted absolute position of the wall
+     * @side-effect change the walls of the board
      */
-    placeWall(player, position) {
-        // TODO : check if the position is valid
-        this.walls[position.y][position.x] = player.id;
+    placeWalls(player, positions) {
+        console.log("placeWalls", player, positions);
+        for (let wall of positions) {
+            this.walls[wall[1]][wall[0]] = player.id;
+        }
     }
 
     /*
@@ -231,4 +249,14 @@ export class Event {
         this.action = action;
         this.position = position;
     }
+}
+
+
+/* utils */
+function create2DArray(x, y, fill = 0) {
+    let arr = [];
+    for (let i = 0; i < x; i++) {
+        arr.push(Array(y).fill(fill));
+    }
+    return arr;
 }

@@ -1,5 +1,5 @@
 import { getBoard, Board, Position } from "./board_final.js";
-import { display_board, display_overviews } from "./display.js";
+import { display_board, display_overviews, wall_over_display, wall_out_display } from "./display.js";
 
 
 /*
@@ -30,23 +30,53 @@ export function onCellClick(event) {
                     
                     // change the position of the player
                     myPlayer().setPosition(position);
-                    display_board(getBoard());
+                    display_board(getBoard()); // update the board
                 }
             }
         }
     }
 }
 
+
+/*
+ * When a wall is hovered, display the walls affected by the event
+ * @param {Event} the mouseover event
+ * @return {void}
+ * @side-effect: display the walls affected by the event
+ */
 export function onWallOver(event) {
-    console.log("wall over");
+    if (myPlayer().remainingWalls() > 0) {
+        let position = new Position(event.target.id.split("-")[3], event.target.id.split("-")[2]);
+        if (position.x < getBoard().getSize()[1]/2) {
+            let vertical = event.target.classList.contains("v-wall");
+            let walls = get_walls_for_dom(position, vertical);
+            wall_over_display(walls, vertical);
+        }
+    }
 }
 
 export function onWallOut(event) {
-    console.log("wall out");
+    if (myPlayer().remainingWalls() > 0) {
+        let position = new Position(event.target.id.split("-")[3], event.target.id.split("-")[2]);
+        if (position.x < getBoard().getSize()[1]/2) {
+            let vertical = event.target.classList.contains("v-wall");
+            let walls = get_walls_for_dom(position, vertical);
+            wall_out_display(walls, vertical);
+        }
+    }
 }
 
 export function onWallClick(event) {
-    console.log("wall click");
+    if (myPlayer().remainingWalls() > 0) {
+        let position = new Position(event.target.id.split("-")[3], event.target.id.split("-")[2]);
+        let vertical = event.target.classList.contains("v-wall");
+        let walls = get_walls_for_board(position, vertical);
+        console.log(walls);
+        getBoard().placeWalls(myPlayer(), walls);
+        let wall_event = new Event("wall", myPlayer(), walls);
+        send_event(wall_event);
+        display_board(getBoard());
+    }
 }
 
 export function onPlayerClick(event) {
@@ -152,4 +182,63 @@ function isPlayerOnPosition(position) {
         }
     }
     return false;
+}
+
+
+/*
+ * Get the walls affected by the event
+ * @param {Position} the position of the wall
+ * @param {boolean} true if the wall is vertical, false if the wall is horizontal
+ * @return {Position[]} the walls affected by the event
+ */
+function get_walls_for_dom(position, vertical) {
+    let walls = [];
+    if (vertical) {
+        if (position.y < getBoard().getSize()[0] - 1) {
+            // if the wall is not on the bottom border of the board
+            walls.push(new Position(position.x, position.y));
+            walls.push(new Position(position.x, position.y + 1));
+        } else {
+            walls.push(new Position(position.x, position.y - 1));
+            walls.push(new Position(position.x, position.y));
+        }
+    } else {
+        if (position.x < getBoard().getSize()[1]/2) {
+            // if the wall is not on the right border of the board
+            walls.push(new Position(position.x, position.y));
+            walls.push(new Position(position.x + 1, position.y));
+        } else {
+            walls.push(new Position(position.x - 1, position.y));
+            walls.push(new Position(position.x, position.y));
+        }
+    }
+    return walls;
+}
+
+/*
+ * Get the walls affected by the event
+ * @param {Position} the position of the wall
+ * @param {boolean} true if the wall is vertical, false if the wall is horizontal
+ * @return {int[][]} position of the wall in the board
+ */
+function get_walls_for_board(position, vertical) {
+    let walls = [];
+    if (vertical) {
+        if (position.y < getBoard().getSize()[0] - 1) {
+            walls.push([position.x * 2 + 1, position.y]);
+            walls.push([position.x * 2 + 1, position.y + 1]);
+        } else {
+            walls.push([position.x * 2 + 1, position.y - 1]);
+            walls.push([position.x * 2 + 1, position.y]);
+        }
+    } else {
+        if (position.x < getBoard().getSize()[1] - 1) {
+            walls.push([position.x * 2, position.y]);
+            walls.push([position.x * 2 + 2, position.y]);
+        } else {
+            walls.push([position.x * 2 - 1, position.y]);
+            walls.push([position.x * 2 + 1, position.y]);
+        }
+    }
+    return walls;
 }
