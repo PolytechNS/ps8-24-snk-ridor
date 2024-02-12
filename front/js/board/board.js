@@ -170,6 +170,7 @@ export class Board {
         }
 
         player.setPosition(position);
+        this.updateState();
     }
 
     /*
@@ -199,6 +200,7 @@ export class Board {
         }
 
         player.setPosition(position);
+        this.updateState();
     }
 
     /*
@@ -263,6 +265,7 @@ export class Board {
         // TODO: Check that the wall doesent obstruct path for any player
 
         this.walls[position.getX()][position.getY()] = player.getId();
+        this.updateState();
     }
 
     /*
