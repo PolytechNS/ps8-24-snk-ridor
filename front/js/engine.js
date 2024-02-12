@@ -159,58 +159,35 @@ export function getCorridorPossiblePosition(line, column) {
     return cells;
 }
 
-
 export function getCorridorPossiblePositionForPath(line, column) {
+    if (LOG) console.log(`getCorridorPossiblePositionForPath(${line}, ${column}) called`);
     let cells = [];
     let wall;
-    if (line > 0) {
+    if (line > 0) { // if the player is not on the first line, check the left cell
         wall = document.getElementById('h-wall-' + (line - 1) + '-' + column);
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
-            if (document.getElementById('cell-' + (line - 1) + '-' + column).childElementCount == 0) {
-                cells.push([line - 1, column]);
-            } else {
-                if (line > 1 && !document.getElementById('h-wall-' + (line - 2) + '-' + column).classList.contains("placed")) { 
-                    cells.push([line - 2, column]);
-                }
-            }
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+            cells.push([line - 1, column]);
         }
     }
-    if (line < LINES - 1) {
+    if (line < LINES - 1) { // if the player is not on the last line, check the right cell
         wall = document.getElementById('h-wall-' + line + '-' + column);
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
-            if (document.getElementById('cell-' + (line + 1) + '-' + column).childElementCount == 0) {
-                cells.push([line + 1, column]);
-            } else {
-                if (line < LINES - 2 && !document.getElementById('h-wall-' + (line + 1) + '-' + column).classList.contains("placed")) {
-                    cells.push([line + 2, column]);
-                }
-            }
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+            cells.push([line + 1, column]);
         }
     }
-    if (column > 0) {
+    if (column > 0) { // if the player is not on the first column, check the upper cell
         wall = document.getElementById('v-wall-' + line + '-' + (column - 1));
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
-            if (document.getElementById('cell-' + line + '-' + (column - 1)).childElementCount == 0) {
-                cells.push([line, column - 1]);
-            } else {
-                if (column > 1 && !document.getElementById('v-wall-' + line + '-' + (column - 2)).classList.contains("placed")) {
-                    cells.push([line, column - 2]);
-                }
-            }
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+            cells.push([line, column - 1]);
         }
     }
-    if (column < COLUMNS - 1) {
+    if (column < COLUMNS - 1) { // if the player is not on the last column, check the lower cell
         wall = document.getElementById('v-wall-' + line + '-' + column);
-        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) {
-            if (document.getElementById('cell-' + line + '-' + (column + 1)).childElementCount == 0) {
-                cells.push([line, column + 1]);
-            } else {
-                if (column < COLUMNS - 2 && !document.getElementById('v-wall-' + line + '-' + (column + 1)).classList.contains("placed")) {
-                    cells.push([line, column + 2]);
-                }
-            }
+        if (!wall.classList.contains("placed") && !wall.classList.contains("wall-hover")) { // if there is a wall on the way
+            cells.push([line, column + 1]);
         }
     }
+    if (LOG) console.log(`getCorridorPossiblePositionForPath(${line}, ${column}) returns ${cells}`);
     return cells;
 }
 
@@ -379,16 +356,31 @@ function onOverviewClick(event) {
 
 export function onPlayerClick(event) {
     if (LOG) console.log(`onPlayerClick(${event}) called`);
-    let cell = event.target.parentElement;
+    console.log(`OnPlayerClick called`);
+    let cell;
+    if (event.target instanceof HTMLImageElement) {
+        cell = event.target.parentElement.parentElement;
+    } else {
+        cell = event.target.parentElement;
+    }
     let id = cell.id.split('-');
-    let player = event.target.player;
+    let player;
+    if (event.target instanceof HTMLImageElement) {
+        player = event.target.parentElement.player;
+    } else {
+        player = event.target.player;
+    }
+    console.log(`cell : ${cell.id}`);
+    console.log(`Player ${player} clicked`);
     // reset the board
     deleteOverview();
     // display the possible moves
     let cells = getCorridorPossiblePosition(parseInt(id[1]), parseInt(id[2]));
     let overview;
     for (let cell of cells) {
+        console.log(`cell : ${cell}`);
         let cellElement = document.getElementById('cell-' + cell[0] + '-' + cell[1]);
+        console.log(`cellElement : ${cellElement}, ${cellElement.id}`);
         overview  = document.createElement('div');
         overview.addEventListener('click', onOverviewClick);
         overview.className = 'position_overview';
@@ -396,39 +388,11 @@ export function onPlayerClick(event) {
         overview.column = cell[1];
         overview.id = 'overview-' + cell[0] + '-' + cell[1];
         cellElement.appendChild(overview);
+        console.log(cellElement.contains(overview));
         if (isPlayerTurn(player)) cellElement.overviewed = true;
     }
     cell.selected = true;
 }
-
-/*
-function addPlayers() {
-    // Display players
-    player_a = document.createElement('div');
-    player_a.className = 'player';
-    player_a.id = 'player-a';
-    player_a.backgroundColor = PLAYER_A_COLOR;
-    player_a.line = PLAYER_A_START_LINE;
-    player_a.column = 2;
-    player_a.player = PLAYER_A;
-    player_a.addEventListener('click', onPlayerClick);
-    if (LOG) player_a.textContent = 'A';
-    let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
-    cell.appendChild(player_a);
-
-    player_b = document.createElement('div');
-    player_b.className = 'player';
-    player_b.id = 'player-b';
-    player_b.backgroundColor = PLAYER_B_COLOR;
-    player_b.line = PLAYER_B_START_LINE;
-    player_b.column = 2;
-    player_b.player = PLAYER_B;
-    player_b.addEventListener('click', onPlayerClick);
-    if (LOG) player_b.textContent = 'B';
-    cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
-    cell.appendChild(player_b);
-}
-*/
 
 export function addPlayers(board_div, board) {
     if (LOG) console.log(`addPlayers(${board_div}, ${board}) called`);
@@ -440,8 +404,15 @@ export function addPlayers(board_div, board) {
     player_a.line = PLAYER_A_START_LINE;
     player_a.column = 2;
     player_a.player = PLAYER_A;
-    player_a.addEventListener('click', onPlayerClick);
     if (LOG) player_a.textContent = 'A';
+    if (!LOG) {
+        let img = document.createElement('img');
+        img.src = 'rcs/persons/titan_eren.png';
+        img.alt = 'Annie';
+        img.classList.add('pawn-avatar');
+        player_a.appendChild(img);
+    }
+    player_a.addEventListener('click', onPlayerClick);
     let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
     new Player();
     // do not add the player to the board, this is done in the Player class
@@ -455,8 +426,15 @@ export function addPlayers(board_div, board) {
     player_b.line = PLAYER_B_START_LINE;
     player_b.column = 2;
     player_b.player = PLAYER_B;
-    player_b.addEventListener('click', onPlayerClick);
     if (LOG) player_b.textContent = 'B';
+    if (!LOG) {
+        let img = document.createElement('img');
+        img.src = 'rcs/persons/humain_annie.png';
+        img.alt = 'Annie';
+        img.classList.add('pawn-avatar');
+        player_b.appendChild(img);
+    }
+    player_b.addEventListener('click', onPlayerClick);
     cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
     getGame()['p2_pos'] = [player_b.line, player_b.column];
     new Player();

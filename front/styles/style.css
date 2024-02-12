@@ -15,7 +15,7 @@
 }
 
 #chatbox {
-    margin : 5px;
+    margin: 5px;
     display: flex;
     width: -webkit-fill-available;
     flex-direction: column;
@@ -76,25 +76,25 @@
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
     border-radius: 10px;
-  }
-   
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
     border: solid 3px transparent;
     background: #3a1f0f;
     border-radius: 10px;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #301505; 
-  }
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #301505;
+}
 
 /* Player CSS */
 
@@ -113,6 +113,7 @@
 
 .board {
     display: grid;
+    grid-template-columns: repeat(calc(var(--number-of-columns)*2 - 1), min-content);
 }
 
 .cell {
@@ -127,8 +128,12 @@
     border-radius: 5px;
 }
 
+.cell.possible {
+    background-color: #3a1f0f;
+}
+
 .finish {
-    background-color: #FF11BB;/*#DB2D2D;*/
+    background-color: #ff11bb; /*#DB2D2D;*/
 }
 
 .v-wall {
@@ -146,6 +151,10 @@
 
 .wall {
     background-color: rgba(0, 0, 0, 0);
+}
+
+.wall-over {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .position_overview {
@@ -206,7 +215,7 @@
     margin-top: 1vh;
     padding: 1vh;
     text-align: left;
-    width: 90%
+    width: 90%;
 }
 
 .profile_adversaire .identity {
@@ -221,6 +230,14 @@
     margin-bottom: 0;
     width: 5vw;
     height: 5vw;
+}
+
+/* board pawn */
+
+.pawn-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
 }
 
 /* alert messages */
@@ -318,3 +335,24 @@
 }
 
 /* fin final message */
+
+/* homepage buttons */
+
+.play_button {
+    background-color: #3a1f0f;
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 2vh;
+    box-sizing: border-box;
+    border-radius: 5px;
+    min-width: 300px;
+    margin: 15px auto 0 auto;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pawn-avatar {
+    pointer-events: none;
+}
