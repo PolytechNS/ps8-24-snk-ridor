@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then((data) => {
                 console.log('Signup successful with data:', data);
-                window.location.href = '/ps8-24-snk-ridor/front/login/';
+                window.location.href = '/login';
             })
             .catch((error) => {
                 console.error('Error during signup:', error);

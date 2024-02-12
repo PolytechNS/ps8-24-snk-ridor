@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     );
                 }
                 console.log('Login successful with data:', body);
-                window.location.href = '/ps8-24-snk-ridor/front/';
+                window.location.href = '/';
             })
             .catch((error) => {
                 console.error('Error during login:', error);
@@ -41,6 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const signupButton = document.getElementById('signup-login');
     signupButton.addEventListener('click', function () {
-        window.location.href = '/ps8-24-snk-ridor/front/signup/';
+        window.location.href = '/signup/';
     });
 });
