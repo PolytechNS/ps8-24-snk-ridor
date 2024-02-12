@@ -27,7 +27,7 @@ export function onCellClick(event) {
                 if (p.equals(position)) {
                     let move_event = new Event("move", myPlayer(), position);
                     send_event(move_event);
-                    
+
                     // change the position of the player
                     myPlayer().setPosition(position);
                     display_board(getBoard()); // update the board
@@ -47,22 +47,18 @@ export function onCellClick(event) {
 export function onWallOver(event) {
     if (myPlayer().remainingWalls() > 0) {
         let position = new Position(event.target.id.split("-")[3], event.target.id.split("-")[2]);
-        if (position.x < getBoard().getSize()[1]/2) {
-            let vertical = event.target.classList.contains("v-wall");
-            let walls = get_walls_for_dom(position, vertical);
-            wall_over_display(walls, vertical);
-        }
+        let vertical = event.target.classList.contains("v-wall");
+        let walls = get_walls_for_dom(position, vertical);
+        wall_over_display(walls, vertical);
     }
 }
 
 export function onWallOut(event) {
     if (myPlayer().remainingWalls() > 0) {
         let position = new Position(event.target.id.split("-")[3], event.target.id.split("-")[2]);
-        if (position.x < getBoard().getSize()[1]/2) {
-            let vertical = event.target.classList.contains("v-wall");
-            let walls = get_walls_for_dom(position, vertical);
-            wall_out_display(walls, vertical);
-        }
+        let vertical = event.target.classList.contains("v-wall");
+        let walls = get_walls_for_dom(position, vertical);
+        wall_out_display(walls, vertical);
     }
 }
 
@@ -203,7 +199,7 @@ function get_walls_for_dom(position, vertical) {
             walls.push(new Position(position.x, position.y));
         }
     } else {
-        if (position.x < getBoard().getSize()[1]/2) {
+        if (position.x < getBoard().getSize()[1] / 2) {
             // if the wall is not on the right border of the board
             walls.push(new Position(position.x, position.y));
             walls.push(new Position(position.x + 1, position.y));
@@ -232,7 +228,7 @@ function get_walls_for_board(position, vertical) {
             walls.push([position.x * 2 + 1, position.y]);
         }
     } else {
-        if (position.x < getBoard().getSize()[1] - 1) {
+        if (position.x < getBoard().getSize()[1]/2 - 1) {
             walls.push([position.x * 2, position.y]);
             walls.push([position.x * 2 + 2, position.y]);
         } else {

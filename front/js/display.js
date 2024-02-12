@@ -14,8 +14,6 @@ import {
  * @side-effect: add event listeners to the cells and walls
  */
 export function display_board(board) {
-    console.log('display board');
-    console.log(board.getWalls());
 
     let BOARD_HEIGHT = board.getHeight();
     let BOARD_WIDTH = board.getWidth();
@@ -77,20 +75,19 @@ export function display_board(board) {
 
         // display placed walls
         let walls = board.getWalls();
+        console.log(walls)
         for (let i = 0; i < walls.length; i++) {
             for (let j = 0; j < walls[i].length; j++) {
                 if (walls[i][j] != 0) {
-                    if (j % 2 == 0) {
-                        if (walls[i][j] == 1) {
-                            document
-                                .getElementById('v-wall-' + j / 2 + '-' + i)
-                                .classList.add('wall-placed');
-                        } else {
-                            document
-                                .getElementById(
-                                    'h-wall-' + (j + 1) / 2 + '-' + i
-                                )
-                                .classList.add('wall-placed');
+                    if (j%2 == 1) {
+                        if (walls[i][j] != 0) {
+                            console.log("v-wall-" + (j+1)/2 + "-" + i);
+                            document.getElementById("v-wall-" + (j+1)/2 + "-" + i).classList.add("wall-placed");
+                        } 
+                    } else {
+                        if (walls[i][j] != 0) {
+                            console.log("h-wall-" + j/2 + "-" + i);
+                            document.getElementById("h-wall-" + j/2 + "-" + i).classList.add("wall-placed");
                         }
                     }
                 }
@@ -150,7 +147,6 @@ function resetOverviews() {
 }
 
 export function display_overviews(positions) {
-    console.log('display ', positions);
     resetOverviews();
     let board_div = document.getElementById('board');
     for (let i = 0; i < positions.length; i++) {
