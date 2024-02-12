@@ -34,7 +34,7 @@ export class Board {
             Array(y_size * 2 - 1).fill(0)
         );
         this.history = [];
-        this.gameState = GameState.PENDING;
+        this.gameState = GameState.RUNNING;
     }
 
     /*
@@ -42,16 +42,14 @@ export class Board {
      */
     getFogOfWar() {
         let fogOfWar = Array.from(
-            { length: this.getSize()[0] },
+            { length: this.getHeight() },
             (_, rowIndex) => {
-                return Array.from(
-                    { length: this.getSize()[1] },
-                    (_, colIndex) =>
-                        rowIndex === Math.ceil(this.getSize()[0] / 2)
-                            ? 0
-                            : rowIndex < this.getSize()[0] / 2
-                              ? 1
-                              : -1
+                return Array.from({ length: this.getWidth() }, (_, colIndex) =>
+                    rowIndex === Math.ceil(this.getHeight() / 2)
+                        ? 0
+                        : rowIndex < this.getHeight() / 2
+                          ? 1
+                          : -1
                 );
             }
         );
@@ -74,7 +72,7 @@ export class Board {
                     // Right cells
                     fogOfWar[rowIndex + 1][colIndex / 2] += modifier * 2;
                     fogOfWar[rowIndex + 1][colIndex / 2 + 1] += modifier * 2;
-                    if (colIndex < this.getSize()[1] - 1) {
+                    if (colIndex < this.getWidth() - 1) {
                         fogOfWar[rowIndex + 2][colIndex / 2] += modifier;
                         fogOfWar[rowIndex + 2][colIndex / 2 + 1] += modifier;
                     }
@@ -93,7 +91,7 @@ export class Board {
                     fogOfWar[rowIndex][(colIndex - 1) / 2 + 1] += modifier * 2;
                     fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 1] +=
                         modifier * 2;
-                    if (rowIndex < this.getSize()[0] - 1) {
+                    if (rowIndex < this.getHeight() - 1) {
                         fogOfWar[rowIndex][(colIndex - 1) / 2 + 2] += modifier;
                         fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 2] +=
                             modifier;
@@ -111,13 +109,13 @@ export class Board {
             if (position.getX() > 0) {
                 fogOfWar[position.getY()][position.getX() - 1] += modifier;
             }
-            if (position.getX() < this.getSize()[1] - 1) {
+            if (position.getX() < this.getWidth() - 1) {
                 fogOfWar[position.getY()][position.getX() + 1] += modifier;
             }
             if (position.getY() > 0) {
                 fogOfWar[position.getY() - 1][position.getX()] += modifier;
             }
-            if (position.getY() < this.getSize()[0] - 1) {
+            if (position.getY() < this.getHeight() - 1) {
                 fogOfWar[position.getY() + 1][position.getX()] += modifier;
             }
         });
@@ -154,9 +152,9 @@ export class Board {
         // Check that the position is valid
         if (
             position.getX() < 0 ||
-            position.getX() >= this.getSize()[0] ||
+            position.getX() >= this.getHeight() ||
             position.getY() < 0 ||
-            position.getY() >= this.getSize()[1]
+            position.getY() >= this.getWidth()
         ) {
             throw new Error('Invalid position');
         }
@@ -167,7 +165,7 @@ export class Board {
         }
 
         // If placing player 2, check that it is on the last row
-        if (player.getId() === 2 && position.getY() !== this.getSize()[0] - 1) {
+        if (player.getId() === 2 && position.getY() !== this.getHeight() - 1) {
             throw new Error('Player 2 must be placed on the last row');
         }
 
@@ -180,12 +178,17 @@ export class Board {
      * @return {Position} the new absolute position of the player
      */
     movePlayer(player, position) {
+        // Check that the player is on the board
+        if (!player.getPosition()) {
+            throw new Error('Player not placed');
+        }
+
         // Check that the position is valid
         if (
             position.getX() < 0 ||
-            position.getX() >= this.getSize()[0] ||
+            position.getX() >= this.getHeight() ||
             position.getY() < 0 ||
-            position.getY() >= this.getSize()[1]
+            position.getY() >= this.getWidth()
         ) {
             throw new Error('Invalid position');
         }
@@ -204,6 +207,11 @@ export class Board {
      * @side-effect change the walls of the board
      */
     placeWall(player, position) {
+        // Check that the player is on the board
+        if (!player.getPosition()) {
+            throw new Error('Player not placed');
+        }
+
         // Check that the position is valid
         if (
             position.getX() < 0 ||
@@ -251,7 +259,7 @@ export class Board {
         // Top walls
         if (
             position.getY() !== 0 && // if on the top row we can't go up
-            (position.getX() === this.getSize()[0] - 1 ||
+            (position.getX() === this.getHeight() - 1 ||
                 this.walls[position.getX()][position.getY() * 2 - 1] === 0) && // OK
             (position.getX() === 0 ||
                 this.walls[position.getX() - 1][position.getY() * 2 - 1] === 0) // OK
@@ -266,7 +274,7 @@ export class Board {
             } else {
                 if (
                     position.getY() !== 1 && // if on the second row we can't go up two cells
-                    (position.getX() === this.getSize()[0] - 1 ||
+                    (position.getX() === this.getHeight() - 1 ||
                         this.walls[position.getX()][position.getY() * 2 - 3] ===
                             0) && // OK
                     (position.getX() === 0 ||
@@ -283,8 +291,8 @@ export class Board {
 
         // Right
         if (
-            position.getX() !== this.getSize()[0] - 1 && // if on the right column we can't go right
-            (position.getY() === this.getSize()[1] - 1 ||
+            position.getX() !== this.getHeight() - 1 && // if on the right column we can't go right
+            (position.getY() === this.getWidth() - 1 ||
                 this.walls[position.getX()][position.getY() * 2] === 0) && // OK
             (position.getY() === 0 ||
                 this.walls[position.getX()][position.getY() * 2 - 2] === 0) // OK
@@ -298,8 +306,8 @@ export class Board {
                 );
             } else {
                 if (
-                    position.getX() !== this.getSize()[0] - 2 && // if on the second to last column we can't go right two cells
-                    (position.getY() === this.getSize()[1] - 2 ||
+                    position.getX() !== this.getHeight() - 2 && // if on the second to last column we can't go right two cells
+                    (position.getY() === this.getWidth() - 2 ||
                         this.walls[position.getX() + 1][position.getY() * 2] ===
                             0) && // OK
                     (position.getY() === 0 ||
@@ -316,8 +324,8 @@ export class Board {
 
         // Bottom
         if (
-            position.getY() !== this.getSize()[1] - 1 && // if on the bottom row we can't go down
-            (position.getX() === this.getSize()[0] - 1 ||
+            position.getY() !== this.getWidth() - 1 && // if on the bottom row we can't go down
+            (position.getX() === this.getHeight() - 1 ||
                 this.walls[position.getX()][position.getY() * 2 + 1] === 0) && // OK
             (position.getX() === 0 ||
                 this.walls[position.getX() - 1][position.getY() * 2 + 1] === 0) // OK
@@ -331,8 +339,8 @@ export class Board {
                 );
             } else {
                 if (
-                    position.getY() !== this.getSize()[1] - 2 && // if on the second to last row we can't go down two cells
-                    (position.getX() === this.getSize()[0] - 1 ||
+                    position.getY() !== this.getWidth() - 2 && // if on the second to last row we can't go down two cells
+                    (position.getX() === this.getHeight() - 1 ||
                         this.walls[position.getX()][position.getY() * 2 + 3] ===
                             0) && // OK
                     (position.getX() === 0 ||
@@ -350,7 +358,7 @@ export class Board {
         // Left
         if (
             position.getX() !== 0 && // if on the left column we can't go left
-            (position.getY() === this.getSize()[1] - 1 ||
+            (position.getY() === this.getWidth() - 1 ||
                 this.walls[position.getX() - 1][position.getY() * 2] === 0) &&
             (position.getY() === 0 ||
                 this.walls[position.getX() - 1][position.getY() * 2 - 2] === 0)
@@ -365,7 +373,7 @@ export class Board {
             } else {
                 if (
                     position.getX() !== 1 && // if on the second column we can't go left two cells
-                    (position.getY() === this.getSize()[1] - 1 ||
+                    (position.getY() === this.getWidth() - 1 ||
                         this.walls[position.getX() - 2][position.getY() * 2] ===
                             0) && // OK
                     (position.getY() === 0 ||
@@ -437,10 +445,7 @@ export class Board {
         // If game is currently running
         if (this.gameState === GameState.RUNNING) {
             // If player 1 is on the last row
-            if (
-                this.players[0].getPosition().getY() ===
-                this.getSize()[0] - 1
-            ) {
+            if (this.players[0].getPosition().getY() === this.getHeight() - 1) {
                 this.gameState = GameState.LAST_MOVE;
             }
 
@@ -464,7 +469,7 @@ export class Board {
      * @return {int} the height of the board
      */
     getHeight() {
-        return this.getSize()[0] + 1;
+        return this.getSize()[0] / 2 + 1;
     }
 
     /*
@@ -472,7 +477,7 @@ export class Board {
      * @return {int} the width of the board
      */
     getWidth() {
-        return this.getSize()[1] / 2 + 1;
+        return this.getSize()[1] + 1;
         // each cell is 2 units wide, one for the horizontal wall and one for the vertical wall
     }
 
