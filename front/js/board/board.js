@@ -1,94 +1,25 @@
-// Conventions:
-// - x is the horizontal axis
-// - y is the vertical axis
-// - (0, 0) is the top left corner
+import { Action } from './action.js';
+import { GameState } from './gameState.js';
 
 let board;
 
 export function getBoard() {
-    if (!board || board === undefined) {
+    if (!board) {
         board = new Board();
     }
     return board;
 }
 
-const Action = {
-    INIT: 0,
-    MOVE: 1,
-    WALL: 2,
-};
+// Conventions:
+// - x is the horizontal axis
+// - y is the vertical axis
+// - (0, 0) is the top left corner
 
-const GameState = {
-    PENDING: 0,
-    WON: 1,
-    DRAW: 2,
-    LAST_MOVE: 3,
-};
-
-export class Position {
-    x;
-    y;
-
-    constructor(x, y) {
-        this.x = parseInt(x);
-        this.y = parseInt(y);
-    }
-
-    getX() {
-        return this.x;
-    }
-
-    getY() {
-        return this.y;
-    }
-
-    equals(position) {
-        return this.x === position.x && this.y === position.y;
-    }
-}
-
-export class Player {
-    id;
-    position;
-    avatar;
-
-    constructor(id = 0, avatar = null) {
-        this.id = id;
-        this.position = null;
-        this.avatar = avatar;
-    }
-
-    getId() {
-        return this.id;
-    }
-
-    getPosition() {
-        return this.position;
-    }
-
-    setPosition(position) {
-        this.position = position;
-    }
-
-    /*
-     * @return {int} the number of remaining walls for the player
-     */
-    remainingWalls() {
-        // dinamically calculate the remaining walls from the board
-        let b = getBoard();
-        let placed_walls = 0;
-        for (let i = 0; i < b.getSize()[0]; i++) {
-            for (let j = 0; j < b.getSize()[1]; j++) {
-                if (b.getWalls()[i][j] === this.id) {
-                    placed_walls++;
-                }
-            }
-        }
-        return 10 - placed_walls / 2;
-        // we divide by 2 because each wall is represented by 2 semi-walls
-    }
-}
-
+/*
+ * Board class
+ * Represents the game board
+ * Contains the players, the walls, the history and the game state
+ */
 export class Board {
     players;
     walls; // list of int (0 or 1 or 2) representing no wall, wall placed by player 1, wall placed by player 2
@@ -399,7 +330,7 @@ export class Board {
      * - to draw if the game is a draw
      * - to last move if the game is won by the second player
      */
-    checkEnd() {
+    updateState() {
         return null;
     }
 
@@ -427,19 +358,7 @@ export class Board {
     fromJson() {}
 }
 
-export class Event {
-    player;
-    action;
-    position;
-
-    constructor(player, action, position) {
-        this.player = player;
-        this.action = action;
-        this.position = position;
-    }
-}
-
-/* utils */
+// TODO move this to a utils file of remove it altogether
 function create2DArray(x, y, fill = 0) {
     let arr = [];
     for (let i = 0; i < x; i++) {
