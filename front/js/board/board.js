@@ -106,6 +106,26 @@ export class Board {
             });
         });
 
+        // Apply filter of each player
+        this.players.forEach((player) => {
+            let modifier = player.getId() === 1 ? 1 : -1;
+            let position = player.getPosition();
+            fogOfWar[position.getY()][position.getX()] = modifier;
+
+            if (position.getX() > 0) {
+                fogOfWar[position.getY()][position.getX() - 1] += modifier;
+            }
+            if (position.getX() < this.getSize()[1] - 1) {
+                fogOfWar[position.getY()][position.getX() + 1] += modifier;
+            }
+            if (position.getY() > 0) {
+                fogOfWar[position.getY() - 1][position.getX()] += modifier;
+            }
+            if (position.getY() < this.getSize()[0] - 1) {
+                fogOfWar[position.getY() + 1][position.getX()] += modifier;
+            }
+        });
+
         return null;
     }
 
