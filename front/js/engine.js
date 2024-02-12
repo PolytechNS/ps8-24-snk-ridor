@@ -447,79 +447,45 @@ function onOverviewClick(event) {
 
 export function onPlayerClick(event) {
     if (LOG) console.log(`onPlayerClick(${event}) called`);
-
-    let cell = event.target.parentElement;
+    console.log(`OnPlayerClick called`);
+    let cell;
+    if (event.target instanceof HTMLImageElement) {
+        cell = event.target.parentElement.parentElement;
+    } else {
+        cell = event.target.parentElement;
+    }
     let id = cell.id.split('-');
-    let player = event.target.player;
-
-    if (!isPlayerTurn(player)) return;
-
-    // Toggle the 'border-active' class on the clicked element
-    event.target.classList.toggle('border-active');
-
-    // Check if the border is now active
-    let isBorderActive = event.target.classList.contains('border-active');
-
+    let player;
+    if (event.target instanceof HTMLImageElement) {
+        player = event.target.parentElement.player;
+    } else {
+        player = event.target.player;
+    }
+    
+    console.log(`cell : ${cell.id}`);
+    console.log(`Player ${player} clicked`);
     // reset the board
     deleteOverview();
-
-    // If border is active, display the possible moves, otherwise hide them
-    if (isBorderActive) {
-        let cells = getCorridorPossiblePosition(
-            parseInt(id[1]),
-            parseInt(id[2])
-        );
-        for (let cell of cells) {
-            let cellElement = document.getElementById(
-                'cell-' + cell[0] + '-' + cell[1]
-            );
-            let overview = document.createElement('div');
-            overview.addEventListener('click', onOverviewClick);
-            overview.className = 'position_overview';
-            overview.line = cell[0];
-            overview.column = cell[1];
-            overview.id = 'overview-' + cell[0] + '-' + cell[1];
-            cellElement.appendChild(overview);
-            if (isPlayerTurn(player)) cellElement.overviewed = true;
-        }
-    } else {
-        // Hide or remove the elements if the border is not active
-        let overviews = document.querySelectorAll('.position_overview');
-        overviews.forEach((overview) => {
-            overview.style.display = 'none'; // or overview.remove() to completely remove the element
-        });
+    // display the possible moves
+    let cells = getCorridorPossiblePosition(parseInt(id[1]), parseInt(id[2]));
+    let overview;
+    for (let cell of cells) {
+        console.log(`cell : ${cell}`);
+        let cellElement = document.getElementById('cell-' + cell[0] + '-' + cell[1]);
+        console.log(`cellElement : ${cellElement}, ${cellElement.id}`);
+        overview  = document.createElement('div');
+        overview.addEventListener('click', onOverviewClick);
+        overview.className = 'position_overview';
+        overview.line = cell[0];
+        overview.column = cell[1];
+        overview.id = 'overview-' + cell[0] + '-' + cell[1];
+        cellElement.appendChild(overview);
+        console.log(cellElement.contains(overview));
+        if (isPlayerTurn(player)) cellElement.overviewed = true;
     }
 
     cell.selected = true; // This line seems to set a property 'selected' on the cell. Ensure this is managed as intended based on border toggle.
 }
-/*
-function addPlayers() {
-    // Display players
-    player_a = document.createElement('div');
-    player_a.className = 'player';
-    player_a.id = 'player-a';
-    player_a.backgroundColor = PLAYER_A_COLOR;
-    player_a.line = PLAYER_A_START_LINE;
-    player_a.column = 2;
-    player_a.player = PLAYER_A;
-    player_a.addEventListener('click', onPlayerClick);
-    if (LOG) player_a.textContent = 'A';
-    let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
-    cell.appendChild(player_a);
-
-    player_b = document.createElement('div');
-    player_b.className = 'player';
-    player_b.id = 'player-b';
-    player_b.backgroundColor = PLAYER_B_COLOR;
-    player_b.line = PLAYER_B_START_LINE;
-    player_b.column = 2;
-    player_b.player = PLAYER_B;
-    player_b.addEventListener('click', onPlayerClick);
-    if (LOG) player_b.textContent = 'B';
-    cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
-    cell.appendChild(player_b);
-}
-*/
 
 export function addPlayers(board_div, board) {
     if (LOG) console.log(`addPlayers(${board_div}, ${board}) called`);
@@ -531,11 +497,16 @@ export function addPlayers(board_div, board) {
     player_a.line = PLAYER_A_START_LINE;
     player_a.column = 2;
     player_a.player = PLAYER_A;
-    player_a.addEventListener('click', onPlayerClick);
     if (LOG) player_a.textContent = 'A';
-    let cell = document.getElementById(
-        'cell-' + player_a.line + '-' + player_a.column
-    );
+    if (!LOG) {
+        let img = document.createElement('img');
+        img.src = 'rcs/persons/titan_eren.png';
+        img.alt = 'Annie';
+        img.classList.add('pawn-avatar');
+        player_a.appendChild(img);
+    }
+    player_a.addEventListener('click', onPlayerClick);
+    let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
     new Player();
     // do not add the player to the board, this is done in the Player class
     getGame()['p1_pos'] = [player_a.line, player_a.column];
@@ -548,11 +519,16 @@ export function addPlayers(board_div, board) {
     player_b.line = PLAYER_B_START_LINE;
     player_b.column = 2;
     player_b.player = PLAYER_B;
-    player_b.addEventListener('click', onPlayerClick);
     if (LOG) player_b.textContent = 'B';
-    cell = document.getElementById(
-        'cell-' + player_b.line + '-' + player_b.column
-    );
+    if (!LOG) {
+        let img = document.createElement('img');
+        img.src = 'rcs/persons/humain_annie.png';
+        img.alt = 'Annie';
+        img.classList.add('pawn-avatar');
+        player_b.appendChild(img);
+    }
+    player_b.addEventListener('click', onPlayerClick);
+    cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
     getGame()['p2_pos'] = [player_b.line, player_b.column];
     new Player();
     // do not add the player to the board, this is done in the Player class
