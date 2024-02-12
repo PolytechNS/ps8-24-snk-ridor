@@ -1,6 +1,6 @@
 export const GameState = {
-    PENDING: 0,
-    WON: 1,
+    RUNNING: 0,
+    FINISHED: 1,
     DRAW: 2,
     LAST_MOVE: 3,
 };

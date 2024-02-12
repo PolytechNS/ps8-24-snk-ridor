@@ -214,6 +214,10 @@ export class Board {
             throw new Error('Invalid position');
         }
 
+        // TODO: check that a wall isn't already there
+
+        // TODO: Check that the wall doesent obstruct path for any player
+
         this.walls[position.getX()][position.getY()] = player.getId();
     }
 
@@ -412,13 +416,47 @@ export class Board {
     }
 
     /*
+     * Uses the history to return the turn count of the game
+     */
+    getTurnCount() {
+        return this.history.length;
+    }
+
+    /*
      * Uses the board to update the game state:
      * - to finished if the game is over
      * - to draw if the game is a draw
      * - to last move if the game is won by the second player
      */
     updateState() {
-        return null;
+        // If game is more than 200 turns old
+        if (this.getTurnCount() > 200) {
+            this.gameState = GameState.DRAW;
+        }
+
+        // If game is currently running
+        if (this.gameState === GameState.RUNNING) {
+            // If player 1 is on the last row
+            if (
+                this.players[0].getPosition().getY() ===
+                this.getSize()[0] - 1
+            ) {
+                this.gameState = GameState.LAST_MOVE;
+            }
+
+            // If player 2 is on the first row
+            if (this.players[1].getPosition().getY() === 0) {
+                this.gameState = GameState.FINISHED;
+            }
+        }
+
+        // If game is on its last move
+        if (this.gameState === GameState.LAST_MOVE) {
+            // If player 2 is on the first row
+            if (this.players[1].getPosition().getY() === 0) {
+                this.gameState = GameState.DRAW;
+            }
+        }
     }
 
     /*
