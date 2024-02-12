@@ -153,6 +153,7 @@ function on_wall_click(event) {
         wall.classList.remove('wall-hover');
         wall.classList.add('placed');
         wall.classList.add(`wall-p${wall_player.id}`);
+        wall.classList.add(`wall-p${wall_player.id}`);
         wall.player = wall_player.id;
     }
     wall_player.placeWall();

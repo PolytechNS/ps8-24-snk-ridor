@@ -132,23 +132,47 @@
 }
 
 .v-wall {
-    background-image: url('../resources/svg/wall-v.svg');
     width: 1vh;
 }
 
 .h-wall {
-    background-image: url('../resources/svg/wall-h.svg');
     height: 1vh;
 }
 
 .s-wall {
-    background-image: url('../resources/svg/wall-s.svg');
     width: 1vh;
     height: 1vh;
 }
 
+/*v-wall-svg {*/
+/*    background-image: url("../resources/svg/v-wall.svg");*/
+/*}*/
+
+/*h-wall-svg {*/
+/*    background-image: url("../resources/svg/h-wall.svg");*/
+/*}*/
+
+/*s-wall-svg {*/
+/*    background-image: url("../resources/svg/s-wall.svg");*/
+/*}*/
+
 .wall {
     background-color: rgba(0, 0, 0, 0);
+}
+
+.placed.h-wall {
+    background-image: url('../resources/svg/h-wall.svg');
+    background-size: cover;
+}
+
+.placed.v-wall {
+    background-image: url('../resources/svg/v-wall.svg');
+    background-size: cover;
+}
+
+.placed.s-wall {
+    background-image: url('../resources/svg/s-wall.svg');
+    background-size: cover;
 }
 
 .position_overview {
