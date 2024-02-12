@@ -215,14 +215,50 @@ export class Board {
         // Check that the position is valid
         if (
             position.getX() < 0 ||
-            position.getX() >= this.getSize()[0] ||
+            position.getX() >= this.getWallHeight() ||
             position.getY() < 0 ||
-            position.getY() >= this.getSize()[1]
+            position.getY() >= this.getWallWidth()
         ) {
             throw new Error('Invalid position');
         }
 
-        // TODO: check that a wall isn't already there
+        // If the wall is vertical
+        if (position.getY() % 2 === 0) {
+            // Check that the wall above is not already there
+            if (
+                position.getX() !== 0 &&
+                this.walls[position.getX()][position.getY() - 2] !== 0
+            ) {
+                throw new Error('Wall already there');
+            }
+
+            // Check that the wall below is not already there
+            if (
+                position.getX() !== this.getWallHeight() - 1 &&
+                this.walls[position.getX()][position.getY() + 2] !== 0
+            ) {
+                throw new Error('Wall already there');
+            }
+        }
+
+        // If the wall is horizontal
+        else {
+            // Check that the wall to the left is not already there
+            if (
+                position.getY() !== 0 &&
+                this.walls[position.getX() - 1][position.getY()] !== 0
+            ) {
+                throw new Error('Wall already there');
+            }
+
+            // Check that the wall to the right is not already there
+            if (
+                position.getY() !== this.getWallWidth() - 1 &&
+                this.walls[position.getX() + 1][position.getY()] !== 0
+            ) {
+                throw new Error('Wall already there');
+            }
+        }
 
         // TODO: Check that the wall doesent obstruct path for any player
 
@@ -247,7 +283,6 @@ export class Board {
     /*
      * @param {Player}
      * @return {Position[]} the possible moves for the player (in absolute position)
-     * TODO: add support for when opponent is missing
      */
     getPossibleMoves(player) {
         // Only god and me know how this works, please don't touch ✋
@@ -265,6 +300,8 @@ export class Board {
                 this.walls[position.getX() - 1][position.getY() * 2 - 1] === 0) // OK
         ) {
             if (
+                opponent &&
+                opponent.getPosition() &&
                 opponent.getPosition().getX() !== position.getX() &&
                 opponent.getPosition().getY() !== position.getY() - 1
             ) {
@@ -298,6 +335,8 @@ export class Board {
                 this.walls[position.getX()][position.getY() * 2 - 2] === 0) // OK
         ) {
             if (
+                opponent &&
+                opponent.getPosition() &&
                 opponent.getPosition().getX() !== position.getX() + 1 &&
                 opponent.getPosition().getY() !== position.getY()
             ) {
@@ -331,6 +370,8 @@ export class Board {
                 this.walls[position.getX() - 1][position.getY() * 2 + 1] === 0) // OK
         ) {
             if (
+                opponent &&
+                opponent.getPosition() &&
                 opponent.getPosition().getX() !== position.getX() &&
                 opponent.getPosition().getY() !== position.getY() + 1
             ) {
@@ -364,6 +405,8 @@ export class Board {
                 this.walls[position.getX() - 1][position.getY() * 2 - 2] === 0)
         ) {
             if (
+                opponent &&
+                opponent.getPosition() &&
                 opponent.getPosition().getX() !== position.getX() - 1 &&
                 opponent.getPosition().getY() !== position.getY()
             ) {
@@ -479,6 +522,14 @@ export class Board {
     getWidth() {
         return this.getSize()[1] + 1;
         // each cell is 2 units wide, one for the horizontal wall and one for the vertical wall
+    }
+
+    getWallHeight() {
+        return this.getSize()[0];
+    }
+
+    getWallWidth() {
+        return this.getSize()[1];
     }
 
     copy() {
