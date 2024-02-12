@@ -18,30 +18,35 @@ export function display_board(board) {
     let BOARD_HEIGHT = board.getHeight();
     let BOARD_WIDTH = board.getWidth();
 
+    console.log("display_board", board);
+    console.log("display_board", BOARD_HEIGHT);
+    console.log("display_board", BOARD_WIDTH);
+
+
     // reset the board
     let board_div = document.getElementById('board');
     board_div.innerHTML = '';
 
     // create the cells and walls
-    for (let i = 0; i < BOARD_HEIGHT - 1; i++) {
+    for (let k = 0; k < BOARD_HEIGHT - 1; k++) {
         // for each row, create a line of cells and vertical walls
         for (let j = 0; j < BOARD_WIDTH; j++) {
             // create a cell and add it to the board
-            let cell = document.createElement('div');
-            cell.className = 'cell';
-            cell.id = 'cell-' + i + '-' + j;
-            cell.addEventListener('click', onCellClick);
+            let cell = document.createElement("div");
+            cell.className = "cell";
+            cell.id = "cell-" + k + "-" + j;
+            cell.addEventListener("click", onCellClick);
             board_div.appendChild(cell);
 
             // create a vertical wall and add it to the board
             // if this is not the last column
             if (j < BOARD_WIDTH - 1) {
-                let wall = document.createElement('div');
-                wall.classList.add('v-wall', 'wall');
-                wall.id = 'v-wall-' + i + '-' + j;
-                wall.addEventListener('mouseover', onWallOver);
-                wall.addEventListener('mouseout', onWallOut);
-                wall.addEventListener('click', onWallClick);
+                let wall = document.createElement("div");
+                wall.classList.add("v-wall", "wall");
+                wall.id = "v-wall-" + k + "-" + j;
+                wall.addEventListener("mouseover", onWallOver);
+                wall.addEventListener("mouseout", onWallOut);
+                wall.addEventListener("click", onWallClick);
                 board_div.appendChild(wall);
             }
         }
@@ -50,25 +55,25 @@ export function display_board(board) {
         for (let j = 0; j < BOARD_WIDTH; j++) {
             // create a horizontal wall and add it to the board
             // if this is not the last row
-            if (i < BOARD_HEIGHT - 1) {
-                let wall = document.createElement('div');
-                wall.classList.add('h-wall', 'wall');
-                wall.id = 'h-wall-' + i + '-' + j;
-                wall.addEventListener('mouseover', onWallOver);
-                wall.addEventListener('mouseout', onWallOut);
-                wall.addEventListener('click', onWallClick);
+            if (k < BOARD_HEIGHT - 1) {
+                let wall = document.createElement("div");
+                wall.classList.add("h-wall", "wall");
+                wall.id = "h-wall-" + k + "-" + j;
+                wall.addEventListener("mouseover", onWallOver);
+                wall.addEventListener("mouseout", onWallOut);
+                wall.addEventListener("click", onWallClick);
                 board_div.appendChild(wall);
             }
 
             // create a "small wall" and add it to the board
             // if this is not the last row and the last column
-            if (i < BOARD_HEIGHT - 1 && j < BOARD_WIDTH - 1) {
-                let wall = document.createElement('div');
-                wall.classList.add('s-wall', 'wall');
-                wall.id = 's-wall-' + i + '-' + j;
-                wall.addEventListener('mouseover', onWallOver);
-                wall.addEventListener('mouseout', onWallOut);
-                wall.addEventListener('click', onWallClick);
+            if (k < BOARD_HEIGHT - 1 && j < BOARD_WIDTH - 1) {
+                let wall = document.createElement("div");
+                wall.classList.add("s-wall", "wall");
+                wall.id = "s-wall-" + k + "-" + j;
+                wall.addEventListener("mouseover", onWallOver);
+                wall.addEventListener("mouseout", onWallOut);
+                wall.addEventListener("click", onWallClick);
                 board_div.appendChild(wall);
             }
         }
