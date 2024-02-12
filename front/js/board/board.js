@@ -1,7 +1,7 @@
 import { Action } from './action.js';
 import { GameState } from './gameState.js';
-import { Position } from './position';
-import { Player } from './player';
+import { Position } from './position.js';
+import { Player } from './player.js';
 
 let board;
 
