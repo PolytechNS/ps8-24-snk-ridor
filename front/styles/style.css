@@ -132,14 +132,17 @@
 }
 
 .v-wall {
+    background-image: url('../resources/svg/wall-v.svg');
     width: 1vh;
 }
 
 .h-wall {
+    background-image: url('../resources/svg/wall-h.svg');
     height: 1vh;
 }
 
 .s-wall {
+    background-image: url('../resources/svg/wall-s.svg');
     width: 1vh;
     height: 1vh;
 }
