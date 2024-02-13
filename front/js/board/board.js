@@ -515,7 +515,7 @@ export class Board {
      * @return {int} the height of the board
      */
     getHeight() {
-        return this.getSize()[0] / 2 + 1;
+        return this.getSize()[0] + 1;
     }
 
     /*
@@ -523,7 +523,7 @@ export class Board {
      * @return {int} the width of the board
      */
     getWidth() {
-        return this.getSize()[1] + 1;
+        return (this.getSize()[1] + 1) / 2;
         // each cell is 2 units wide, one for the horizontal wall and one for the vertical wall
     }
 

@@ -26,7 +26,7 @@ export function display_board(board) {
     board_div.innerHTML = '';
 
     // create the cells and walls
-    for (let k = 0; k < BOARD_HEIGHT - 1; k++) {
+    for (let k = 0; k < BOARD_HEIGHT; k++) {
         // for each row, create a line of cells and vertical walls
         for (let j = 0; j < BOARD_WIDTH; j++) {
             // create a cell and add it to the board
