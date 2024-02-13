@@ -16,21 +16,27 @@ import {
  * @side-effect: add event listeners to the cells and walls
  */
 export function display_board(board) {
-    let BOARD_HEIGHT = board.getHeight();
-    let BOARD_WIDTH = board.getWidth();
+
+    // change variabe in css
+    document.documentElement.style.setProperty(
+        '--number-of-row',
+        board.getHeight()
+    );
+    let BOARD_W = board.getWidth();
+    let BOARD_H = board.getHeight();
 
     console.log('display_board', board);
-    console.log('display_board', BOARD_HEIGHT);
-    console.log('display_board', BOARD_WIDTH);
+    console.log('display_board', BOARD_W);
+    console.log('display_board', BOARD_H);
 
     // reset the board
     let board_div = document.getElementById('board');
     board_div.innerHTML = '';
 
     // create the cells and walls
-    for (let k = 0; k < BOARD_HEIGHT; k++) {
+    for (let k = 0; k < BOARD_W; k++) {
         // for each row, create a line of cells and vertical walls
-        for (let j = 0; j < BOARD_WIDTH; j++) {
+        for (let j = 0; j < BOARD_H; j++) {
             // create a cell and add it to the board
             let cell = document.createElement('div');
             cell.className = 'cell';
@@ -40,7 +46,7 @@ export function display_board(board) {
 
             // create a vertical wall and add it to the board
             // if this is not the last column
-            if (j < BOARD_WIDTH - 1) {
+            if (j < BOARD_H - 1) {
                 let wall = document.createElement('div');
                 wall.classList.add('v-wall', 'wall');
                 wall.id = 'v-wall-' + k + '-' + j;
@@ -52,10 +58,10 @@ export function display_board(board) {
         }
 
         // for each row, create a line of horizontal walls and "small walls"
-        for (let j = 0; j < BOARD_WIDTH; j++) {
+        for (let j = 0; j < BOARD_H; j++) {
             // create a horizontal wall and add it to the board
             // if this is not the last row
-            if (k < BOARD_HEIGHT - 1) {
+            if (k < BOARD_W - 1) {
                 let wall = document.createElement('div');
                 wall.classList.add('h-wall', 'wall');
                 wall.id = 'h-wall-' + k + '-' + j;
@@ -67,7 +73,7 @@ export function display_board(board) {
 
             // create a "small wall" and add it to the board
             // if this is not the last row and the last column
-            if (k < BOARD_HEIGHT - 1 && j < BOARD_WIDTH - 1) {
+            if (k < BOARD_W - 1 && j < BOARD_H - 1) {
                 let wall = document.createElement('div');
                 wall.classList.add('s-wall', 'wall');
                 wall.id = 's-wall-' + k + '-' + j;
@@ -89,29 +95,14 @@ export function display_board(board) {
                         // if walls[2] == true then it's a 'v' wall, else it's a 'h' wall
                         let id = `${(walls[w][2])?"v":"h"}-wall-${walls[w][0]}-${walls[w][1]}`
                         let wall = document.getElementById(id);
-                        wall.classList.add('wall-placed');
+                        wall.classList.add('placed');
                     }
+
                     // set the small wall
                     let wall = document.getElementById(
                         's-wall-' + walls[0][0] + '-' + walls[0][1]
                     );
-                    /*
-                     * if (j % 2 == 1) {
-                     *    if (walls[i][j] != 0) {
-                     *         document
-                     *             .getElementById(
-                     *                 'v-wall-' + (j + 1) / 2 + '-' + i
-                     *             )
-                     *             .classList.add('wall-placed');
-                     *     }
-                     * } else {
-                     *     if (walls[i][j] != 0) {
-                     *         document
-                     *             .getElementById('h-wall-' + j / 2 + '-' + i)
-                     *             .classList.add('wall-placed');
-                     *     }
-                     * }
-                    */
+                    wall.classList.add('placed');
                 }
             }
         }
@@ -130,7 +121,7 @@ export function display_board(board) {
             player.id = 'player-' + i;
 
             let img = document.createElement('img');
-            img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
+            img.src = 'resources/persons/' + board.getPlayer(i).avatar || "humain_annie" + '.png';
             img.alt = 'paw ' + i;
             img.classList.add('pawn-avatar');
             player.appendChild(img);
@@ -152,7 +143,7 @@ export function display_board(board) {
 
         // change the profile picture
         let img = player_profile.getElementsByClassName('avatar')[0];
-        img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
+        img.src = 'resources/persons/' + board.getPlayer(i).avatar || "humain_annie" + '.png';
     }
 }
 
@@ -186,6 +177,9 @@ export function display_overviews(positions) {
 export function wall_over_display(positions, vertical = true) {
     for (let i = 0; i < positions.length; i++) {
         let position = positions[i];
+        console.log(
+            (vertical ? 'v' : 'h') + '-wall-' + position.y + '-' + position.x
+            )
         let wall = document.getElementById(
             (vertical ? 'v' : 'h') + '-wall-' + position.y + '-' + position.x
         );
