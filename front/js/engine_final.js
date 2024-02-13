@@ -274,3 +274,55 @@ function get_walls_for_board(position, vertical) {
     }
     return walls;
 }
+
+/*
+ * convert the coordinates of the board to the coordinates of the display
+ * @param {int} the i coordinate of the board
+ * @param {int} the j coordinate of the board
+ * @return {int[]} the x and y coordinates of the display
+ */
+export function convertCoordinatesFromId(i, j, vertical) {
+    let x;
+    let y;
+    if (vertical) {
+        x = j;
+        y = i * 2;
+    } else {
+        x = j - 1;
+        y = i * 2 + 1;
+    }
+    return [x, y];
+}
+
+/*
+ * convert the coordinates of the display to the coordinates of the board
+ * @param {int} the x coordinate of the display
+ * @param {int} the y coordinate of the display
+ * @return {int[][]} the i and j coordinates of the board
+ * @return {boolean} true if the wall is vertical, false if the wall is horizontal
+ */
+export function convertCoordinatesToId(x, y) {
+    let vertical;
+    let i1;
+    let i2;
+    let j1;
+    let j2;
+    
+    j1 = x;
+    if (y % 2 === 0) {
+        vertical = true;
+        i1 = y / 2;
+        i2 = i1 + 1;
+        j2 = j1;
+    } else {
+        vertical = false;
+        i1 = (y - 1) / 2;
+        i2 = i1;
+        j2 = j1 + 1;
+    }
+    return [
+        [i1, j1],
+        [i2, j2],
+        vertical,
+    ];
+}

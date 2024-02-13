@@ -4,6 +4,8 @@ import {
     onWallClick,
     onWallOut,
     onWallOver,
+    convertCoordinatesToId,
+    convertCoordinatesFromId
 } from './engine_final.js';
 
 /*
@@ -82,23 +84,34 @@ export function display_board(board) {
         for (let i = 0; i < walls.length; i++) {
             for (let j = 0; j < walls[i].length; j++) {
                 if (walls[i][j] != 0) {
-                    if (j % 2 == 1) {
-                        if (walls[i][j] != 0) {
-                            console.log('v-wall-' + (j + 1) / 2 + '-' + i);
-                            document
-                                .getElementById(
-                                    'v-wall-' + (j + 1) / 2 + '-' + i
-                                )
-                                .classList.add('wall-placed');
-                        }
-                    } else {
-                        if (walls[i][j] != 0) {
-                            console.log('h-wall-' + j / 2 + '-' + i);
-                            document
-                                .getElementById('h-wall-' + j / 2 + '-' + i)
-                                .classList.add('wall-placed');
-                        }
+                    let walls = convertCoordinatesToId(i, j);
+                    for (let w = 0; w < 2; w++) {
+                        // if walls[2] == true then it's a 'v' wall, else it's a 'h' wall
+                        let id = `${(walls[w][2])?"v":"h"}-wall-${walls[w][0]}-${walls[w][1]}`
+                        let wall = document.getElementById(id);
+                        wall.classList.add('wall-placed');
                     }
+                    // set the small wall
+                    let wall = document.getElementById(
+                        's-wall-' + walls[0][0] + '-' + walls[0][1]
+                    );
+                    /*
+                     * if (j % 2 == 1) {
+                     *    if (walls[i][j] != 0) {
+                     *         document
+                     *             .getElementById(
+                     *                 'v-wall-' + (j + 1) / 2 + '-' + i
+                     *             )
+                     *             .classList.add('wall-placed');
+                     *     }
+                     * } else {
+                     *     if (walls[i][j] != 0) {
+                     *         document
+                     *             .getElementById('h-wall-' + j / 2 + '-' + i)
+                     *             .classList.add('wall-placed');
+                     *     }
+                     * }
+                    */
                 }
             }
         }

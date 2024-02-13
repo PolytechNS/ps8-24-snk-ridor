@@ -83,18 +83,15 @@ export class Board {
                     fogOfWar[rowIndex + 1][(colIndex - 1) / 2] += modifier * 2;
                     if (rowIndex > 0) {
                         fogOfWar[rowIndex][(colIndex - 1) / 2 - 1] += modifier;
-                        fogOfWar[rowIndex + 1][(colIndex - 1) / 2 - 1] +=
-                            modifier;
+                        fogOfWar[rowIndex + 1][(colIndex - 1) / 2 - 1] += modifier;
                     }
 
                     // Bottom cells
                     fogOfWar[rowIndex][(colIndex - 1) / 2 + 1] += modifier * 2;
-                    fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 1] +=
-                        modifier * 2;
+                    fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 1] += modifier * 2;
                     if (rowIndex < this.getHeight() - 1) {
                         fogOfWar[rowIndex][(colIndex - 1) / 2 + 2] += modifier;
-                        fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 2] +=
-                            modifier;
+                        fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 2] += modifier;
                     }
                 }
             });
