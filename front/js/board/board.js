@@ -83,15 +83,18 @@ export class Board {
                     fogOfWar[rowIndex + 1][(colIndex - 1) / 2] += modifier * 2;
                     if (rowIndex > 0) {
                         fogOfWar[rowIndex][(colIndex - 1) / 2 - 1] += modifier;
-                        fogOfWar[rowIndex + 1][(colIndex - 1) / 2 - 1] += modifier;
+                        fogOfWar[rowIndex + 1][(colIndex - 1) / 2 - 1] +=
+                            modifier;
                     }
 
                     // Bottom cells
                     fogOfWar[rowIndex][(colIndex - 1) / 2 + 1] += modifier * 2;
-                    fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 1] += modifier * 2;
+                    fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 1] +=
+                        modifier * 2;
                     if (rowIndex < this.getHeight() - 1) {
                         fogOfWar[rowIndex][(colIndex - 1) / 2 + 2] += modifier;
-                        fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 2] += modifier;
+                        fogOfWar[rowIndex + 1][(colIndex - 1) / 2 + 2] +=
+                            modifier;
                     }
                 }
             });
@@ -163,11 +166,12 @@ export class Board {
 
         // If placing player 2, check that it is on the last row
         if (player.getId() === 2 && position.getY() !== this.getHeight() - 1) {
-            throw new Error('Player 2 must be placed on the last row');
+            throw new Error(
+                `Player 2 must be placed on the last row (${position.getY()} !== ${this.getHeight() - 1})`
+            );
         }
 
         player.setPosition(position);
-        this.updateState();
     }
 
     /*
@@ -188,16 +192,20 @@ export class Board {
             position.getY() < 0 ||
             position.getY() >= this.getWidth()
         ) {
+            console.log(
+                `Invalid position: ${position.getX()}, ${position.getY()}`
+            );
             throw new Error('Invalid position');
         }
 
         // Check that the position is in the available moves
         if (!this.getPossibleMoves(player).find((p) => p.equals(position))) {
-            throw new Error('Invalid position');
+            throw new Error(
+                `Invalid position: (${position.getX()}, ${position.getY()}) not in ${this.getPossibleMoves(player)}`
+            );
         }
 
         player.setPosition(position);
-        this.updateState();
     }
 
     /*
@@ -209,6 +217,10 @@ export class Board {
         // Check that the player is on the board
         if (!player.getPosition()) {
             throw new Error('Player not placed');
+        }
+
+        if (!this.isWallPositionValid(position.getX(), position.getY())) {
+            throw new Error('Invalid wall position');
         }
 
         // Check that the position is valid
@@ -259,7 +271,7 @@ export class Board {
             }
         }
 
-        // TODO: Check that the wall doesent obstruct path for any player
+        // TODO: Check that the wall doesn't obstruct path for any player
 
         this.walls[position.getX()][position.getY()] = player.getId();
         this.updateState();
@@ -432,6 +444,28 @@ export class Board {
         }
 
         return available_positions;
+    }
+
+    /*
+     * @return {Position[]} the possible walls for the player (in absolute position)
+     */
+    isWallPositionValid(x, y) {
+        if (
+            x < 0 ||
+            x >= this.getWallHeight() ||
+            y < 0 ||
+            y >= this.getWallWidth()
+        ) {
+            return false;
+        }
+
+        if (this.walls[x][y] !== 0) {
+            return false;
+        }
+
+        if (y % 2 === 0) {
+            //TODO
+        }
     }
 
     /*
