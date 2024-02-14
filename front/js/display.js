@@ -17,18 +17,14 @@ import {
  * @side-effect: add event listeners to the cells and walls
  */
 export function display_board(board) {
-
     // change variabe in css
     document.documentElement.style.setProperty(
         '--number-of-row',
         board.getHeight()
     );
+
     let BOARD_W = board.getWidth();
     let BOARD_H = board.getHeight();
-
-    console.log('display_board', board);
-    console.log('display_board', BOARD_W);
-    console.log('display_board', BOARD_H);
 
     // reset the board
     let board_div = document.getElementById('board');

@@ -106,10 +106,6 @@ export function onWallClick(event) {
     }
 }
 
-export function onPlayerClick(event) {
-    console.log('player click');
-}
-
 export function send_event(event) {
     console.log('event sent');
 }
@@ -159,7 +155,8 @@ function isItMyTurn() {
  */
 function myPlayer() {
     // TODO : implement the function
-    return getBoard().getPlayer(0);
+    let board = getBoard();
+    return board.getPlayer(0);
 }
 
 /*
