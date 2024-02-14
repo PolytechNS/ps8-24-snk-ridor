@@ -122,6 +122,8 @@ export function display_board(board) {
             img.classList.add('pawn-avatar');
             player.appendChild(img);
 
+            console.log('cell-' + position.y + '-' + position.x);
+
             let cell = document.getElementById(
                 'cell-' + position.y + '-' + position.x
             );
@@ -219,9 +221,8 @@ export function wall_out_display(positions, vertical = true) {
 export function display_message(message, category = 'info_message', timeout = 3000) {
     /*
      * The possible categories are:
-     * - info_message 
-     * - warning_message
-     * - error_message
+     * - info_message
+     * - forbidden_message
      * - dev_message
      */ 
     let message_div = document.createElement('div');
@@ -278,6 +279,6 @@ export function display_action_message(message, timeout = 0, buttons = [], cance
 
 document.addEventListener('DOMContentLoaded', function () {
     let board = new Board();
-    display_message('Welcome to Quoridor', 'information_message', 1000);
+    display_message('Welcome to Quoridor', 1000);
     onBoardInit(board);
 });

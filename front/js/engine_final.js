@@ -29,7 +29,7 @@ export function onCellClick(event) {
     let board = getBoard();
     // if the player 1 has not placed its pawn yet, we display the possible moves
     if (board.getPlayer(0).getPosition() == null) {
-        try {
+
             placePawn(board.getPlayer(0), position);
             display_board(board);
             display_action_message("")
@@ -41,25 +41,18 @@ export function onCellClick(event) {
             }
             display_overviews(overviews);
             return;
-        } catch (e) {
-            console.log(e);
-            return;
-        }
-
     } else {
+        console.log("position 1 : ", board.getPlayer(1).getPosition());
         // if the player 2 has not placed its pawn yet, we display the possible moves
         if (board.getPlayer(1).getPosition() == null) {
-            try {
+
                 placePawn(board.getPlayer(1), position);
                 display_board(board);
-                display_message('The game can start', timeout = 1000);
+                display_message('The game can start', 1000);
                 display_overviews();
                 return;
-            } catch (e) {
-                console.log(e);
-                return;
-            }
         }
+        console.log("position 2 : ", board.getPlayer(1).getPosition());
     }
 
     if (isPlayerOnPosition(position)) {
@@ -397,15 +390,3 @@ export function convertCoordinatesToId(x, y) {
         vertical,
     ];
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    // unit tests for the ccordinates conversion
-    console.log(convertCoordinatesToId(0, 0), " <=>  [0, 0], [1, 0], true");
-    console.log(convertCoordinatesFromId(0, 0, true), " <=>  [0, 0]");
-    console.log(convertCoordinatesToId(3, 7), " <=>  [3, 3], [3, 4], false");
-    console.log(convertCoordinatesFromId(3, 4, false), " <=>  [3, 7]");
-    console.log(convertCoordinatesToId(1, 4), " <=>  [1, 1], [2, 1], false");
-    console.log(convertCoordinatesFromId(1, 1, false), " <=>  [1, 4]");
-    console.log(convertCoordinatesToId(1, 3), " <=>  [1, 1], [1, 2], true");
-    console.log(convertCoordinatesFromId(1, 1, true), " <=>  [1, 3]");
-});
