@@ -8,7 +8,11 @@ export class Player {
     constructor(id = 0, avatar = null) {
         this.id = id;
         this.position = null;
-        this.avatar = avatar;
+        if (avatar === null) {
+            this.avatar = `humain_annie`;
+        } else {
+            this.avatar = avatar;
+        }
     }
 
     getId() {
