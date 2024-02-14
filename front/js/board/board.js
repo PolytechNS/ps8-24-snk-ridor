@@ -306,19 +306,36 @@ export class Board {
 
         let available_positions = [];
 
-        // Top walls
+        console.log(`========${position}=========`);
+
+        // Top walls    0, 8
         if (
             position.getY() !== 0 && // if on the top row we can't go up
-            (position.getX() === this.getHeight() - 1 ||
+            (position.getX() === this.getWidth() - 1 ||
                 this.walls[position.getX()][position.getY() * 2 - 1] === 0) && // OK
             (position.getX() === 0 ||
                 this.walls[position.getX() - 1][position.getY() * 2 - 1] === 0) // OK
         ) {
+            console.log(
+                '(',
+                !opponent,
+                '||',
+                !opponent.getPosition(),
+                '|| (',
+                opponent.getPosition().getX(),
+                '!==',
+                position.getX(),
+                '&&',
+                opponent.getPosition().getY(),
+                '!==',
+                position.getY() - 1,
+                '))'
+            );
             if (
-                opponent &&
-                opponent.getPosition() &&
-                opponent.getPosition().getX() !== position.getX() &&
-                opponent.getPosition().getY() !== position.getY() - 1
+                !opponent ||
+                !opponent.getPosition() ||
+                (opponent.getPosition().getX() !== position.getX() &&
+                    opponent.getPosition().getY() !== position.getY() - 1)
             ) {
                 available_positions.push(
                     new Position(position.getX(), position.getY() - 1)
@@ -326,7 +343,7 @@ export class Board {
             } else {
                 if (
                     position.getY() !== 1 && // if on the second row we can't go up two cells
-                    (position.getX() === this.getHeight() - 1 ||
+                    (position.getX() === this.getWidth() - 1 ||
                         this.walls[position.getX()][position.getY() * 2 - 3] ===
                             0) &&
                     (position.getX() === 0 ||
@@ -343,26 +360,41 @@ export class Board {
 
         // Right
         if (
-            position.getX() !== this.getHeight() - 1 && // if on the right column we can't go right
-            (position.getY() === this.getWidth() - 1 ||
+            position.getX() !== this.getWidth() - 1 && // if on the right column we can't go right
+            (position.getY() === this.getHeight() - 1 ||
                 this.walls[position.getX()][position.getY() * 2] === 0) && // OK
             (position.getY() === 0 ||
                 this.walls[position.getX()][position.getY() * 2 - 2] === 0) // OK
         ) {
+            console.log(
+                '(',
+                !opponent,
+                '||',
+                !opponent.getPosition(),
+                '|| (',
+                opponent.getPosition().getX(),
+                '!==',
+                position.getX() + 1,
+                '&&',
+                opponent.getPosition().getY(),
+                '!==',
+                position.getY(),
+                '))'
+            );
             if (
-                opponent &&
-                opponent.getPosition() &&
-                opponent.getPosition().getX() !== position.getX() + 1 &&
-                opponent.getPosition().getY() !== position.getY()
+                !opponent ||
+                !opponent.getPosition() ||
+                (opponent.getPosition().getX() !== position.getX() + 1 &&
+                    opponent.getPosition().getY() !== position.getY())
             ) {
-                console.log('right 1');
+                console.log('right');
                 available_positions.push(
                     new Position(position.getX() + 1, position.getY())
                 );
             } else {
                 if (
-                    position.getX() !== this.getHeight() - 2 && // if on the second to last column we can't go right two cells
-                    (position.getY() === this.getWidth() - 2 ||
+                    position.getX() !== this.getWidth() - 2 && // if on the second to last column we can't go right two cells
+                    (position.getY() === this.getHeight() - 2 ||
                         this.walls[position.getX() + 1][position.getY() * 2] ===
                             0) &&
                     (position.getY() === 0 ||
@@ -370,7 +402,6 @@ export class Board {
                             position.getY() * 2 - 2
                         ] === 0)
                 ) {
-                    console.log('right 2');
                     available_positions.push(
                         new Position(position.getX() + 2, position.getY())
                     );
@@ -380,25 +411,41 @@ export class Board {
 
         // Bottom
         if (
-            position.getY() !== this.getWidth() - 1 && // if on the bottom row we can't go down
-            (position.getX() === this.getHeight() - 1 ||
+            position.getY() !== this.getHeight() - 1 && // if on the bottom row we can't go down
+            (position.getX() === this.getWidth() - 1 ||
                 this.walls[position.getX()][position.getY() * 2 + 1] === 0) && // OK
             (position.getX() === 0 ||
                 this.walls[position.getX() - 1][position.getY() * 2 + 1] === 0) // OK
         ) {
+            console.log(
+                '(',
+                !opponent,
+                '||',
+                !opponent.getPosition(),
+                '|| (',
+                opponent.getPosition().getX(),
+                '!==',
+                position.getX(),
+                '&&',
+                opponent.getPosition().getY(),
+                '!==',
+                position.getY() + 1,
+                '))'
+            );
             if (
-                opponent &&
-                opponent.getPosition() &&
-                opponent.getPosition().getX() !== position.getX() &&
-                opponent.getPosition().getY() !== position.getY() + 1
+                !opponent ||
+                !opponent.getPosition() ||
+                (opponent.getPosition().getX() !== position.getX() &&
+                    opponent.getPosition().getY() !== position.getY() + 1)
             ) {
+                console.log('bottom');
                 available_positions.push(
                     new Position(position.getX(), position.getY() + 1)
                 );
             } else {
                 if (
-                    position.getY() !== this.getWidth() - 2 && // if on the second to last row we can't go down two cells
-                    (position.getX() === this.getHeight() - 1 ||
+                    position.getY() !== this.getHeight() - 2 && // if on the second to last row we can't go down two cells
+                    (position.getX() === this.getWidth() - 1 ||
                         this.walls[position.getX()][position.getY() * 2 + 3] ===
                             0) && // OK
                     (position.getX() === 0 ||
@@ -416,24 +463,31 @@ export class Board {
         // Left
         if (
             position.getX() !== 0 && // if on the left column we can't go left
-            (position.getY() === this.getWidth() - 1 ||
+            (position.getY() === this.getHeight() - 1 ||
                 this.walls[position.getX() - 1][position.getY() * 2] === 0) &&
             (position.getY() === 0 ||
                 this.walls[position.getX() - 1][position.getY() * 2 - 2] === 0)
         ) {
+            console.log('left 1');
+            console.log('opponent', opponent);
+            console.log('opponent position', opponent.getPosition());
+            console.log('opponent position x', opponent.getPosition().getX());
+            console.log('opponent position y', opponent.getPosition().getY());
             if (
-                opponent &&
-                opponent.getPosition() &&
-                opponent.getPosition().getX() !== position.getX() - 1 &&
-                opponent.getPosition().getY() !== position.getY()
+                !opponent ||
+                !opponent.getPosition() ||
+                (opponent.getPosition().getX() !== position.getX() - 1 &&
+                    opponent.getPosition().getY() !== position.getY())
             ) {
+                console.log('left 2');
+                console.log('cacaaaaaaaaaaaaaaaaaaaaaaaaaa');
                 available_positions.push(
                     new Position(position.getX() - 1, position.getY())
                 );
             } else {
                 if (
                     position.getX() !== 1 && // if on the second column we can't go left two cells
-                    (position.getY() === this.getWidth() - 1 ||
+                    (position.getY() === this.getHeight() - 1 ||
                         this.walls[position.getX() - 2][position.getY() * 2] ===
                             0) && // OK
                     (position.getY() === 0 ||
