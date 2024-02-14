@@ -5,6 +5,8 @@ import {
     display_overviews,
     wall_over_display,
     wall_out_display,
+    display_message,
+    display_action_message,
 } from './display.js';
 
 /*
@@ -15,13 +17,26 @@ import {
  * @side-effect: trigger the right action
  */
 export function onCellClick(event) {
-    let cell = event.target;
-    // if the event target is not a cell, it must be a child of a cell
-    // so we get the parent cell (player or move display on the cell)
-    if (!cell.classList.contains('cell')) {
-        cell = cell.parentElement;
+    let target;
+    if (!event.target.classList.contains('wall')) {
+        target = event.target.parentElement;
+    } else {
+        target = event.target;
     }
-    let position = new Position(cell.id.split('-')[1], cell.id.split('-')[2]);
+
+    let position = new Position(target.id.split('-')[1], target.id.split('-')[2]);
+    console.log(position);
+    // if the player has not placed its pawn yet, we display the possible moves
+    if (myPlayer().getPosition() == null) {
+        try {
+            placePawn(position);
+            // remove the message
+            display_action_message('');
+        } catch (e) {
+            display_message("The pawn have to be placed on the first line of the board");
+        }
+    }
+    
     if (isPlayerOnPosition(position)) {
         display_overviews(getCorridorPossiblePositions(position));
     } else {
@@ -82,9 +97,10 @@ export function onWallClick(event) {
         );
         let vertical = event.target.classList.contains('v-wall');
         let walls = get_walls_for_board(position, vertical);
-        console.log(walls);
-        getBoard().placeWalls(myPlayer(), walls);
-        let wall_event = new Event('wall', myPlayer(), walls);
+        let coordinate = convertCoordinatesFromId(position.x, position.y, vertical);
+        position = new Position(coordinate[0], coordinate[1]);
+        getBoard().placeWall(myPlayer(), coordinate);
+        let wall_event = new Event('wall', myPlayer(), coordinate);
         send_event(wall_event);
         display_board(getBoard());
     }
@@ -96,6 +112,36 @@ export function onPlayerClick(event) {
 
 export function send_event(event) {
     console.log('event sent');
+}
+
+export function onBoardInit(event) {
+    display_board(getBoard());
+
+    // display the overviews on the first line to let the player place its pawn
+    let overviews = [];
+    for (let i = 0; i < getBoard().getWidth(); i++) {
+        let j = getBoard().getHeight() - 1;
+        
+        overviews.push(new Position(i, j));
+    }
+    display_overviews(overviews);
+    display_action_message('Place your pawn on the first line');
+}
+
+
+/*
+ * Let the player place it's pawn on the board for the first turn
+ * @param {Position} the position of the pawn
+ * @return {void}
+ * @side-effect: change the position of the player
+ */
+export function placePawn(position) {
+    if (myPlayer().getPosition() != null) {
+        // raise an error
+        throw new Error('The player has already placed its pawn');
+    }
+    myPlayer().setPosition(position);
+    display_board(getBoard());
 }
 
 /*

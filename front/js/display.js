@@ -5,7 +5,8 @@ import {
     onWallOut,
     onWallOver,
     convertCoordinatesToId,
-    convertCoordinatesFromId
+    convertCoordinatesFromId,
+    onBoardInit
 } from './engine_final.js';
 
 /*
@@ -86,14 +87,13 @@ export function display_board(board) {
 
         // display placed walls
         let walls = board.getWalls();
-        console.log(walls);
         for (let i = 0; i < walls.length; i++) {
             for (let j = 0; j < walls[i].length; j++) {
                 if (walls[i][j] != 0) {
                     let walls = convertCoordinatesToId(i, j);
                     for (let w = 0; w < 2; w++) {
                         // if walls[2] == true then it's a 'v' wall, else it's a 'h' wall
-                        let id = `${(walls[w][2])?"v":"h"}-wall-${walls[w][0]}-${walls[w][1]}`
+                        let id = `${(walls[w][2]) ? "v" : "h"}-wall-${walls[w][0]}-${walls[w][1]}`
                         let wall = document.getElementById(id);
                         wall.classList.add('placed');
                     }
@@ -179,7 +179,7 @@ export function wall_over_display(positions, vertical = true) {
         let position = positions[i];
         console.log(
             (vertical ? 'v' : 'h') + '-wall-' + position.y + '-' + position.x
-            )
+        )
         let wall = document.getElementById(
             (vertical ? 'v' : 'h') + '-wall-' + position.y + '-' + position.x
         );
@@ -205,7 +205,76 @@ export function wall_out_display(positions, vertical = true) {
         .classList.remove('wall-over');
 }
 
+/*
+ * Display a message for 3 seconds
+ * @param {string} message - the message to display
+ * @param {string} (Optionnal) category - the category of the message
+ * @param {int} (Optionnal) timeout - the time before the message is removed (in ms)
+ * @return {void} or {HTMLElement}
+ * @side-effect: display a message
+ */
+export function display_message(message, category = 'info_message', timeout = 3000) {
+    /*
+     * The possible categories are:
+     * - info_message 
+     * - warning_message
+     * - error_message
+     * - dev_message
+     */ 
+    let message_div = document.createElement('div');
+    message_div.classList.add('alert', category);
+    message_div.textContent = message;
+    message_div.style.display = 'block';
+    document.getElementsByTagName("body")[0].appendChild(message_div)
+    if (timeout > 0) {
+        setTimeout(function () {
+            message_div.style.display = 'none';
+            message_div.remove();
+        }, timeout);
+    } else {
+        return message_div;
+    }
+}
+
+export function display_action_message(message, timeout = 0, buttons = [], cancelable = true, blocking = true) {
+    // remove the previous message
+    let previous_message = document.getElementsByClassName('action_message');
+    for (let i = 0; i < previous_message.length; i++) {
+        previous_message[i].remove();
+    }
+
+    // if the message is empty, do not display it
+    if (message == '') {
+        return;
+    }
+
+    let message_div = document.createElement('div');
+    message_div.classList.add('action_message');
+    if (blocking) {
+        message_div.classList.add('blocking');
+    }
+    if (cancelable) {
+        message_div.classList.add('cancelable');
+    }
+    for (let i = 0; i < buttons.length; i++) {
+        let button = document.createElement('button');
+        button.textContent = buttons[i].text;
+        button.addEventListener('click', buttons[i].callback);
+        message_div.appendChild(button);
+    }
+    message_div.textContent = message;
+    message_div.style.display = 'block';
+    document.getElementsByTagName("body")[0].appendChild(message_div)
+    if (timeout > 0) {
+        setTimeout(function () {
+            message_div.style.display = 'none';
+            message_div.remove();
+        }, timeout);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     let board = new Board();
-    display_board(board);
+    display_message('Welcome to Quoridor', 'information_message', 1000);
+    onBoardInit(board);
 });
