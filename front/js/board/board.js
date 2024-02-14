@@ -173,7 +173,7 @@ export class Board {
         }
 
         player.setPosition(position);
-        history.push(new BoardEvent(Action.INIT, player, position));
+        this.history.push(new BoardEvent(Action.INIT, player, position));
     }
 
     /*
@@ -207,7 +207,7 @@ export class Board {
         }
 
         player.setPosition(position);
-        history.push(new BoardEvent(Action.MOVE, player, position));
+        this.history.push(new BoardEvent(Action.MOVE, player, position));
     }
 
     /*
@@ -276,7 +276,7 @@ export class Board {
         // TODO: Check that the wall doesn't obstruct path for any player
 
         this.walls[position.getX()][position.getY()] = player.getId();
-        history.push(new BoardEvent(Action.WALL, player, position));
+        this.history.push(new BoardEvent(Action.WALL, player, position));
         this.updateState();
     }
 
