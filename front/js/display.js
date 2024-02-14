@@ -141,6 +141,10 @@ export function display_board(board) {
         let img = player_profile.getElementsByClassName('avatar')[0];
         img.src = 'resources/persons/' + board.getPlayer(i).avatar || "humain_annie" + '.png';
     }
+
+    // change the turn number
+    let turn_number = document.getElementById('turn');
+    turn_number.textContent = board.getTurnCount();
 }
 
 function resetOverviews() {

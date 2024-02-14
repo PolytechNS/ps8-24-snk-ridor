@@ -502,7 +502,7 @@ export class Board {
      * @return {Player} the current player
      */
     getCurrentPLayer() {
-        return this.players[this.history.length % 2];
+        return this.players[this.history.length % 2] + 1;
     }
 
     /*
