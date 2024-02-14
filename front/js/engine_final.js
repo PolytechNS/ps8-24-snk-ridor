@@ -24,19 +24,44 @@ export function onCellClick(event) {
         target = event.target;
     }
 
-    let position = new Position(target.id.split('-')[1], target.id.split('-')[2]);
-    console.log(position);
-    // if the player has not placed its pawn yet, we display the possible moves
-    if (myPlayer().getPosition() == null) {
+    let position = new Position(target.id.split('-')[2], target.id.split('-')[1]);
+
+    let board = getBoard();
+    // if the player 1 has not placed its pawn yet, we display the possible moves
+    if (board.getPlayer(0).getPosition() == null) {
         try {
-            placePawn(position);
-            // remove the message
-            display_action_message('');
+            placePawn(board.getPlayer(0), position);
+            display_board(board);
+            display_action_message("")
+            display_message('Place the player 2 pawn on the first line', 1000);
+            let overviews = [];
+            for (let i = 0; i < board.getWidth(); i++) {
+                let j = 0;
+                overviews.push(new Position(i, j));
+            }
+            display_overviews(overviews);
+            return;
         } catch (e) {
-            display_message("The pawn have to be placed on the first line of the board");
+            console.log(e);
+            return;
+        }
+
+    } else {
+        // if the player 2 has not placed its pawn yet, we display the possible moves
+        if (board.getPlayer(1).getPosition() == null) {
+            try {
+                placePawn(board.getPlayer(1), position);
+                display_board(board);
+                display_message('The game can start', timeout = 1000);
+                display_overviews();
+                return;
+            } catch (e) {
+                console.log(e);
+                return;
+            }
         }
     }
-    
+
     if (isPlayerOnPosition(position)) {
         display_overviews(getCorridorPossiblePositions(position));
     } else {
@@ -107,21 +132,25 @@ export function onWallClick(event) {
 }
 
 export function send_event(event) {
-    console.log('event sent');
+    console.log("DoEvent : ", event);
+    let board = getBoard();
+    let retour = board.doEvent(event);
+    console.log(retour);
 }
 
-export function onBoardInit(event) {
+export function onBoardInit() {
     display_board(getBoard());
 
     // display the overviews on the first line to let the player place its pawn
     let overviews = [];
     for (let i = 0; i < getBoard().getWidth(); i++) {
         let j = getBoard().getHeight() - 1;
-        
+
         overviews.push(new Position(i, j));
     }
     display_overviews(overviews);
-    display_action_message('Place your pawn on the first line');
+    display_action_message('Place the player 1 pawn on the first line');
+    // TODO : change for multiplayer
 }
 
 
@@ -131,13 +160,12 @@ export function onBoardInit(event) {
  * @return {void}
  * @side-effect: change the position of the player
  */
-export function placePawn(position) {
-    if (myPlayer().getPosition() != null) {
+export function placePawn(player, position) {
+    if (player.getPosition() != null) {
         // raise an error
         throw new Error('The player has already placed its pawn');
     }
-    myPlayer().setPosition(position);
-    display_board(getBoard());
+    player.setPosition(position);
 }
 
 /*
@@ -169,7 +197,7 @@ export function getCorridorPossiblePositions(position) {
     let board = getBoard();
     if (position.x > 0) {
         // if the player is not on the left border
-        if (board.getWalls()[position.y][position.x - 1] == 0) {
+        if (board.getWalls()[position.x - 1][position.y] == 0) {
             // if there is no wall on the left
             // if there is no player on the left
             if (!isPlayerOnPosition(new Position(position.x - 1, position.y))) {
@@ -178,7 +206,7 @@ export function getCorridorPossiblePositions(position) {
                 // if there is a player on the left check if there is no wall behind
                 if (
                     position.x > 1 &&
-                    board.getWalls()[position.y][position.x - 2] == 0
+                    board.getWalls()[position.x - 2][position.y] == 0
                 ) {
                     // if there is another player next to the first one, he can jump over
                     positions.push(new Position(position.x - 2, position.y));
@@ -186,28 +214,28 @@ export function getCorridorPossiblePositions(position) {
             }
         }
     }
-    if (position.y < board.getSize()[0] - 1) {
+    if (position.x < board.getSize()[0] - 1) {
         // if the player is not on the right border
-        if (board.getWalls()[position.y + 1][position.x] == 0) {
+        if (board.getWalls()[position.x + 1][position.y] == 0) {
             // if there is no wall on the right
             // if there is no player on the right
-            if (!isPlayerOnPosition(new Position(position.x, position.y + 1))) {
-                positions.push(new Position(position.x, position.y + 1));
+            if (!isPlayerOnPosition(new Position(position.x + 1, position.y))) {
+                positions.push(new Position(position.x + 1, position.y));
             } else {
                 // if there is a player on the right check if there is no wall behind
                 if (
-                    position.x < board.getSize()[0] - 2 &&
-                    board.getWalls()[position.y + 2][position.x] == 0
+                    position.x < board.getSize()[1] - 2 &&
+                    board.getWalls()[position.x + 2][position.y] == 0
                 ) {
                     // if there is another player next to the first one, he can jump over
-                    positions.push(new Position(position.x, position.y + 2));
+                    positions.push(new Position(position.x + 2, position.y));
                 }
             }
         }
     }
     if (position.y > 0) {
         // if the player is not on the top border
-        if (board.getWalls()[position.y - 1][position.x] == 0) {
+        if (board.getWalls()[position.x][position.y - 1] == 0) {
             // if there is no wall on the top
             // if there is no player on the top
             if (!isPlayerOnPosition(new Position(position.x, position.y - 1))) {
@@ -216,7 +244,7 @@ export function getCorridorPossiblePositions(position) {
                 // if there is a player on the top check if there is no wall behind
                 if (
                     position.y > 1 &&
-                    board.getWalls()[position.y - 2][position.x] == 0
+                    board.getWalls()[position.x][position.y - 2] == 0
                 ) {
                     // if there is another player next to the first one, he can jump over
                     positions.push(new Position(position.x, position.y - 2));
@@ -224,21 +252,21 @@ export function getCorridorPossiblePositions(position) {
             }
         }
     }
-    if (position.x < board.getSize()[1] - 1) {
+    if (position.y < board.getSize()[1] - 1) {
         // if the player is not on the bottom border
-        if (board.getWalls()[position.y][position.x + 1] == 0) {
+        if (board.getWalls()[position.x][position.y + 1] == 0) {
             // if there is no wall on the bottom
             // if there is no player on the bottom
-            if (!isPlayerOnPosition(new Position(position.x + 1, position.y))) {
-                positions.push(new Position(position.x + 1, position.y));
+            if (!isPlayerOnPosition(new Position(position.x, position.y + 1))) {
+                positions.push(new Position(position.x, position.y + 1));
             } else {
                 // if there is a player on the bottom check if there is no wall behind
                 if (
-                    position.y < board.getSize()[1] - 2 &&
-                    board.getWalls()[position.y][position.x + 2] == 0
+                    position.y < board.getSize()[0] - 2 &&
+                    board.getWalls()[position.x][position.y + 2] == 0
                 ) {
                     // if there is another player next to the first one, he can jump over
-                    positions.push(new Position(position.x + 2, position.y));
+                    positions.push(new Position(position.x, position.y + 2));
                 }
             }
         }
@@ -350,7 +378,7 @@ export function convertCoordinatesToId(x, y) {
     let i2;
     let j1;
     let j2;
-    
+
     j1 = x;
     if (y % 2 === 0) {
         vertical = true;
@@ -369,3 +397,15 @@ export function convertCoordinatesToId(x, y) {
         vertical,
     ];
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    // unit tests for the ccordinates conversion
+    console.log(convertCoordinatesToId(0, 0), " <=>  [0, 0], [1, 0], true");
+    console.log(convertCoordinatesFromId(0, 0, true), " <=>  [0, 0]");
+    console.log(convertCoordinatesToId(3, 7), " <=>  [3, 3], [3, 4], false");
+    console.log(convertCoordinatesFromId(3, 4, false), " <=>  [3, 7]");
+    console.log(convertCoordinatesToId(1, 4), " <=>  [1, 1], [2, 1], false");
+    console.log(convertCoordinatesFromId(1, 1, false), " <=>  [1, 4]");
+    console.log(convertCoordinatesToId(1, 3), " <=>  [1, 1], [1, 2], true");
+    console.log(convertCoordinatesFromId(1, 1, true), " <=>  [1, 3]");
+});

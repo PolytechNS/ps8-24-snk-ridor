@@ -117,13 +117,17 @@ export function display_board(board) {
             player.id = 'player-' + i;
 
             let img = document.createElement('img');
-            img.src = 'resources/persons/' + board.getPlayer(i).avatar || "humain_annie" + '.png';
+            if (board.getPlayer(i).avatar == null) {
+                img.src = 'resources/persons/humain_annie.png';
+            } else {
+                img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
+            }
             img.alt = 'paw ' + i;
             img.classList.add('pawn-avatar');
             player.appendChild(img);
 
             let cell = document.getElementById(
-                'cell-' + position.x + '-' + position.y
+                'cell-' + position.y + '-' + position.x
             );
             cell.appendChild(player);
         }
@@ -139,7 +143,11 @@ export function display_board(board) {
 
         // change the profile picture
         let img = player_profile.getElementsByClassName('avatar')[0];
-        img.src = 'resources/persons/' + board.getPlayer(i).avatar || "humain_annie" + '.png';
+        if (board.getPlayer(i).avatar == null) {
+            img.src = 'resources/persons/humain_annie.png';
+        } else {
+            img.src = 'resources/persons/' + board.getPlayer(i).avatar || "humain_annie" + '.png';
+        }
     }
 
     // change the turn number
@@ -161,6 +169,9 @@ function resetOverviews() {
 
 export function display_overviews(positions) {
     resetOverviews();
+    if (positions == null || positions == undefined || positions.length == 0) {
+        return;
+    }
     let board_div = document.getElementById('board');
     for (let i = 0; i < positions.length; i++) {
         let position = positions[i];
