@@ -25,13 +25,31 @@ describe('board', function () {
         });
     });
 
-    describe('should be able to tell me if a player movment is valid', function () {
-        var board = new Board();
+    describe('should be able to tell me if a player movement is valid', function () {
         it('should be able to tell me if a player can move down and right', function () {
+            const board = new Board();
             board.placePlayer(board.getPlayer(0), new Position(0, 0));
             chai.expect(
                 board.getPossibleMoves(board.getPlayer(0))
             ).to.deep.equal([new Position(0, 1), new Position(1, 0)]);
+        });
+
+        it('should be able to tell me if a player can move down and left', function () {
+            const board = new Board();
+            board.placePlayer(board.getPlayer(0), new Position(8, 0));
+            chai.expect(
+                board.getPossibleMoves(board.getPlayer(0))
+            ).to.deep.equal([new Position(7, 0), new Position(8, 1)]);
+        });
+
+        it('should be able to tell me if a player can move up and right', function () {
+            const board = new Board();
+            board.placePlayer(board.getPlayer(0), new Position(0, 0));
+            board.placePlayer(board.getPlayer(1), new Position(0, 8));
+
+            chai.expect(
+                board.getPossibleMoves(board.getPlayer(1))
+            ).to.deep.equal([new Position(0, 7), new Position(1, 8)]);
         });
     });
 

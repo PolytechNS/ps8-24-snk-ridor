@@ -2,6 +2,7 @@ import { Action } from './action.js';
 import { GameState } from './gameState.js';
 import { Position } from './position.js';
 import { Player } from './player.js';
+import { BoardEvent } from './boardEvent.js';
 
 let board;
 
@@ -172,6 +173,7 @@ export class Board {
         }
 
         player.setPosition(position);
+        history.push(new BoardEvent(Action.INIT, player, position));
     }
 
     /*
@@ -192,10 +194,9 @@ export class Board {
             position.getY() < 0 ||
             position.getY() >= this.getWidth()
         ) {
-            console.log(
-                `Invalid position: ${position.getX()}, ${position.getY()}`
+            throw new Error(
+                `Invalid position (${position.getX()}, ${position.getY()})`
             );
-            throw new Error('Invalid position');
         }
 
         // Check that the position is in the available moves
@@ -206,6 +207,7 @@ export class Board {
         }
 
         player.setPosition(position);
+        history.push(new BoardEvent(Action.MOVE, player, position));
     }
 
     /*
@@ -274,6 +276,7 @@ export class Board {
         // TODO: Check that the wall doesn't obstruct path for any player
 
         this.walls[position.getX()][position.getY()] = player.getId();
+        history.push(new BoardEvent(Action.WALL, player, position));
         this.updateState();
     }
 
@@ -325,11 +328,11 @@ export class Board {
                     position.getY() !== 1 && // if on the second row we can't go up two cells
                     (position.getX() === this.getHeight() - 1 ||
                         this.walls[position.getX()][position.getY() * 2 - 3] ===
-                            0) && // OK
+                            0) &&
                     (position.getX() === 0 ||
                         this.walls[position.getX() - 1][
                             position.getY() * 2 - 3
-                        ] === 0) // OK
+                        ] === 0)
                 ) {
                     available_positions.push(
                         new Position(position.getX(), position.getY() - 2)
@@ -352,6 +355,7 @@ export class Board {
                 opponent.getPosition().getX() !== position.getX() + 1 &&
                 opponent.getPosition().getY() !== position.getY()
             ) {
+                console.log('right 1');
                 available_positions.push(
                     new Position(position.getX() + 1, position.getY())
                 );
@@ -360,12 +364,13 @@ export class Board {
                     position.getX() !== this.getHeight() - 2 && // if on the second to last column we can't go right two cells
                     (position.getY() === this.getWidth() - 2 ||
                         this.walls[position.getX() + 1][position.getY() * 2] ===
-                            0) && // OK
+                            0) &&
                     (position.getY() === 0 ||
                         this.walls[position.getX() + 1][
                             position.getY() * 2 - 2
-                        ] === 0) // OK
+                        ] === 0)
                 ) {
+                    console.log('right 2');
                     available_positions.push(
                         new Position(position.getX() + 2, position.getY())
                     );
