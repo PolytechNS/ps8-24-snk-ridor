@@ -3,6 +3,7 @@ export class Position {
     y;
 
     constructor(x, y) {
+        console.log('Position constructor :' + x + ' ' + y);
         this.x = parseInt(x);
         this.y = parseInt(y);
     }

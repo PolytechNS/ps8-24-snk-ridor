@@ -216,6 +216,7 @@ export class Board {
      * @side-effect change the walls of the board
      */
     placeWall(player, position) {
+        console.log('placeWall', player, position, position instanceof Position);
         // Check that the player is on the board
         if (!player.getPosition()) {
             throw new Error('Player not placed');
@@ -509,6 +510,7 @@ export class Board {
      * @return {Position[]} the possible walls for the player (in absolute position)
      */
     isWallPositionValid(x, y) {
+        console.log('isWallPositionValid', x, y);
         if (
             x < 0 ||
             x >= this.getWallHeight() ||
@@ -523,8 +525,21 @@ export class Board {
         }
 
         if (y % 2 === 0) {
-            //TODO
+            if (
+                (x === 0 || this.walls[x - 1][y] !== 0) &&
+                (x === this.getWallHeight() - 1 || this.walls[x + 1][y] !== 0)
+            ) {
+                return false;
+            }
+        } else {
+            if (
+                (y === 0 || this.walls[x][y - 1] !== 0) &&
+                (y === this.getWallWidth() - 1 || this.walls[x][y + 1] !== 0)
+            ) {
+                return false;
+            }
         }
+        return true;
     }
 
     /*

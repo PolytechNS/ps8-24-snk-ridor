@@ -166,12 +166,10 @@ export function display_overviews(positions) {
     if (positions == null || positions == undefined || positions.length == 0) {
         return;
     }
-    let board_div = document.getElementById('board');
+    
     for (let i = 0; i < positions.length; i++) {
         let position = positions[i];
-        let cell = document.getElementById(
-            'cell-' + position.y + '-' + position.x
-        );
+        let cell = document.getElementById('cell-' + position.y + '-' + position.x);
 
         let overview = document.createElement('div');
         overview.classList.add('position_overview');
@@ -182,12 +180,7 @@ export function display_overviews(positions) {
 export function wall_over_display(positions, vertical = true) {
     for (let i = 0; i < positions.length; i++) {
         let position = positions[i];
-        console.log(
-            (vertical ? 'v' : 'h') + '-wall-' + position.y + '-' + position.x
-        )
-        let wall = document.getElementById(
-            (vertical ? 'v' : 'h') + '-wall-' + position.y + '-' + position.x
-        );
+        let wall = document.getElementById((vertical ? 'v' : 'h') + '-wall-' + position.y + '-' + position.x);
         wall.classList.add('wall-over');
     }
     // add the small wall to made the junction
@@ -218,13 +211,13 @@ export function wall_out_display(positions, vertical = true) {
  * @return {void} or {HTMLElement}
  * @side-effect: display a message
  */
-export function display_message(message, category = 'info_message', timeout = 3000) {
+export function display_message(message, { category = 'info_message', timeout = 3000 } = {}) {
     /*
      * The possible categories are:
      * - info_message
      * - forbidden_message
      * - dev_message
-     */ 
+     */
     let message_div = document.createElement('div');
     message_div.classList.add('alert', category);
     message_div.textContent = message;
@@ -279,6 +272,6 @@ export function display_action_message(message, timeout = 0, buttons = [], cance
 
 document.addEventListener('DOMContentLoaded', function () {
     let board = new Board();
-    display_message('Welcome to Quoridor', 1000);
+    display_message('Welcome to Quoridor', { timeout: 1000 });
     onBoardInit(board);
 });

@@ -30,27 +30,26 @@ export function onCellClick(event) {
     // if the player 1 has not placed its pawn yet, we display the possible moves
     if (board.getPlayer(0).getPosition() == null) {
 
-            placePawn(board.getPlayer(0), position);
-            display_board(board);
-            display_action_message("")
-            display_message('Place the player 2 pawn on the first line', 1000);
-            let overviews = [];
-            for (let i = 0; i < board.getWidth(); i++) {
-                let j = 0;
-                overviews.push(new Position(i, j));
-            }
-            display_overviews(overviews);
-            return;
+        placePawn(board.getPlayer(0), position);
+        display_board(board);
+        display_action_message("")
+        display_message('Place the player 2 pawn on the first line', { timeout: 1000 });
+        let overviews = [];
+        for (let i = 0; i < board.getWidth(); i++) {
+            let j = 0;
+            overviews.push(new Position(i, j));
+        }
+        display_overviews(overviews);
+        return;
     } else {
         console.log("position 1 : ", board.getPlayer(1).getPosition());
         // if the player 2 has not placed its pawn yet, we display the possible moves
         if (board.getPlayer(1).getPosition() == null) {
-
-                placePawn(board.getPlayer(1), position);
-                display_board(board);
-                display_message('The game can start', 1000);
-                display_overviews();
-                return;
+            placePawn(board.getPlayer(1), position);
+            display_board(board);
+            display_message('The game can start', { timeout: 1000 });
+            display_overviews();
+            return;
         }
         console.log("position 2 : ", board.getPlayer(1).getPosition());
     }
@@ -351,11 +350,13 @@ export function convertCoordinatesFromId(i, j, vertical) {
     if (vertical) {
         x = j;
         y = i * 2;
-    } else {
-        x = j - 1;
+    }
+    else {
+        x = j;
         y = i * 2 + 1;
     }
-    return [x, y];
+    console.log("convertCoordinatesFromId : ", x, y);
+    return new Position(x, y);
 }
 
 /*
@@ -390,3 +391,17 @@ export function convertCoordinatesToId(x, y) {
         vertical,
     ];
 }
+
+/*
+// unit tests, to be removed in final version
+document.addEventListener('DOMContentLoaded', function () {
+    for (let e of [[0, 0], [2, 2], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1], [1, 2], [0, 2]]) {
+        console.log("====================================")
+        console.log(e[0], e[1])
+        let id = convertCoordinatesToId(e[0], e[1]);
+        console.log(id);
+        console.log(convertCoordinatesFromId(id[0][0], id[0][1], id[2]));
+        console.log("====================================")
+    }
+});
+*/
