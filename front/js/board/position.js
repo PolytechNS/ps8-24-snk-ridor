@@ -3,20 +3,19 @@ export class Position {
     y;
 
     constructor(x, y) {
-        console.log('Position constructor :' + x + ' ' + y);
         this.x = parseInt(x);
         this.y = parseInt(y);
     }
 
     getX() {
-        if (!this.x) {
+        if (this.x === undefined) {
             throw new Error('x is not defined');
         }
         return this.x;
     }
 
     getY() {
-        if (!this.y) {
+        if (this.y === undefined) {
             throw new Error('y is not defined');
         }
         return this.y;

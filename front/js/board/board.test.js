@@ -84,21 +84,15 @@ describe('board', function () {
         );
     });
 
-    it("shouldn't be able to move unless both players are placed", function () {
+    it('should be able to move a player', function () {
         var board = new Board();
         board.placePlayer(board.getPlayer(0), new Position(0, 0));
-        try {
+        chai.expect(() => {
             board.movePlayer(board.getPlayer(0), new Position(0, 1));
-        } catch (e) {
-            chai.expect(e).to.be.an('error');
-        }
-        board.placePlayer(board.getPlayer(1), new Position(0, 8));
-        board.movePlayer(board.getPlayer(0), new Position(0, 1));
-        try {
-        } catch (e) {
-            // Should not throw an error
-            chai.expect(true).to.be.false;
-        }
+        }).to.not.throw();
+        chai.expect(board.players[0].getPosition()).to.deep.equal(
+            new Position(0, 1)
+        );
     });
 });
 

@@ -216,7 +216,6 @@ export class Board {
      * @side-effect change the walls of the board
      */
     placeWall(player, position) {
-        console.log('placeWall', player, position, position instanceof Position);
         // Check that the player is on the board
         if (!player.getPosition()) {
             throw new Error('Player not placed');
@@ -307,9 +306,7 @@ export class Board {
 
         let available_positions = [];
 
-        console.log(`========${position}=========`);
-
-        // Top walls    0, 8
+        // Top walls
         if (
             position.getY() !== 0 && // if on the top row we can't go up
             (position.getX() === this.getWidth() - 1 ||
@@ -317,26 +314,13 @@ export class Board {
             (position.getX() === 0 ||
                 this.walls[position.getX() - 1][position.getY() * 2 - 1] === 0) // OK
         ) {
-            console.log(
-                '(',
-                !opponent,
-                '||',
-                !opponent.getPosition(),
-                '|| (',
-                opponent.getPosition().getX(),
-                '!==',
-                position.getX(),
-                '&&',
-                opponent.getPosition().getY(),
-                '!==',
-                position.getY() - 1,
-                '))'
-            );
             if (
                 !opponent ||
                 !opponent.getPosition() ||
-                (opponent.getPosition().getX() !== position.getX() &&
-                    opponent.getPosition().getY() !== position.getY() - 1)
+                !(
+                    opponent.getPosition().getX() === position.getX() &&
+                    opponent.getPosition().getY() === position.getY() - 1
+                )
             ) {
                 available_positions.push(
                     new Position(position.getX(), position.getY() - 1)
@@ -367,28 +351,14 @@ export class Board {
             (position.getY() === 0 ||
                 this.walls[position.getX()][position.getY() * 2 - 2] === 0) // OK
         ) {
-            console.log(
-                '(',
-                !opponent,
-                '||',
-                !opponent.getPosition(),
-                '|| (',
-                opponent.getPosition().getX(),
-                '!==',
-                position.getX() + 1,
-                '&&',
-                opponent.getPosition().getY(),
-                '!==',
-                position.getY(),
-                '))'
-            );
             if (
                 !opponent ||
                 !opponent.getPosition() ||
-                (opponent.getPosition().getX() !== position.getX() + 1 &&
-                    opponent.getPosition().getY() !== position.getY())
+                !(
+                    opponent.getPosition().getX() === position.getX() + 1 &&
+                    opponent.getPosition().getY() === position.getY()
+                )
             ) {
-                console.log('right');
                 available_positions.push(
                     new Position(position.getX() + 1, position.getY())
                 );
@@ -418,28 +388,14 @@ export class Board {
             (position.getX() === 0 ||
                 this.walls[position.getX() - 1][position.getY() * 2 + 1] === 0) // OK
         ) {
-            console.log(
-                '(',
-                !opponent,
-                '||',
-                !opponent.getPosition(),
-                '|| (',
-                opponent.getPosition().getX(),
-                '!==',
-                position.getX(),
-                '&&',
-                opponent.getPosition().getY(),
-                '!==',
-                position.getY() + 1,
-                '))'
-            );
             if (
                 !opponent ||
                 !opponent.getPosition() ||
-                (opponent.getPosition().getX() !== position.getX() &&
-                    opponent.getPosition().getY() !== position.getY() + 1)
+                !(
+                    opponent.getPosition().getX() === position.getX() &&
+                    opponent.getPosition().getY() === position.getY() + 1
+                )
             ) {
-                console.log('bottom');
                 available_positions.push(
                     new Position(position.getX(), position.getY() + 1)
                 );
@@ -469,19 +425,14 @@ export class Board {
             (position.getY() === 0 ||
                 this.walls[position.getX() - 1][position.getY() * 2 - 2] === 0)
         ) {
-            console.log('left 1');
-            console.log('opponent', opponent);
-            console.log('opponent position', opponent.getPosition());
-            console.log('opponent position x', opponent.getPosition().getX());
-            console.log('opponent position y', opponent.getPosition().getY());
             if (
                 !opponent ||
                 !opponent.getPosition() ||
-                (opponent.getPosition().getX() !== position.getX() - 1 &&
-                    opponent.getPosition().getY() !== position.getY())
+                !(
+                    opponent.getPosition().getX() === position.getX() - 1 &&
+                    opponent.getPosition().getY() === position.getY()
+                )
             ) {
-                console.log('left 2');
-                console.log('cacaaaaaaaaaaaaaaaaaaaaaaaaaa');
                 available_positions.push(
                     new Position(position.getX() - 1, position.getY())
                 );
@@ -510,7 +461,6 @@ export class Board {
      * @return {Position[]} the possible walls for the player (in absolute position)
      */
     isWallPositionValid(x, y) {
-        console.log('isWallPositionValid', x, y);
         if (
             x < 0 ||
             x >= this.getWallHeight() ||
