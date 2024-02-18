@@ -113,7 +113,6 @@ export function onWallClick(event) {
             event.target.id.split('-')[2]
         );
         let vertical = event.target.classList.contains('v-wall');
-        let walls = get_walls_for_board(position, vertical);
         let coordinate = convertCoordinatesFromId(position.x, position.y, vertical);
         position = new Position(coordinate[0], coordinate[1]);
         getBoard().placeWall(myPlayer(), coordinate);
