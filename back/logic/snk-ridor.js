@@ -2,6 +2,7 @@
 let globalGameState;
 let goal;
 let wallsPlaced = 0;
+let player = 0;
 const MAX_WALLS = 3; // Maximum number of walls to place before moving towards the goal
 
 /*
@@ -11,6 +12,7 @@ const MAX_WALLS = 3; // Maximum number of walls to place before moving towards t
  */
 function setup(AIplay) {
     let column = Math.ceil(Math.random() * 9);
+    player = AIplay;
 
     if (AIplay === 1) {
         goal = 9;
@@ -38,8 +40,6 @@ function nextMove(gameState) {
     gameState = GameState.fromDict(gameState);
     globalGameState = gameState;
 
-    console.log(gameState.getPlayer());
-
     // Place a wall in a systematic way
     let wallPosition = calculateNextWallPosition(gameState);
 
@@ -47,11 +47,10 @@ function nextMove(gameState) {
         return new Move('wall', wallPosition); // 0 for horizontal wall
     } else {
         // If the opponent is visible, or we have placed enough walls, calculate the best move
-        let pathFinder = new PathFinder(gameState, goal);
-        let bestMove = pathFinder.getBestMove();
+        let move = getBestMove(gameState);
 
-        if (bestMove !== null) {
-            return new Move('move', `${bestMove[0] + 1}${bestMove[1] + 1}`);
+        if (move !== null) {
+            return new Move('move', `${move[0]}${move[1]}`);
         }
 
         return new Move('idle', null);
@@ -263,149 +262,26 @@ class Move {
     }
 }
 
-class PathFinder {
-    constructor(gameState, goal) {
-        this.gameState = gameState;
-        this.goal = goal;
-        this.nodes = this.initializeNodes();
-        this.startNode =
-            this.nodes[this.gameState.getPlayer()[1]][
-                this.gameState.getPlayer()[0]
-            ];
-        this.goalNodes = this.nodes[this.goal - 1];
-    }
-    initializeNodes() {
-        const nodes = [];
-        const { board } = this.gameState;
-        for (let y = 0; y < board.length; y++) {
-            const row = [];
-            for (let x = 0; x < board[y].length; x++) {
-                const isWall = board[y][x] === '1';
-                row.push(new Node(x, y, isWall));
-            }
-            nodes.push(row);
-        }
-        return nodes;
-    }
+function getBestMove(gameState) {
+    let playerPos;
 
-    nodeExistsInGoalNodes(node) {
-        return this.goalNodes.some(
-            (goalNode) => goalNode.x === node.x && goalNode.y === node.y
-        );
-    }
-
-    calculatePath() {
-        let openList = [];
-        const closedList = [];
-        const startNode = this.startNode;
-        const goalNodes = this.goalNodes;
-
-        openList.push(startNode);
-
-        while (openList.length > 0) {
-            const currentNode = openList.reduce((prev, curr) =>
-                prev.f < curr.f ? prev : curr
-            );
-
-            if (this.nodeExistsInGoalNodes(currentNode)) {
-                return this.retrieveShortestPath(currentNode);
-            }
-
-            openList = openList.filter((node) => node !== currentNode);
-            closedList.push(currentNode);
-
-            const neighbors = this.getNeighbors(currentNode);
-
-            for (const neighbor of neighbors) {
-                if (closedList.includes(neighbor) || neighbor.isWall) {
-                    continue;
-                }
-
-                const tentativeGScore =
-                    currentNode.g + this.calculateCost(currentNode, neighbor);
-
-                if (!openList.includes(neighbor)) {
-                    openList.push(neighbor);
-                } else if (tentativeGScore >= neighbor.g) {
-                    continue;
-                }
-
-                neighbor.parent = currentNode;
-                neighbor.g = tentativeGScore;
-                neighbor.h = this.calculateCost(neighbor, goalNodes[0]); // Use the first goal node for heuristic calculation
-                neighbor.f = neighbor.g + neighbor.h;
+    for (let i = 0; i < gameState.board.length; i++) {
+        for (let j = 0; j < gameState.board[i].length; j++) {
+            if (gameState.board[i][j] === player) {
+                playerPos = [i, j];
             }
         }
-
-        return null;
     }
 
-    getBestMove() {
-        const path = this.calculatePath();
-
-        if (path && path.length > 1) {
-            // The next move is the second node in the path because the first node is the current position
-            return [path[1].x, path[1].y];
-        }
-
-        // If there's no path or the path only contains the current position, return null
-        return null;
+    if (player === 1) {
+        return [playerPos[0], playerPos[1] + 1];
     }
 
-    getNeighbors(node) {
-        const neighbors = [];
-        const directions = [
-            [-1, 0],
-            [1, 0],
-            [0, -1],
-            [0, 1],
-        ];
-
-        for (const direction of directions) {
-            const x = node.x + direction[0];
-            const y = node.y + direction[1];
-
-            if (
-                x >= 0 &&
-                x < this.nodes[0].length &&
-                y >= 0 &&
-                y < this.nodes.length
-            ) {
-                neighbors.push(this.nodes[y][x]);
-            }
-        }
-
-        return neighbors;
+    if (player === 2) {
+        return [playerPos[0], playerPos[1] - 1];
     }
 
-    calculateCost(nodeA, nodeB) {
-        return Math.abs(nodeA.x - nodeB.x) + Math.abs(nodeA.y - nodeB.y);
-    }
-
-    retrieveShortestPath(goalNode) {
-        const path = [];
-        let currentNode = goalNode;
-
-        while (currentNode !== null) {
-            path.unshift(currentNode);
-            currentNode = currentNode.parent;
-        }
-
-        return path;
-    }
-}
-
-class Node {
-    constructor(x, y, isWall) {
-        this.x = x;
-        this.y = y;
-        this.isWall = isWall;
-        this.g = Infinity; // Cost from start to this node
-        this.h = 0; // Heuristic cost from this node to goal
-        this.f = Infinity; // Total cost (g + h)
-        this.parent = null; // Parent node for path tracing
-        this.visited = false; // Flag to check if the node has been visited
-    }
+    return null;
 }
 
 exports.setup = setup;
