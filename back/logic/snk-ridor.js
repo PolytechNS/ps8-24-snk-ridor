@@ -3,6 +3,7 @@ let globalGameState;
 let goal;
 let wallsPlaced = 0;
 let player = 0;
+let mode = 'right';
 const MAX_WALLS = 3; // Maximum number of walls to place before moving towards the goal
 
 /*
@@ -61,46 +62,46 @@ function calculateNextWallPosition(gameState) {
     if (goal === 9) {
         if (
             !gameState.opponentWalls.some(
-                (wall) => wall[0] === '28' && wall[1] === 1
+                (wall) => wall[0] === '28' && wall[1] === 0
             ) &&
             !gameState.ownWalls.some(
-                (wall) => wall[0] === '28' && wall[1] === 1
+                (wall) => wall[0] === '28' && wall[1] === 0
             )
         ) {
             wallsPlaced++;
-            return ['28', 1];
+            return ['28', 0];
         } else if (
             !gameState.opponentWalls.some(
-                (wall) => wall[0] === '78' && wall[1] === 1
+                (wall) => wall[0] === '78' && wall[1] === 0
             ) &&
             !gameState.ownWalls.some(
-                (wall) => wall[0] === '78' && wall[1] === 1
+                (wall) => wall[0] === '78' && wall[1] === 0
             )
         ) {
             wallsPlaced++;
-            return ['78', 1];
+            return ['78', 0];
         }
     } else if (goal === 1) {
         if (
             !gameState.opponentWalls.some(
-                (wall) => wall[0] === '32' && wall[1] === 1
+                (wall) => wall[0] === '32' && wall[1] === 0
             ) &&
             !gameState.ownWalls.some(
-                (wall) => wall[0] === '32' && wall[1] === 1
+                (wall) => wall[0] === '32' && wall[1] === 0
             )
         ) {
             wallsPlaced++;
-            return ['82', 1];
+            return ['82', 0];
         } else if (
             !gameState.opponentWalls.some(
-                (wall) => wall[0] === '72' && wall[1] === 1
+                (wall) => wall[0] === '72' && wall[1] === 0
             ) &&
             !gameState.ownWalls.some(
-                (wall) => wall[0] === '72' && wall[1] === 1
+                (wall) => wall[0] === '72' && wall[1] === 0
             )
         ) {
             wallsPlaced++;
-            return ['73', 1];
+            return ['73', 0];
         }
     }
 
@@ -270,6 +271,57 @@ function getBestMove(gameState) {
             if (gameState.board[i][j] === player) {
                 playerPos = [i, j];
             }
+        }
+    }
+
+    // If there is a wall in front of us, move to the right or left
+    if (player === 1) {
+        if (
+            gameState.ownWalls.some(
+                (wall) => wall[0] === `${playerPos[0]}${playerPos[1] + 1}`
+            ) ||
+            gameState.opponentWalls.some(
+                (wall) => wall[0] === `${playerPos[0]}${playerPos[1] + 1}`
+            )
+        ) {
+            if (playerPos[0] + 1 > 9 && mode === 'right') {
+                mode = 'left';
+            }
+
+            if (playerPos[0] - 1 < 0 && mode === 'left') {
+                mode = 'right';
+            }
+
+            if (mode === 'right') {
+                return [playerPos[0] + 1, playerPos[1]];
+            }
+
+            return [playerPos[0] - 1, playerPos[1]];
+        }
+    }
+
+    if (player === 2) {
+        if (
+            gameState.ownWalls.some(
+                (wall) => wall[0] === `${playerPos[0]}${playerPos[1] - 1}`
+            ) ||
+            gameState.opponentWalls.some(
+                (wall) => wall[0] === `${playerPos[0]}${playerPos[1] - 1}`
+            )
+        ) {
+            if (playerPos[0] + 1 > 9 && mode === 'right') {
+                mode = 'left';
+            }
+
+            if (playerPos[0] - 1 < 0 && mode === 'left') {
+                mode = 'right';
+            }
+
+            if (mode === 'right') {
+                return [playerPos[0] + 1, playerPos[1]];
+            }
+
+            return [playerPos[0] - 1, playerPos[1]];
         }
     }
 

@@ -1,6 +1,7 @@
 const { setup, nextMove } = require('./snk-ridor.js');
 const { describe, test } = require('mocha');
 const chai = require('chai');
+const { updateBoard } = require('./snk-ridor');
 describe('setup function', () => {
     Array.from({ length: 100 }, (_, i) => i + 1).forEach((i) => {
         test(`should return a promise that resolves to a string of two characters ending in 1 when called with 1 (${i}/100)`, async () => {
@@ -25,14 +26,14 @@ describe('nextMove function', () => {
     const gameState = {
         opponentWalls: [],
         ownWalls: [],
-        board: Array(9).fill(Array(9).fill(0)),
+        board: Array(10).fill(Array(10).fill(0)),
     };
 
     beforeEach(async () => {
         gameState.opponentWalls = [];
         gameState.ownWalls = [];
         gameState.board = JSON.parse(
-            JSON.stringify(Array(9).fill(Array(9).fill(0)))
+            JSON.stringify(Array(10).fill(Array(10).fill(0)))
         );
 
         await setup(1);
@@ -62,8 +63,8 @@ describe('nextMove function', () => {
     test('player should move at some point', async () => {
         gameState.board[1][1] = 1;
         for (let i = 0; i < 100; i++) {
-            gameState.ownWalls.push(['28', 1]);
-            gameState.ownWalls.push(['78', 1]);
+            gameState.ownWalls.push(['28', 0]);
+            gameState.ownWalls.push(['78', 0]);
             const move = await nextMove(gameState);
             if (move.action === 'move') {
                 console.log(move.value);
@@ -77,12 +78,12 @@ describe('nextMove function', () => {
         const move1 = await nextMove(gameState);
         chai.expect(move1.action).to.equal('wall');
 
-        gameState.ownWalls.push(['28', 1]);
+        gameState.ownWalls.push(['28', 0]);
 
         const move2 = await nextMove(gameState);
         chai.expect(move2.action).to.equal('wall');
 
-        gameState.ownWalls.push(['78', 1]);
+        gameState.ownWalls.push(['78', 0]);
 
         gameState.board = JSON.parse(
             JSON.stringify(Array(9).fill(Array(9).fill(0)))
@@ -95,17 +96,17 @@ describe('nextMove function', () => {
     });
 
     test('player should not place a wall on top of another wall', async () => {
-        gameState.opponentWalls.push(['28', 1]);
+        gameState.opponentWalls.push(['28', 0]);
         const move = await nextMove(gameState);
         if (move.action === 'wall') {
-            chai.expect(move.value).to.not.deep.equal(['28', 1]);
+            chai.expect(move.value).to.not.deep.equal(['28', 0]);
         }
     });
 
     test('pathfinding should walk', async () => {
         gameState.board[1][1] = 1;
-        gameState.ownWalls.push(['28', 1]);
-        gameState.ownWalls.push(['78', 1]);
+        gameState.ownWalls.push(['28', 0]);
+        gameState.ownWalls.push(['78', 0]);
         while (true) {
             const move = await nextMove(gameState);
             if (move.action === 'move') {
@@ -123,21 +124,42 @@ describe('nextMove function', () => {
         }
     });
 
-    // test('pathfinding should walk around walls', async () => {
-    //     await setup(1);
-    //     gameState.ownWalls.push(['28', 1]);
-    //     gameState.ownWalls.push(['78', 1]);
-    //     while (true) {
-    //         const move = await nextMove(gameState);
-    //         if (move.action === 'move') {
-    //             gameState.board = JSON.parse(JSON.stringify(Array(9).fill(Array(9).fill(0))));
-    //             gameState.board[parseInt(move.value[0])][parseInt(move.value[1])] = 1;
-    //             console.log('board', gameState.board);
-    //             console.log(move.value);
-    //             if (move.value[1] === '9') {
-    //                 return;
-    //             }
-    //         }
-    //     }
-    // });
+    test('when there is a wall, should go right', async () => {
+        gameState.board[1][1] = 1;
+        gameState.ownWalls.push(['28', 0]);
+        gameState.ownWalls.push(['78', 0]);
+        gameState.ownWalls.push(['12', 0]);
+        const move = await nextMove(gameState);
+        chai.expect(move.action).to.equal('move');
+        chai.expect(move.value).to.equal('21');
+        console.log('Player moved to', move.value);
+    });
+
+    test("when there is a wall and can't go right, should go left", async () => {
+        gameState.board[9][1] = 1;
+        gameState.ownWalls.push(['28', 0]);
+        gameState.ownWalls.push(['78', 0]);
+        gameState.ownWalls.push(['92', 0]);
+        const move = await nextMove(gameState);
+        console.log('Player moved to', move.value);
+        chai.expect(move.action).to.equal('move');
+        chai.expect(move.value).to.equal('81');
+    });
+
+    test("when there is a wall and can't go right, should go left and then continue to go straight ahead", async () => {
+        gameState.board[9][1] = 1;
+        gameState.ownWalls.push(['28', 0]);
+        gameState.ownWalls.push(['78', 0]);
+        gameState.ownWalls.push(['92', 0]);
+        const move = await nextMove(gameState);
+        console.log('Player moved to', move.value);
+        chai.expect(move.action).to.equal('move');
+        chai.expect(move.value).to.equal('81');
+        gameState.board[8][1] = 1;
+        gameState.board[9][1] = 0;
+        const move2 = await nextMove(gameState);
+        console.log('Player moved to', move2.value);
+        chai.expect(move2.action).to.equal('move');
+        chai.expect(move2.value).to.equal('82');
+    });
 });
