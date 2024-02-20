@@ -27,6 +27,8 @@ function manageRequest(request, response) {
     );
     let endpoint = url.pathname.split('/')[2]; // Supposant que l'URL est sous la forme /api/endpoint
 
+    addCors(response);
+
     switch (endpoint) {
         case 'signup':
             handleSignup(request, response);
@@ -57,22 +59,9 @@ function manageRequest(request, response) {
             response.end(JSON.stringify({ error: 'Endpoint non trouvé' }));
     }
 }
-function addCors(response) {
-    response.setHeader('Access-Control-Allow-Origin', '*');
-    response.setHeader(
-        'Access-Control-Allow-Methods',
-        'GET, POST, OPTIONS, PUT, PATCH, DELETE'
-    );
-    response.setHeader(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization'
-    );
-    response.setHeader('Access-Control-Allow-Credentials', true);
-}
 
 function handleSignup(request, response) {
     if (request.method === 'OPTIONS') {
-        addCors(response);
         response.writeHead(200);
         response.end();
         return;
@@ -83,8 +72,6 @@ function handleSignup(request, response) {
         response.end(JSON.stringify({ error: 'Method not allowed' }));
         return;
     }
-
-    addCors(response);
 
     getJsonBody(request)
         .then((body) => {
@@ -140,20 +127,16 @@ function handleSignup(request, response) {
 
 function handleLogin(request, response) {
     if (request.method === 'OPTIONS') {
-        addCors(response);
         response.writeHead(200);
         response.end();
         return;
     }
 
     if (request.method !== 'POST') {
-        addCors(response);
         response.writeHead(405, { 'Content-Type': 'application/json' });
         response.end(JSON.stringify({ error: 'Method not allowed' }));
         return;
     }
-
-    addCors(response);
 
     // Get the data from the request body
     getJsonBody(request).then((body) => {
@@ -503,6 +486,19 @@ function createOrUpdateUser(
             }
         });
     });
+}
+
+function addCors(response) {
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader(
+        'Access-Control-Allow-Methods',
+        'GET, POST, OPTIONS, PUT, PATCH, DELETE'
+    );
+    response.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+    );
+    response.setHeader('Access-Control-Allow-Credentials', true);
 }
 
 exports.manage = manageRequest;
