@@ -8,11 +8,27 @@ services:
         environment:
             - MONGO_URL=mongodb://mongo-snk-ridor:27017/snk-ridor
             # - JWT_SECRET=secret   # Uncomment this line to set the JWT_SECRET environment variable
+        networks:
+            - traefik
+        labels:
+            - 'traefik.enable=true'
+            - 'traefik.http.routers.snk.rule=Host(`snk.ozeliurs.com`)'
+            - 'traefik.http.routers.snk.entrypoints=websecure'
+            - 'traefik.http.routers.snk.tls.certresolver=cloudflare'
+            - 'traefik.http.routers.snk.tls=true'
 
     mongo-snk-ridor:
         image: mongo:latest
         volumes:
             - mongo-data:/data/db
+        networks:
+            - traefik
+        labels:
+            - 'traefik.enable=false'
 
 volumes:
     mongo-data:
+
+networks:
+    traefik:
+        external: true
