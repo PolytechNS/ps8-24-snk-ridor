@@ -85,6 +85,25 @@ function getWallAtCoordinates(walls: [string, number][], x: number, y: number, o
     }
 }
 
+function getPossibleWallPositions(walls: [string, number][]): [string, number][] {
+    let possibleWalls: [string, number][] = [];
+
+    for (let i = 1; i < 9; i++) {
+        for (let j = 1; j < 9; j++) {
+            if (i < 9 && j < 9) {
+                if (!(getWallAtCoordinates(walls, i, j, Direction.HORIZONTAL) || getWallAtCoordinates(walls, i - 1, j, Direction.HORIZONTAL) || getWallAtCoordinates(walls, i, j, Direction.VERTICAL))) {
+                    possibleWalls.push([`${i}${j}`, Direction.HORIZONTAL]);
+                }
+                if (!(getWallAtCoordinates(walls, i, j, Direction.VERTICAL) || getWallAtCoordinates(walls, i, j - 1, Direction.VERTICAL) || getWallAtCoordinates(walls, i, j, Direction.HORIZONTAL))) {
+                    possibleWalls.push([`${i}${j}`, Direction.VERTICAL]);
+                }
+            }
+        }
+    }
+
+    return possibleWalls;
+}
+
 class AStar {
     readonly board: number[][];
     readonly player: number;
@@ -235,4 +254,4 @@ class AStar {
     }
 }
 
-export { setup, nextMove, correction, updateBoard, AStar, getWallAtCoordinates };
+export { setup, nextMove, correction, updateBoard, AStar, getWallAtCoordinates, getPossibleWallPositions };

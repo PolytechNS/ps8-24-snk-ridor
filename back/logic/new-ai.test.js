@@ -1,4 +1,4 @@
-const { AStar } = require('./new-ai');
+const { AStar, getPossibleWallPositions } = require('./new-ai');
 const { describe, test } = require('mocha');
 const { performance } = require('node:perf_hooks');
 const chai = require('chai');
@@ -6,6 +6,28 @@ const chai = require('chai');
 function getBoard() {
     return JSON.parse(JSON.stringify(Array.from({ length: 10 }, () => Array.from({ length: 10 }, () => 0))));
 }
+
+describe('getPossibleWallPositions', () => {
+    test('empty board should return all possible wall positions', () => {
+        let positions = getPossibleWallPositions([]);
+        chai.expect(positions).to.be.an('array');
+        console.log(positions);
+        chai.expect(positions.length).to.equal(128);
+        // Should not contain any duplicates
+        chai.expect(new Set(positions).size).to.equal(positions.length);
+    });
+
+    test('board with 1 wall should return 125 possible wall positions', () => {
+        let positions = getPossibleWallPositions([['55', 0]]);
+        chai.expect(positions).to.be.an('array');
+        chai.expect(positions.length).to.equal(125);
+        chai.expect(positions).to.not.deep.include.members([
+            ['55', 0],
+            ['45', 0],
+            ['45', 1],
+        ]);
+    });
+});
 
 describe('AStar', () => {
     let board;
