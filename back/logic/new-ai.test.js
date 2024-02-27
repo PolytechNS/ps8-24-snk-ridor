@@ -1,4 +1,4 @@
-const { AStar, getPossibleWallPositions } = require('./new-ai');
+const { AStar, getPossibleWallPositions, getNumberOfTurnsTillGoal } = require('./new-ai');
 const { describe, test } = require('mocha');
 const { performance } = require('node:perf_hooks');
 const chai = require('chai');
@@ -26,6 +26,26 @@ describe('getPossibleWallPositions', () => {
             ['45', 0],
             ['45', 1],
         ]);
+    });
+});
+
+describe('getNumberOfTurnsTillGoal', () => {
+    let board;
+
+    beforeEach(() => {
+        board = getBoard();
+    });
+
+    test('should return 0 when the start and goal are the same', () => {
+        board[9][9] = 1;
+        const turns = getNumberOfTurnsTillGoal(board, 1, []);
+        chai.expect(turns).to.equal(0);
+    });
+
+    test('should return 8 when the start and goal are on opposite sides of the board', () => {
+        board[1][1] = 1;
+        const turns = getNumberOfTurnsTillGoal(board, 1, []);
+        chai.expect(turns).to.equal(8);
     });
 });
 

@@ -46,6 +46,38 @@ function setup(AIplay: number): Promise<string> {
 
 function nextMove(gameState: GameState): Promise<Action> {
     globalState.stateHistory.push(gameState);
+
+    let allWalls = gameState.ownWalls.concat(gameState.opponentWalls);
+
+    // If you see the opponent's pawn, check who will win.
+    let numberOfTurnsTillGoalForOpponent = getNumberOfTurnsTillGoal(gameState.board, globalState.opponent, allWalls);
+    let numberOfTurnsTillGoalForPlayer = getNumberOfTurnsTillGoal(gameState.board, globalState.player, allWalls);
+
+    if (numberOfTurnsTillGoalForOpponent < numberOfTurnsTillGoalForPlayer) {
+        // find the best wall to place to block the opponent
+        let possibleWalls = getPossibleWallPositions(gameState.ownWalls);
+
+        let maxNumberOfTurnsTillGoalForOpponent = 0;
+        let bestWall: [string, number] = possibleWalls[0];
+
+        possibleWalls.forEach((wall) => {
+            let newWalls = gameState.ownWalls.concat([wall]);
+            let numberOfTurnsTillGoalForOpponent = getNumberOfTurnsTillGoal(gameState.board, globalState.opponent, newWalls);
+
+            if (numberOfTurnsTillGoalForOpponent > maxNumberOfTurnsTillGoalForOpponent) {
+                maxNumberOfTurnsTillGoalForOpponent = numberOfTurnsTillGoalForOpponent;
+                bestWall = wall;
+            }
+        });
+
+        // If the new wall is better than the current state, place it
+        if (maxNumberOfTurnsTillGoalForOpponent > numberOfTurnsTillGoalForOpponent) {
+            return new Promise((resolve) => {
+                resolve({ action: 'placeWall', value: bestWall }); // TODO: ozeliurs verify action name
+            });
+        }
+    }
+
     return new Promise((resolve) => {
         resolve({ action: 'move', value: '11' });
     });
@@ -103,6 +135,15 @@ function getPossibleWallPositions(walls: [string, number][]): [string, number][]
 
     return possibleWalls;
 }
+
+function getNumberOfTurnsTillGoal(board: number[][], player: number, walls: [string, number][]): number {
+    let astar = new AStar(board, player, walls);
+    let path = astar.search();
+
+    return path.length - 1;
+}
+
+// === A* ===
 
 class AStar {
     readonly board: number[][];
@@ -254,4 +295,6 @@ class AStar {
     }
 }
 
-export { setup, nextMove, correction, updateBoard, AStar, getWallAtCoordinates, getPossibleWallPositions };
+// === END OF A* ===
+
+export { setup, nextMove, correction, updateBoard, AStar, getWallAtCoordinates, getPossibleWallPositions, getNumberOfTurnsTillGoal };
