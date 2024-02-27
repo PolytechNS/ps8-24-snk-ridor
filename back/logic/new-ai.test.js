@@ -141,5 +141,23 @@ describe('AStar', () => {
             chai.expect(path).to.be.an('array');
             chai.expect(path.length).to.be.greaterThan(0);
         });
+
+        test('should find a path with walls', () => {
+            board[5][1] = 1;
+            let walls = [
+                ['25', 0],
+                ['35', 0],
+                ['45', 0],
+                ['55', 0],
+                ['65', 0],
+                ['75', 0],
+                ['85', 0],
+                ['95', 0],
+            ];
+            const aStar = new AStar(board, 1, walls);
+            const path = aStar.search();
+            chai.expect(path).to.be.an('array');
+            chai.expect(path.length).to.be.greaterThan(0);
+        });
     });
 });
