@@ -114,11 +114,32 @@ describe('AStar', () => {
         });
     });
 
-    test('should find a path', () => {
-        board[1][1] = 1;
-        const aStar = new AStar(board, 1, []);
-        const path = aStar.search();
-        chai.expect(path).to.be.an('array');
-        chai.expect(path.length).to.be.greaterThan(0);
+    describe('search()', () => {
+        test('should return an empty array when no path is found', () => {
+            board[1][1] = 1;
+            let walls = [
+                ['15', 0],
+                ['25', 0],
+                ['35', 0],
+                ['45', 0],
+                ['55', 0],
+                ['65', 0],
+                ['75', 0],
+                ['85', 0],
+                ['95', 0],
+            ];
+            const aStar = new AStar(board, 1, walls);
+            const path = aStar.search();
+            chai.expect(path).to.be.an('array');
+            chai.expect(path.length).to.equal(0);
+        });
+
+        test('should find a path', () => {
+            board[1][1] = 1;
+            const aStar = new AStar(board, 1, []);
+            const path = aStar.search();
+            chai.expect(path).to.be.an('array');
+            chai.expect(path.length).to.be.greaterThan(0);
+        });
     });
 });

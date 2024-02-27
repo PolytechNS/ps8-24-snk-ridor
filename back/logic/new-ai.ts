@@ -86,11 +86,11 @@ function getWallAtCoordinates(walls: [string, number][], x: number, y: number, o
 }
 
 class AStar {
-    board: number[][];
-    player: number;
-    walls: [string, number][];
-    goals: [number, number][]; // [x, y]
-    start: [number, number]; // [x, y]
+    readonly board: number[][];
+    readonly player: number;
+    readonly walls: [string, number][];
+    readonly goals: [number, number][]; // [x, y]
+    readonly start: [number, number]; // [x, y]
 
     constructor(board: number[][], player: number, walls: [string, number][]) {
         this.board = board;
@@ -117,8 +117,6 @@ class AStar {
 
         // Left
         if (x > 1) {
-            // Check if there is a top wall if y > 1
-            // Check if there is a bottom wall if y < 9
             // prettier-ignore
             if (
                 !(
@@ -132,8 +130,6 @@ class AStar {
 
         // Right
         if (x < 9) {
-            // Check if there is a top wall if y > 1
-            // Check if there is a bottom wall if y < 9
             // prettier-ignore
             if (
                 !(
@@ -147,8 +143,6 @@ class AStar {
 
         // Up
         if (y < 9) {
-            // Check if there is a left wall if x > 1
-            // Check if there is a right wall if x < 9
             // prettier-ignore
             if (
                 !(
@@ -162,8 +156,6 @@ class AStar {
 
         // Down
         if (y > 1) {
-            // Check if there is a left wall if x > 1
-            // Check if there is a right wall if x < 9
             // prettier-ignore
             if (
                 !(
@@ -187,24 +179,20 @@ class AStar {
         gScore[`${this.start[0]}${this.start[1]}`] = 0;
         fScore[`${this.start[0]}${this.start[1]}`] = this.heuristic(this.start, this.goals[0]);
 
-        console.log('Initial gScore and fScore:', gScore, fScore);
-
         while (openSet.length > 0) {
             let current: [number, number] = openSet[0];
             let currentStr = `${current[0]}${current[1]}`;
 
             for (let i = 1; i < openSet.length; i++) {
                 let openSetStr = `${openSet[i][0]}${openSet[i][1]}`;
+
                 if (fScore[openSetStr] < fScore[currentStr]) {
                     current = openSet[i];
                     currentStr = openSetStr;
                 }
             }
 
-            console.log('Current node:', current);
-
             if (this.goals.some((goal) => goal[0] === current[0] && goal[1] === current[1])) {
-                console.log('Goal reached:', current);
                 return this.reconstructPath(cameFrom, current);
             }
 
@@ -214,24 +202,18 @@ class AStar {
                 let neighborStr = `${neighbor[0]}${neighbor[1]}`;
                 let tentativeGScore = gScore[currentStr] + 1;
 
-                console.log('Evaluating neighbor:', neighbor, 'with tentative G Score:', tentativeGScore);
-
-                if (tentativeGScore < gScore[neighborStr]) {
+                if (tentativeGScore < (gScore[neighborStr] || Infinity)) {
                     cameFrom[neighborStr] = current;
                     gScore[neighborStr] = tentativeGScore;
                     fScore[neighborStr] = gScore[neighborStr] + this.heuristic(neighbor, this.goals[0]);
 
-                    console.log('Updated gScore and fScore for neighbor:', neighbor, gScore, fScore);
-
                     if (!openSet.some((node) => node[0] === neighbor[0] && node[1] === neighbor[1])) {
                         openSet.push(neighbor);
-                        console.log('Neighbor added to open set:', neighbor);
                     }
                 }
             }
         }
 
-        console.log('No path found');
         return [];
     }
 
@@ -243,8 +225,12 @@ class AStar {
             current = cameFrom[currentStr];
             currentStr = `${current[0]}${current[1]}`;
             totalPath.push(current);
+            if (currentStr === `${this.start[0]}${this.start[1]}`) {
+                break;
+            }
         }
 
+        console.log('Total path:', totalPath.reverse());
         return totalPath.reverse();
     }
 }
