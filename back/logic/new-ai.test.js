@@ -1,5 +1,6 @@
 const { AStar } = require('./new-ai');
 const { describe, test } = require('mocha');
+const { performance } = require('node:perf_hooks');
 const chai = require('chai');
 
 function getBoard() {
@@ -158,6 +159,27 @@ describe('AStar', () => {
             const path = aStar.search();
             chai.expect(path).to.be.an('array');
             chai.expect(path.length).to.be.greaterThan(0);
+        });
+
+        let testSet = Array.from({ length: 1000 }, () => {
+            return {
+                startIndex: Math.ceil(Math.random() * 9),
+                walls: Array.from({ length: Math.ceil(Math.random() * 18) }, () => {
+                    return [`${Math.ceil(Math.random() * 9)}${Math.ceil(Math.random() * 9)}`, Math.floor(Math.random() * 2)];
+                }),
+            };
+        });
+
+        testSet.forEach((t) => {
+            test(`should find a path with walls (${t.startIndex}, ${t.walls}) under 20ms`, () => {
+                board[t.startIndex][1] = 1;
+                const aStar = new AStar(board, 1, t.walls);
+                const start = performance.now();
+                const path = aStar.search();
+                const end = performance.now();
+                console.log('Time: ', end - start);
+                chai.expect(end - start).to.be.lessThan(20);
+            });
         });
     });
 });
