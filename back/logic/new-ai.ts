@@ -49,6 +49,42 @@ function nextMove(gameState: GameState): Promise<Action> {
 
     let allWalls = gameState.ownWalls.concat(gameState.opponentWalls);
 
+    // If you do not see the other player's pawn, move towards the goal
+    let opponentCoordinates = getPlayerCoordinates(gameState.board, globalState.opponent);
+
+    if (opponentCoordinates === null) {
+        let possibleMoves = getPossibleWallPositions(gameState.ownWalls);
+
+        let maxNumberOfTurnsTillGoal = 0;
+        let bestMove = '11';
+
+        for (let i = 1; i < 10; i++) {
+            for (let j = 1; j < 10; j++) {
+                if (gameState.board[i][j] === globalState.player) {
+                    let newNumberOfTurnsTillGoal = getNumberOfTurnsTillGoal(gameState.board, globalState.player, allWalls.concat([[`${i}${j}`, Direction.HORIZONTAL]]));
+
+                    if (newNumberOfTurnsTillGoal > maxNumberOfTurnsTillGoal) {
+                        maxNumberOfTurnsTillGoal = newNumberOfTurnsTillGoal;
+                        bestMove = `${i}${j}`;
+                    }
+                }
+            }
+        }
+
+        possibleMoves.forEach((move) => {
+            let newNumberOfTurnsTillGoal = getNumberOfTurnsTillGoal(gameState.board, globalState.player, allWalls.concat([move]));
+
+            if (newNumberOfTurnsTillGoal > maxNumberOfTurnsTillGoal) {
+                maxNumberOfTurnsTillGoal = newNumberOfTurnsTillGoal;
+                bestMove = move[0];
+            }
+        });
+
+        return new Promise((resolve) => {
+            resolve({ action: 'move', value: bestMove });
+        });
+    }
+
     // If you see the opponent's pawn, check who will win.
     let numberOfTurnsTillGoalForOpponent = getNumberOfTurnsTillGoal(gameState.board, globalState.opponent, allWalls);
     let numberOfTurnsTillGoalForPlayer = getNumberOfTurnsTillGoal(gameState.board, globalState.player, allWalls);
@@ -107,6 +143,7 @@ function getPlayerCoordinates(board: number[][], player: number): [number, numbe
             }
         }
     }
+    return null;
 }
 
 function getWallAtCoordinates(walls: [string, number][], x: number, y: number, orientation: number): [string, number] {
@@ -290,7 +327,6 @@ class AStar {
             }
         }
 
-        console.log('Total path:', totalPath.reverse());
         return totalPath.reverse();
     }
 }
