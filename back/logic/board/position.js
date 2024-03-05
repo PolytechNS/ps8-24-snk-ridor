@@ -22,9 +22,7 @@ class Position {
     }
 
     equals(position) {
-        return (
-            this.getX() === position.getX() && this.getY() === position.getY()
-        );
+        return this.getX() === position.getX() && this.getY() === position.getY();
     }
 
     /*
@@ -41,10 +39,7 @@ class Position {
      * @return {Position} the rotated position
      */
     static rot90(center, point, times = 1) {
-        return new Position(
-            center.getX() - (point.getY() - center.getY()),
-            center.getY() + (point.getX() - center.getX())
-        );
+        return new Position(center.getX() - (point.getY() - center.getY()), center.getY() + (point.getX() - center.getX()));
     }
 
     /*
@@ -62,7 +57,7 @@ class Position {
      * Returns a Vella compatible string of the position, (1,1) corresponds to our (0,8) and (9,9) to our (8,0)
      */
     toVellaString() {
-        return `(${this.getX() + 1},${8 - this.getY()})`;
+        return `${this.getX() + 1}${9 - this.getY()}`;
     }
 }
 
