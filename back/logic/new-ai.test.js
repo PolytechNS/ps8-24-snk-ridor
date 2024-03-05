@@ -1,4 +1,4 @@
-const { AStar, getPossibleWallPositions, getNumberOfTurnsTillGoal, nextMove } = require('./new-ai');
+const { AStar, getPossibleWallPositions, getNumberOfTurnsTillGoal, nextMove, setup } = require('./new-ai');
 const { describe, test } = require('mocha');
 const { performance } = require('node:perf_hooks');
 const chai = require('chai');
@@ -227,11 +227,25 @@ describe('AStar', () => {
 });
 
 describe('nextMove', () => {
+    let board;
+    let ownWalls;
+    let opponentWalls;
+
+    beforeEach(() => {
+        board = getBoard();
+        ownWalls = [];
+        opponentWalls = [];
+    });
+
     test('should return a move', () => {
-        let board = getBoard();
-        let walls = [];
-        let move = nextMove(board, walls);
-        chai.expect(move).to.be.an('array');
-        chai.expect(move.length).to.equal(3);
+        setup(1);
+        board[5][1] = 1;
+        let move = nextMove({ board: board, ownWalls: [], opponentWalls: [] });
+        move.then((m) => {
+            chai.expect(m).to.be.an('object');
+            chai.expect(m).to.have.property('action');
+            chai.expect(m).to.have.property('value');
+            chai.expect(m.action).to.be.oneOf(['move', 'wall']);
+        });
     });
 });

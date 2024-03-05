@@ -28,6 +28,7 @@ function setup(AIplay: number): Promise<string> {
     globalState = {
         player: AIplay,
         opponent: AIplay === 1 ? 2 : 1,
+        stateHistory: [],
     };
 
     let column = Math.ceil(Math.random() * 9);
@@ -47,75 +48,13 @@ function setup(AIplay: number): Promise<string> {
 function nextMove(gameState: GameState): Promise<Action> {
     globalState.stateHistory.push(gameState);
 
-    let allWalls = gameState.ownWalls.concat(gameState.opponentWalls);
+    let astar = new AStar(gameState.board, globalState.player, gameState.opponentWalls);
 
-    // If you do not see the other player's pawn, move towards the goal
-    let opponentCoordinates = getPlayerCoordinates(gameState.board, globalState.opponent);
-
-    if (opponentCoordinates === null) {
-        let possibleMoves = getPossibleWallPositions(gameState.ownWalls);
-
-        let maxNumberOfTurnsTillGoal = 0;
-        let bestMove = '11';
-
-        for (let i = 1; i < 10; i++) {
-            for (let j = 1; j < 10; j++) {
-                if (gameState.board[i][j] === globalState.player) {
-                    let newNumberOfTurnsTillGoal = getNumberOfTurnsTillGoal(gameState.board, globalState.player, allWalls.concat([[`${i}${j}`, Direction.HORIZONTAL]]));
-
-                    if (newNumberOfTurnsTillGoal > maxNumberOfTurnsTillGoal) {
-                        maxNumberOfTurnsTillGoal = newNumberOfTurnsTillGoal;
-                        bestMove = `${i}${j}`;
-                    }
-                }
-            }
-        }
-
-        possibleMoves.forEach((move) => {
-            let newNumberOfTurnsTillGoal = getNumberOfTurnsTillGoal(gameState.board, globalState.player, allWalls.concat([move]));
-
-            if (newNumberOfTurnsTillGoal > maxNumberOfTurnsTillGoal) {
-                maxNumberOfTurnsTillGoal = newNumberOfTurnsTillGoal;
-                bestMove = move[0];
-            }
-        });
-
-        return new Promise((resolve) => {
-            resolve({ action: 'move', value: bestMove });
-        });
-    }
-
-    // If you see the opponent's pawn, check who will win.
-    let numberOfTurnsTillGoalForOpponent = getNumberOfTurnsTillGoal(gameState.board, globalState.opponent, allWalls);
-    let numberOfTurnsTillGoalForPlayer = getNumberOfTurnsTillGoal(gameState.board, globalState.player, allWalls);
-
-    if (numberOfTurnsTillGoalForOpponent < numberOfTurnsTillGoalForPlayer) {
-        // find the best wall to place to block the opponent
-        let possibleWalls = getPossibleWallPositions(gameState.ownWalls);
-
-        let maxNumberOfTurnsTillGoalForOpponent = 0;
-        let bestWall: [string, number] = possibleWalls[0];
-
-        possibleWalls.forEach((wall) => {
-            let newWalls = gameState.ownWalls.concat([wall]);
-            let numberOfTurnsTillGoalForOpponent = getNumberOfTurnsTillGoal(gameState.board, globalState.opponent, newWalls);
-
-            if (numberOfTurnsTillGoalForOpponent > maxNumberOfTurnsTillGoalForOpponent) {
-                maxNumberOfTurnsTillGoalForOpponent = numberOfTurnsTillGoalForOpponent;
-                bestWall = wall;
-            }
-        });
-
-        // If the new wall is better than the current state, place it
-        if (maxNumberOfTurnsTillGoalForOpponent > numberOfTurnsTillGoalForOpponent) {
-            return new Promise((resolve) => {
-                resolve({ action: 'placeWall', value: bestWall }); // TODO: ozeliurs verify action name
-            });
-        }
-    }
+    let path = astar.search();
+    let nextMove = path[1];
 
     return new Promise((resolve) => {
-        resolve({ action: 'move', value: '11' });
+        resolve({ action: 'move', value: `${nextMove[0]}${nextMove[1]}` });
     });
 }
 
