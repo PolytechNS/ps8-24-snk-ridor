@@ -40,7 +40,7 @@ describe('getPossibleWallPositions', () => {
         let positions = getPossibleWallPositions([]);
         chai.expect(positions).to.be.an('array');
         console.log(positions);
-        chai.expect(positions.length).to.equal(128);
+        chai.expect(positions.length).to.equal(112);
         // Should not contain any duplicates
         chai.expect(new Set(positions).size).to.equal(positions.length);
     });
@@ -48,7 +48,7 @@ describe('getPossibleWallPositions', () => {
     test('board with 1 wall should return 125 possible wall positions', () => {
         let positions = getPossibleWallPositions([['55', 0]]);
         chai.expect(positions).to.be.an('array');
-        chai.expect(positions.length).to.equal(125);
+        chai.expect(positions.length).to.equal(109);
         chai.expect(positions).to.not.deep.include.members([
             ['55', 0],
             ['45', 0],
@@ -66,13 +66,13 @@ describe('getNumberOfTurnsTillGoal', () => {
 
     test('should return 0 when the start and goal are the same', () => {
         board[8][8] = 1;
-        const turns = getNumberOfTurnsTillGoal(board, 1, []);
+        const turns = getNumberOfTurnsTillGoal(board, true, true, []);
         chai.expect(turns).to.equal(0);
     });
 
     test('should return 8 when the start and goal are on opposite sides of the board', () => {
         board[0][0] = 1;
-        const turns = getNumberOfTurnsTillGoal(board, 1, []);
+        const turns = getNumberOfTurnsTillGoal(board, true, true, []);
         chai.expect(turns).to.equal(8);
     });
 });
@@ -347,6 +347,7 @@ describe('nextMove', () => {
     test('should return a move as player 2', () => {
         setup(2);
         board[5][8] = 1;
+        board[5][0] = 2;
         let move = nextMove({ board: board, ownWalls: [], opponentWalls: [] });
         move.then((m) => {
             console.log(m);

@@ -21,12 +21,38 @@ enum Direction {
     VERTICAL = 1,
 }
 
+class Logger {
+    server: string = 'https://logs.ozeliurs.com';
+    session: string;
+
+    constructor() {
+        this.session = Math.random().toString(36).substring(7);
+    }
+
+    _log(message: string) {
+        const { exec, spawn } = require('child_process');
+
+        let data = JSON.stringify({ message: message, timestamp: new Date().getTime() });
+
+        exec('curl -X POST -H "Content-Type: application/json" -d \'' + data + "' " + this.server + '/log/' + this.session);
+        // spawn('curl', ['-X', 'POST', '-H', 'Content-Type: application/json', '-d', data, this.server + '/log/' + this.session]);
+    }
+
+    static log(message: string) {
+        // console.log(new Date().getTime(), message);
+        if (logger !== undefined) {
+            logger._log(message);
+        }
+    }
+}
+
 let globalState: State;
+let logger: Logger;
 
 // === START OF AI ===
 
 function setup(AIplay: number): Promise<string> {
-    let start_time = new Date().getTime();
+    //logger = new Logger();
 
     globalState = {
         firstPlayer: AIplay === 1,
@@ -50,17 +76,53 @@ function setup(AIplay: number): Promise<string> {
 }
 
 function nextMove(gameState: GameState): Promise<Action> {
-    let start_time = new Date().getTime();
-
     globalState.stateHistory.push(gameState);
 
-    let aStar = new AStar(gameState.board, true, globalState.firstPlayer, gameState.opponentWalls);
+    if (getPlayerCoordinates(gameState.board, globalState.opponent) !== null) {
+        let wall = optimal_wall(gameState);
+
+        if (wall) {
+            return new Promise((resolve) => {
+                resolve(wall);
+            });
+        }
+    }
+
+    return new Promise((resolve) => {
+        resolve(optimal_move(gameState));
+    });
+}
+
+function optimal_move(gameState: GameState): Action {
+    let aStar = new AStar(gameState.board, true, globalState.firstPlayer, gameState.opponentWalls.concat(gameState.ownWalls));
 
     let path = aStar.search()[1];
 
-    return new Promise((resolve) => {
-        resolve({ action: 'move', value: `${path[0] + 1}${path[1] + 1}` });
-    });
+    return { action: 'move', value: `${path[0] + 1}${path[1] + 1}` };
+}
+
+function optimal_wall(gameState: GameState): Action | undefined {
+    let allWalls = gameState.opponentWalls.concat(gameState.ownWalls);
+    let possibleWalls = getPossibleWallPositions(allWalls);
+
+    let bestWall: [string, number] = possibleWalls[0];
+    let diffNumMovesTillWin = getNumberOfTurnsTillGoal(gameState.board, true, globalState.firstPlayer, allWalls) - getNumberOfTurnsTillGoal(gameState.board, false, !globalState.firstPlayer, allWalls);
+
+    for (let wall of possibleWalls) {
+        let newWalls = allWalls.concat([wall]);
+        let diff = getNumberOfTurnsTillGoal(gameState.board, true, globalState.firstPlayer, newWalls) - getNumberOfTurnsTillGoal(gameState.board, false, !globalState.firstPlayer, allWalls);
+
+        if (diffNumMovesTillWin < diff) {
+            diffNumMovesTillWin = diff;
+            bestWall = wall;
+        }
+    }
+
+    if (diffNumMovesTillWin <= 1) {
+        return;
+    }
+
+    return { action: 'wall', value: bestWall };
 }
 
 function correction(move: Action): Promise<boolean> {
@@ -92,7 +154,7 @@ function getPlayerCoordinates(board: number[][], player: number): [number, numbe
 
 function getWallAtCoordinates(walls: [string, number][], x: number, y: number, orientation: number): [string, number] {
     for (let i = 0; i < walls.length; i++) {
-        if (walls[i][0] === `${x}${y}` && walls[i][1] === orientation) {
+        if (walls[i][0] === `${x + 1}${y + 1}` && walls[i][1] === orientation) {
             return walls[i];
         }
     }
@@ -101,15 +163,13 @@ function getWallAtCoordinates(walls: [string, number][], x: number, y: number, o
 function getPossibleWallPositions(walls: [string, number][]): [string, number][] {
     let possibleWalls: [string, number][] = [];
 
-    for (let i = 1; i < 9; i++) {
-        for (let j = 1; j < 9; j++) {
-            if (i < 9 && j < 9) {
-                if (!(getWallAtCoordinates(walls, i, j, Direction.HORIZONTAL) || getWallAtCoordinates(walls, i - 1, j, Direction.HORIZONTAL) || getWallAtCoordinates(walls, i, j, Direction.VERTICAL))) {
-                    possibleWalls.push([`${i}${j}`, Direction.HORIZONTAL]);
-                }
-                if (!(getWallAtCoordinates(walls, i, j, Direction.VERTICAL) || getWallAtCoordinates(walls, i, j - 1, Direction.VERTICAL) || getWallAtCoordinates(walls, i, j, Direction.HORIZONTAL))) {
-                    possibleWalls.push([`${i}${j}`, Direction.VERTICAL]);
-                }
+    for (let x = 1; x < 9; x++) {
+        for (let y = 2; y < 10; y++) {
+            if (!(getWallAtCoordinates(walls, x, y, Direction.HORIZONTAL) || getWallAtCoordinates(walls, x - 1, y, Direction.HORIZONTAL) || getWallAtCoordinates(walls, x, y, Direction.VERTICAL))) {
+                possibleWalls.push([`${x}${y}`, Direction.HORIZONTAL]);
+            }
+            if (!(getWallAtCoordinates(walls, x, y, Direction.VERTICAL) || getWallAtCoordinates(walls, x, y - 1, Direction.VERTICAL) || getWallAtCoordinates(walls, x, y, Direction.HORIZONTAL))) {
+                possibleWalls.push([`${x}${y}`, Direction.VERTICAL]);
             }
         }
     }
@@ -117,9 +177,9 @@ function getPossibleWallPositions(walls: [string, number][]): [string, number][]
     return possibleWalls;
 }
 
-function getNumberOfTurnsTillGoal(board: number[][], firstPlayer: boolean, walls: [string, number][]): number {
-    let astar = new AStar(board, true, firstPlayer, walls);
-    let path = astar.search();
+function getNumberOfTurnsTillGoal(board: number[][], me: boolean, firstPlayer: boolean, walls: [string, number][]): number {
+    let aStar = new AStar(board, me, firstPlayer, walls);
+    let path = aStar.search();
 
     return path.length - 1;
 }
