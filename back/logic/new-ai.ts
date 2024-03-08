@@ -10,6 +10,7 @@ interface Action {
 }
 
 class State {
+    firstPlayer: boolean;
     player?: number;
     opponent?: number;
     stateHistory?: GameState[];
@@ -25,9 +26,12 @@ let globalState: State;
 // === START OF AI ===
 
 function setup(AIplay: number): Promise<string> {
+    let start_time = new Date().getTime();
+
     globalState = {
-        player: AIplay,
-        opponent: AIplay === 1 ? 2 : 1,
+        firstPlayer: AIplay === 1,
+        player: 1,
+        opponent: 2,
         stateHistory: [],
     };
 
@@ -46,15 +50,16 @@ function setup(AIplay: number): Promise<string> {
 }
 
 function nextMove(gameState: GameState): Promise<Action> {
+    let start_time = new Date().getTime();
+
     globalState.stateHistory.push(gameState);
 
-    let astar = new AStar(gameState.board, globalState.player, gameState.opponentWalls);
+    let aStar = new AStar(gameState.board, true, globalState.firstPlayer, gameState.opponentWalls);
 
-    let path = astar.search();
-    let nextMove = path[1];
+    let path = aStar.search()[1];
 
     return new Promise((resolve) => {
-        resolve({ action: 'move', value: `${nextMove[0]}${nextMove[1]}` });
+        resolve({ action: 'move', value: `${path[0] + 1}${path[1] + 1}` });
     });
 }
 
@@ -75,8 +80,8 @@ function updateBoard(gameState: GameState): Promise<boolean> {
 // === END OF AI ===
 
 function getPlayerCoordinates(board: number[][], player: number): [number, number] {
-    for (let i = 1; i < 10; i++) {
-        for (let j = 1; j < 10; j++) {
+    for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
             if (board[i][j] === player) {
                 return [i, j];
             }
@@ -112,8 +117,8 @@ function getPossibleWallPositions(walls: [string, number][]): [string, number][]
     return possibleWalls;
 }
 
-function getNumberOfTurnsTillGoal(board: number[][], player: number, walls: [string, number][]): number {
-    let astar = new AStar(board, player, walls);
+function getNumberOfTurnsTillGoal(board: number[][], firstPlayer: boolean, walls: [string, number][]): number {
+    let astar = new AStar(board, true, firstPlayer, walls);
     let path = astar.search();
 
     return path.length - 1;
@@ -123,22 +128,20 @@ function getNumberOfTurnsTillGoal(board: number[][], player: number, walls: [str
 
 class AStar {
     readonly board: number[][];
-    readonly player: number;
     readonly walls: [string, number][];
     readonly goals: [number, number][]; // [x, y]
     readonly start: [number, number]; // [x, y]
 
-    constructor(board: number[][], player: number, walls: [string, number][]) {
+    constructor(board: number[][], me: boolean, firstPlayer: boolean, walls: [string, number][]) {
         this.board = board;
-        this.player = player;
         this.walls = walls;
 
-        this.start = getPlayerCoordinates(board, player);
+        this.start = getPlayerCoordinates(board, me ? 1 : 2);
 
-        if (player === 2) {
-            this.goals = [[1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1]]; // prettier-ignore
+        if (!firstPlayer) {
+            this.goals = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]]; // prettier-ignore
         } else {
-            this.goals = [[1, 9], [2, 9], [3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9]]; // prettier-ignore
+            this.goals = [[0, 8], [1, 8], [2, 8], [3, 8], [4, 8], [5, 8], [6, 8], [7, 8], [8, 8]]; // prettier-ignore
         }
     }
 
@@ -152,12 +155,12 @@ class AStar {
         let y = node[1];
 
         // Left
-        if (x > 1) {
+        if (x > 0) {
             // prettier-ignore
             if (
                 !(
-                    y > 1 && getWallAtCoordinates(this.walls, x - 1, y, Direction.VERTICAL) ||
-                    y < 9 && getWallAtCoordinates(this.walls, x - 1, y + 1, Direction.VERTICAL)
+                    y > 0 && getWallAtCoordinates(this.walls, x - 1, y, Direction.VERTICAL) ||
+                    y < 8 && getWallAtCoordinates(this.walls, x - 1, y + 1, Direction.VERTICAL)
                 )
             ) {
                 ret.push([x - 1, y]);
@@ -165,12 +168,12 @@ class AStar {
         }
 
         // Right
-        if (x < 9) {
+        if (x < 8) {
             // prettier-ignore
             if (
                 !(
-                    y > 1 && getWallAtCoordinates(this.walls, x, y, Direction.VERTICAL) ||
-                    y < 9 && getWallAtCoordinates(this.walls, x, y + 1, Direction.VERTICAL)
+                    y > 0 && getWallAtCoordinates(this.walls, x, y, Direction.VERTICAL) ||
+                    y < 8 && getWallAtCoordinates(this.walls, x, y + 1, Direction.VERTICAL)
                 )
             ) {
                 ret.push([x + 1, y]);
@@ -178,12 +181,12 @@ class AStar {
         }
 
         // Up
-        if (y < 9) {
+        if (y < 8) {
             // prettier-ignore
             if (
                 !(
-                    x > 1 && getWallAtCoordinates(this.walls, x - 1, y + 1, Direction.HORIZONTAL) ||
-                    x < 9 && getWallAtCoordinates(this.walls, x, y + 1, Direction.HORIZONTAL)
+                    x > 0 && getWallAtCoordinates(this.walls, x - 1, y + 1, Direction.HORIZONTAL) ||
+                    x < 8 && getWallAtCoordinates(this.walls, x, y + 1, Direction.HORIZONTAL)
                 )
             ) {
                 ret.push([x, y + 1]);
@@ -191,12 +194,12 @@ class AStar {
         }
 
         // Down
-        if (y > 1) {
+        if (y > 0) {
             // prettier-ignore
             if (
                 !(
-                    x > 1 && getWallAtCoordinates(this.walls, x - 1, y, Direction.HORIZONTAL) ||
-                    x < 9 && getWallAtCoordinates(this.walls, x, y, Direction.HORIZONTAL)
+                    x > 0 && getWallAtCoordinates(this.walls, x - 1, y, Direction.HORIZONTAL) ||
+                    x < 8 && getWallAtCoordinates(this.walls, x, y, Direction.HORIZONTAL)
                 )
             ) {
                 ret.push([x, y - 1]);
