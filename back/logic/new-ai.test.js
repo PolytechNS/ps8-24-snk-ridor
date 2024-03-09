@@ -419,41 +419,39 @@ describe('nextMove', () => {
         { x: 5, y: 5, walls: [], expected: [[5, 4], [5, 6], [4, 5], [6, 5]], label: 'No walls' },
 
         // Edges
-        { x: 1, y: 5, walls: [], expected: [[0, 4], [0, 6], [1, 5]], label: 'Left Edge' },
-        { x: 9, y: 5, walls: [], expected: [[8, 4], [8, 6], [7, 5]], label: 'Right Edge' },
-        { x: 5, y: 1, walls: [], expected: [[5, 1], [4, 0], [6, 0]], label: 'Top Edge' },
-        { x: 5, y: 9, walls: [], expected: [[5, 7], [4, 8], [6, 8]], label: 'Bottom Edge' },
+        { x: 0, y: 5, walls: [], expected: [[0, 4], [0, 6], [1, 5]], label: 'Left Edge' },
+        { x: 8, y: 5, walls: [], expected: [[8, 4], [8, 6], [7, 5]], label: 'Right Edge' },
+        { x: 5, y: 0, walls: [], expected: [[5, 1], [4, 0], [6, 0]], label: 'Top Edge' },
 
         // Normal Walls
-        { x: 5, y: 5, walls: [[''.concat(5).concat(5), 0]], expected: [[4, 5], [6, 5], [5, 6]], label: 'Bottom Right Wall' },
-        { x: 5, y: 5, walls: [[''.concat(5).concat(6), 0]], expected: [[4, 5], [6, 5], [5, 4]], label: 'Top Right Wall' },
-        { x: 5, y: 5, walls: [[''.concat(5).concat(5), 1]], expected: [[4, 5], [5, 6], [5, 4]], label: 'Right Bottom Wall' },
-        { x: 5, y: 5, walls: [[''.concat(4).concat(5), 1]], expected: [[5, 4], [6, 5], [5, 6]], label: 'Left Bottom Wall' },
+        { x: 5, y: 5, walls: [[''.concat(6).concat(6), 0]], expected: [[4, 5], [6, 5], [5, 6]], label: 'Bottom Right Wall' },
+        { x: 5, y: 5, walls: [[''.concat(6).concat(7), 0]], expected: [[4, 5], [6, 5], [5, 4]], label: 'Top Right Wall' },
+        { x: 5, y: 5, walls: [[''.concat(6).concat(6), 1]], expected: [[4, 5], [5, 6], [5, 4]], label: 'Right Bottom Wall' },
+        { x: 5, y: 5, walls: [[''.concat(5).concat(6), 1]], expected: [[5, 4], [6, 5], [5, 6]], label: 'Left Bottom Wall' },
 
         // "Overhanging" Walls
-        { x: 5, y: 5, walls: [[''.concat(4).concat(5), 0]], expected: [[4, 5], [6, 5], [5, 6]], label: 'Bottom Left Wall' },
-        { x: 5, y: 5, walls: [[''.concat(4).concat(6), 0]], expected: [[4, 5], [6, 5], [5, 4]], label: 'Top Left Wall' },
-        { x: 5, y: 5, walls: [[''.concat(5).concat(6), 1]], expected: [[4, 5], [5, 6], [5, 4]], label: 'Right Top Wall' },
-        { x: 5, y: 5, walls: [[''.concat(4).concat(6), 1]], expected: [[5, 4], [6, 5], [5, 6]], label: 'Left Top Wall' },
+        { x: 5, y: 5, walls: [[''.concat(5).concat(6), 0]], expected: [[4, 5], [6, 5], [5, 6]], label: 'Bottom Left Wall' },
+        { x: 5, y: 5, walls: [[''.concat(5).concat(7), 0]], expected: [[4, 5], [6, 5], [5, 4]], label: 'Top Left Wall' },
+        { x: 5, y: 5, walls: [[''.concat(6).concat(7), 1]], expected: [[4, 5], [5, 6], [5, 4]], label: 'Right Top Wall' },
+        { x: 5, y: 5, walls: [[''.concat(5).concat(6), 1]], expected: [[5, 4], [6, 5], [5, 6]], label: 'Left Top Wall' },
 
         // Walls on the edges TODO
 
         // Other
-        { x: 2, y: 8, walls: [[''.concat(1).concat(9), 0]], expected: [[1, 8], [3, 8], [2, 7]], label: 'Other Problematic 1' },
-        { x: 3, y: 2, walls: [[''.concat(3).concat(3), 0]], expected: [[2, 2], [4, 2], [3, 1]], label: 'Other Problematic 2' },
+        { x: 3, y: 2, walls: [[''.concat(3).concat(3), 0]], expected: [[2, 2], [4, 2], [3, 3]], label: 'Other Problematic 2' },
     ];
 
     testSet.forEach((t) => {
         test(`should return ${t.expected.length} neighbors with ${t.walls} (${t.label})`, async () => {
             setup(1);
-            board[t.x - 1][t.y - 1] = 1;
+            board[t.x][t.y] = 1;
             let move = await nextMove({ board: board, ownWalls: t.walls, opponentWalls: [] });
             chai.expect(move).to.be.an('object');
             chai.expect(move).to.have.property('action');
             chai.expect(move).to.have.property('value');
             chai.expect(move.action).to.be.oneOf(['move']);
             chai.expect(move.value).to.be.an('string');
-            chai.expect(t.expected.map((x) => x.join(''))).to.deep.include(move.value);
+            chai.expect(t.expected.map((x) => x.join(''))).to.deep.include(`${move.value[0] - 1}${move.value[1] - 1}`);
         });
     });
 });

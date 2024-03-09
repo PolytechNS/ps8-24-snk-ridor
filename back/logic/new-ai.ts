@@ -106,7 +106,7 @@ function optimal_move(gameState: GameState): Action {
         throw new Error('No path found');
     }
 
-    Logger.log(`Move: ${path[0] + 1}${path[1] + 1}`);
+    Logger.log(`Move: ${path[0]}${path[1]}`);
 
     return { action: 'move', value: `${path[0] + 1}${path[1] + 1}` };
 }
@@ -239,12 +239,9 @@ class AStar {
         // Left
         if (x > 0) {
             // prettier-ignore
-            if (
-                !(
-                    y > 0 && getWallAtCoordinates(this.walls, (x+1) - 1, y, Direction.VERTICAL) ||
-                    y < 8 && getWallAtCoordinates(this.walls, (x+1) - 1, y + 1, Direction.VERTICAL)
-                )
-            ) {
+            Logger.log(`Checking Wall at ${(x + 1) - 1}, ${(y + 1)}, ${Direction.VERTICAL})} and ${(x + 1) - 1}, ${(y + 1) + 1}, ${Direction.VERTICAL})`);
+            if (!((y > 0 && getWallAtCoordinates(this.walls, x + 1 - 1, y + 1, Direction.VERTICAL)) || (y < 8 && getWallAtCoordinates(this.walls, x + 1 - 1, y + 1 + 1, Direction.VERTICAL)))) {
+                Logger.log('Left');
                 ret.push([x - 1, y]);
             }
         }
@@ -252,12 +249,9 @@ class AStar {
         // Right
         if (x < 8) {
             // prettier-ignore
-            if (
-                !(
-                    y > 0 && getWallAtCoordinates(this.walls, (x+1), y, Direction.VERTICAL) ||
-                    y < 8 && getWallAtCoordinates(this.walls, (x+1), y + 1, Direction.VERTICAL)
-                )
-            ) {
+            Logger.log(`Checking Wall at ${(x + 1)}, ${(y + 1)}, ${Direction.VERTICAL})} and ${(x + 1)}, ${(y + 1) + 1}, ${Direction.VERTICAL})`);
+            if (!((y > 0 && getWallAtCoordinates(this.walls, x + 1, y + 1, Direction.VERTICAL)) || (y < 8 && getWallAtCoordinates(this.walls, x + 1, y + 1 + 1, Direction.VERTICAL)))) {
+                Logger.log('Right');
                 ret.push([x + 1, y]);
             }
         }
@@ -265,12 +259,9 @@ class AStar {
         // Up
         if (y < 8) {
             // prettier-ignore
-            if (
-                !(
-                    x > 0 && getWallAtCoordinates(this.walls, (x+1) - 1, y + 1, Direction.HORIZONTAL) ||
-                    x < 8 && getWallAtCoordinates(this.walls, (x+1), y + 1, Direction.HORIZONTAL)
-                )
-            ) {
+            Logger.log(`Checking Wall at ${(x + 1) - 1}, ${(y + 1) + 1}, ${Direction.HORIZONTAL})} and ${(x + 1)}, ${(y + 1) + 1}, ${Direction.HORIZONTAL})`);
+            if (!((x > 0 && getWallAtCoordinates(this.walls, x + 1 - 1, y + 1 + 1, Direction.HORIZONTAL)) || (x < 8 && getWallAtCoordinates(this.walls, x + 1, y + 1 + 1, Direction.HORIZONTAL)))) {
+                Logger.log('Up');
                 ret.push([x, y + 1]);
             }
         }
@@ -278,15 +269,14 @@ class AStar {
         // Down
         if (y > 0) {
             // prettier-ignore
-            if (
-                !(
-                    x > 0 && getWallAtCoordinates(this.walls, (x+1) - 1, y, Direction.HORIZONTAL) ||
-                    x < 8 && getWallAtCoordinates(this.walls, (x+1), y, Direction.HORIZONTAL)
-                )
-            ) {
+            Logger.log(`Checking Wall at ${(x + 1) - 1}, ${(y + 1)}, ${Direction.HORIZONTAL})} and ${(x + 1)}, ${(y + 1)}, ${Direction.HORIZONTAL})`);
+            if (!((x > 0 && getWallAtCoordinates(this.walls, x + 1 - 1, y + 1, Direction.HORIZONTAL)) || (x < 8 && getWallAtCoordinates(this.walls, x + 1, y + 1, Direction.HORIZONTAL)))) {
+                Logger.log('Down');
                 ret.push([x, y - 1]);
             }
         }
+
+        Logger.log(`Neighbors of ${x}${y}: ${JSON.stringify(ret)}`);
 
         return ret;
     }
