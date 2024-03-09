@@ -40,7 +40,7 @@ describe('getPossibleWallPositions', () => {
         let positions = getPossibleWallPositions([]);
         chai.expect(positions).to.be.an('array');
         console.log(positions);
-        chai.expect(positions.length).to.equal(112);
+        chai.expect(positions.length).to.equal(128);
         // Should not contain any duplicates
         chai.expect(new Set(positions).size).to.equal(positions.length);
     });
@@ -48,7 +48,7 @@ describe('getPossibleWallPositions', () => {
     test('board with 1 wall should return 125 possible wall positions', () => {
         let positions = getPossibleWallPositions([['55', 0]]);
         chai.expect(positions).to.be.an('array');
-        chai.expect(positions.length).to.equal(109);
+        chai.expect(positions.length).to.equal(125);
         chai.expect(positions).to.not.deep.include.members([
             ['55', 0],
             ['45', 0],
@@ -106,6 +106,8 @@ describe('AStar', () => {
 
     describe('should correctly set the goal nodes', () => {
         test('when player is 1', () => {
+            board = getBoard(1);
+            board[0][8] = 1;
             const aStar = new AStar(board, true, true, []);
             const goalNodes = aStar.goals;
             chai.expect(goalNodes).to.be.an('array');
@@ -116,6 +118,7 @@ describe('AStar', () => {
 
         test('when player is 2', () => {
             board = getBoard(2);
+            board[8][0] = 1;
             const aStar = new AStar(board, true, false, []);
             const goalNodes = aStar.goals;
             chai.expect(goalNodes).to.be.an('array');
@@ -141,18 +144,22 @@ describe('AStar', () => {
             { x: 5, y: 8, walls: [], expected: [[5, 7], [4, 8], [6, 8]], label: 'Bottom Edge' },
 
             // Normal Walls
-            { x: 5, y: 5, walls: [[''.concat(5).concat(5), 0]], expected: [[4, 5], [6, 5], [5, 6]], label: 'Bottom Right Wall' },
-            { x: 5, y: 5, walls: [[''.concat(5).concat(6), 0]], expected: [[4, 5], [6, 5], [5, 4]], label: 'Top Right Wall' },
-            { x: 5, y: 5, walls: [[''.concat(5).concat(5), 1]], expected: [[4, 5], [5, 6], [5, 4]], label: 'Right Bottom Wall' },
-            { x: 5, y: 5, walls: [[''.concat(4).concat(5), 1]], expected: [[5, 4], [6, 5], [5, 6]], label: 'Left Bottom Wall' },
+            { x: 5, y: 5, walls: [[''.concat(6).concat(6), 0]], expected: [[4, 5], [6, 5], [5, 6]], label: 'Bottom Right Wall' },
+            { x: 5, y: 5, walls: [[''.concat(6).concat(7), 0]], expected: [[4, 5], [6, 5], [5, 4]], label: 'Top Right Wall' },
+            { x: 5, y: 5, walls: [[''.concat(6).concat(6), 1]], expected: [[4, 5], [5, 6], [5, 4]], label: 'Right Bottom Wall' },
+            { x: 5, y: 5, walls: [[''.concat(5).concat(6), 1]], expected: [[5, 4], [6, 5], [5, 6]], label: 'Left Bottom Wall' },
 
             // "Overhanging" Walls
-            { x: 5, y: 5, walls: [[''.concat(4).concat(5), 0]], expected: [[4, 5], [6, 5], [5, 6]], label: 'Bottom Left Wall' },
-            { x: 5, y: 5, walls: [[''.concat(4).concat(6), 0]], expected: [[4, 5], [6, 5], [5, 4]], label: 'Top Left Wall' },
-            { x: 5, y: 5, walls: [[''.concat(5).concat(6), 1]], expected: [[4, 5], [5, 6], [5, 4]], label: 'Right Top Wall' },
-            { x: 5, y: 5, walls: [[''.concat(4).concat(6), 1]], expected: [[5, 4], [6, 5], [5, 6]], label: 'Left Top Wall' },
+            { x: 5, y: 5, walls: [[''.concat(5).concat(6), 0]], expected: [[4, 5], [6, 5], [5, 6]], label: 'Bottom Left Wall' },
+            { x: 5, y: 5, walls: [[''.concat(5).concat(7), 0]], expected: [[4, 5], [6, 5], [5, 4]], label: 'Top Left Wall' },
+            { x: 5, y: 5, walls: [[''.concat(6).concat(7), 1]], expected: [[4, 5], [5, 6], [5, 4]], label: 'Right Top Wall' },
+            { x: 5, y: 5, walls: [[''.concat(5).concat(7), 1]], expected: [[5, 4], [6, 5], [5, 6]], label: 'Left Top Wall' },
 
             // Walls on the edges TODO
+
+            // Other
+            { x: 1, y: 7, walls: [[''.concat(1).concat(9), 0]], expected: [[0, 7], [2, 7], [1, 6]], label: 'Other Problematic 1' },
+            { x: 2, y: 1, walls: [[''.concat(3).concat(3), 0]], expected: [[1, 1], [3, 1], [2, 0]], label: 'Other Problematic 2' },
         ];
 
         testSet.forEach((t) => {
@@ -169,18 +176,21 @@ describe('AStar', () => {
 
     describe('should correctly calculate the heuristic', () => {
         test('should return 0 when the start and goal are the same', () => {
+            board[1][1] = 1;
             const aStar = new AStar(board, true, true, []);
             const heuristic = aStar.heuristic([1, 1], [1, 1]);
             chai.expect(heuristic).to.equal(0);
         });
 
         test('should return 1 when the start and goal are adjacent', () => {
+            board[1][1] = 1;
             const aStar = new AStar(board, true, true, []);
             const heuristic = aStar.heuristic([1, 2], [1, 1]);
             chai.expect(heuristic).to.equal(1);
         });
 
         test('should return 2 when the start and goal are diagonal', () => {
+            board[1][1] = 1;
             const aStar = new AStar(board, true, true, []);
             const heuristic = aStar.heuristic([2, 2], [1, 1]);
             chai.expect(heuristic).to.equal(2);
@@ -331,30 +341,119 @@ describe('nextMove', () => {
         opponentWalls = [];
     });
 
-    test('should return a move as player 1', () => {
+    test('when other player is not visible, should return a move as player 1', async () => {
         setup(1);
         board[5][0] = 1;
+        let move = await nextMove({ board: board, ownWalls: [], opponentWalls: [] });
+        chai.expect(move).to.be.an('object');
+        chai.expect(move).to.have.property('action');
+        chai.expect(move).to.have.property('value');
+        chai.expect(move.action).to.be.oneOf(['move']);
+    });
+
+    test('when other player is not visible, should return a move as player 2', async () => {
+        setup(2);
+        board[5][8] = 1;
+        let move = await nextMove({ board: board, ownWalls: [], opponentWalls: [] });
+        chai.expect(move).to.be.an('object');
+        chai.expect(move).to.have.property('action');
+        chai.expect(move).to.have.property('value');
+        chai.expect(move.action).to.be.oneOf(['move']);
+    });
+
+    test("when other player is visible and isn't winning, should return a move as player 1", async () => {
+        setup(1);
+        board[5][3] = 1;
+        board[6][8] = 2;
+        let move = await nextMove({ board: board, ownWalls: [], opponentWalls: [] });
+        chai.expect(move).to.be.an('object');
+        chai.expect(move).to.have.property('action');
+        chai.expect(move).to.have.property('value');
+        chai.expect(move.action).to.be.oneOf(['move']);
+    });
+
+    test("when other player is visible and isn't winning, should return a move as player 2", () => {
+        setup(1);
+        board[5][0] = 1;
+        board[6][5] = 2;
         let move = nextMove({ board: board, ownWalls: [], opponentWalls: [] });
         move.then((m) => {
             console.log(m);
             chai.expect(m).to.be.an('object');
             chai.expect(m).to.have.property('action');
             chai.expect(m).to.have.property('value');
-            chai.expect(m.action).to.be.oneOf(['move', 'wall']);
+            chai.expect(m.action).to.be.oneOf(['move']);
         });
     });
 
-    test('should return a move as player 2', () => {
-        setup(2);
-        board[5][8] = 1;
-        board[5][0] = 2;
+    test('when other player is visible and is winning, should return a wall as player 1', () => {
+        setup(1);
+        board[5][0] = 1;
+        board[6][5] = 2;
         let move = nextMove({ board: board, ownWalls: [], opponentWalls: [] });
         move.then((m) => {
             console.log(m);
             chai.expect(m).to.be.an('object');
             chai.expect(m).to.have.property('action');
             chai.expect(m).to.have.property('value');
-            chai.expect(m.action).to.be.oneOf(['move', 'wall']);
+            chai.expect(m.action).to.be.oneOf(['wall']);
+        });
+    });
+
+    test('when other player is visible and is winning, should return a wall as player 2', () => {
+        setup(2);
+        board[5][3] = 1;
+        board[6][8] = 2;
+        let move = nextMove({ board: board, ownWalls: [], opponentWalls: [] });
+        move.then((m) => {
+            console.log(m);
+            chai.expect(m).to.be.an('object');
+            chai.expect(m).to.have.property('action');
+            chai.expect(m).to.have.property('value');
+            chai.expect(m.action).to.be.oneOf(['wall']);
+        });
+    });
+
+    // prettier-ignore
+    let testSet = [
+        { x: 5, y: 5, walls: [], expected: [[5, 4], [5, 6], [4, 5], [6, 5]], label: 'No walls' },
+
+        // Edges
+        { x: 1, y: 5, walls: [], expected: [[0, 4], [0, 6], [1, 5]], label: 'Left Edge' },
+        { x: 9, y: 5, walls: [], expected: [[8, 4], [8, 6], [7, 5]], label: 'Right Edge' },
+        { x: 5, y: 1, walls: [], expected: [[5, 1], [4, 0], [6, 0]], label: 'Top Edge' },
+        { x: 5, y: 9, walls: [], expected: [[5, 7], [4, 8], [6, 8]], label: 'Bottom Edge' },
+
+        // Normal Walls
+        { x: 5, y: 5, walls: [[''.concat(5).concat(5), 0]], expected: [[4, 5], [6, 5], [5, 6]], label: 'Bottom Right Wall' },
+        { x: 5, y: 5, walls: [[''.concat(5).concat(6), 0]], expected: [[4, 5], [6, 5], [5, 4]], label: 'Top Right Wall' },
+        { x: 5, y: 5, walls: [[''.concat(5).concat(5), 1]], expected: [[4, 5], [5, 6], [5, 4]], label: 'Right Bottom Wall' },
+        { x: 5, y: 5, walls: [[''.concat(4).concat(5), 1]], expected: [[5, 4], [6, 5], [5, 6]], label: 'Left Bottom Wall' },
+
+        // "Overhanging" Walls
+        { x: 5, y: 5, walls: [[''.concat(4).concat(5), 0]], expected: [[4, 5], [6, 5], [5, 6]], label: 'Bottom Left Wall' },
+        { x: 5, y: 5, walls: [[''.concat(4).concat(6), 0]], expected: [[4, 5], [6, 5], [5, 4]], label: 'Top Left Wall' },
+        { x: 5, y: 5, walls: [[''.concat(5).concat(6), 1]], expected: [[4, 5], [5, 6], [5, 4]], label: 'Right Top Wall' },
+        { x: 5, y: 5, walls: [[''.concat(4).concat(6), 1]], expected: [[5, 4], [6, 5], [5, 6]], label: 'Left Top Wall' },
+
+        // Walls on the edges TODO
+
+        // Other
+        { x: 2, y: 8, walls: [[''.concat(1).concat(9), 0]], expected: [[1, 8], [3, 8], [2, 7]], label: 'Other Problematic 1' },
+        { x: 3, y: 2, walls: [[''.concat(3).concat(3), 0]], expected: [[2, 2], [4, 2], [3, 1]], label: 'Other Problematic 2' },
+    ];
+
+    testSet.forEach((t) => {
+        test(`should return ${t.expected.length} neighbors with ${t.walls} (${t.label})`, async () => {
+            setup(1);
+            board[t.x - 1][t.y - 1] = 1;
+            let move = await nextMove({ board: board, ownWalls: t.walls, opponentWalls: [] });
+            chai.expect(move).to.be.an('object');
+            chai.expect(move).to.have.property('action');
+            chai.expect(move).to.have.property('value');
+            chai.expect(move.action).to.be.oneOf(['move']);
+            chai.expect(move.value).to.be.an('string');
+            chai.expect(t.expected.map((x) => x.join(''))).to.deep.include(move.value);
         });
     });
 });

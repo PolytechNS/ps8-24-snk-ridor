@@ -39,7 +39,7 @@ class Logger {
     }
 
     static log(message: string) {
-        // console.log(new Date().getTime(), message);
+        console.log(new Date().getTime(), message);
         if (logger !== undefined) {
             logger._log(message);
         }
@@ -52,7 +52,7 @@ let logger: Logger;
 // === START OF AI ===
 
 function setup(AIplay: number): Promise<string> {
-    //logger = new Logger();
+    // logger = new Logger();
 
     globalState = {
         firstPlayer: AIplay === 1,
@@ -78,17 +78,21 @@ function setup(AIplay: number): Promise<string> {
 function nextMove(gameState: GameState): Promise<Action> {
     globalState.stateHistory.push(gameState);
 
+    Logger.log(`Game state: ${JSON.stringify(gameState)}`);
+
     if (getPlayerCoordinates(gameState.board, globalState.opponent) !== null) {
         let wall = optimal_wall(gameState);
 
-        if (wall) {
+        if (wall !== undefined && wall !== null) {
             return new Promise((resolve) => {
+                Logger.log(`Wall: ${JSON.stringify(wall)}`);
                 resolve(wall);
             });
         }
     }
 
     return new Promise((resolve) => {
+        Logger.log('Optimal move');
         resolve(optimal_move(gameState));
     });
 }
@@ -98,6 +102,12 @@ function optimal_move(gameState: GameState): Action {
 
     let path = aStar.search()[1];
 
+    if (path === undefined) {
+        throw new Error('No path found');
+    }
+
+    Logger.log(`Move: ${path[0] + 1}${path[1] + 1}`);
+
     return { action: 'move', value: `${path[0] + 1}${path[1] + 1}` };
 }
 
@@ -106,11 +116,11 @@ function optimal_wall(gameState: GameState): Action | undefined {
     let possibleWalls = getPossibleWallPositions(allWalls);
 
     let bestWall: [string, number] = possibleWalls[0];
-    let diffNumMovesTillWin = getNumberOfTurnsTillGoal(gameState.board, true, globalState.firstPlayer, allWalls) - getNumberOfTurnsTillGoal(gameState.board, false, !globalState.firstPlayer, allWalls);
+    let diffNumMovesTillWin = getNumTurnsDiff(gameState.board, globalState.firstPlayer, allWalls);
 
     for (let wall of possibleWalls) {
         let newWalls = allWalls.concat([wall]);
-        let diff = getNumberOfTurnsTillGoal(gameState.board, true, globalState.firstPlayer, newWalls) - getNumberOfTurnsTillGoal(gameState.board, false, !globalState.firstPlayer, allWalls);
+        let diff = getNumTurnsDiff(gameState.board, globalState.firstPlayer, newWalls);
 
         if (diffNumMovesTillWin < diff) {
             diffNumMovesTillWin = diff;
@@ -154,7 +164,7 @@ function getPlayerCoordinates(board: number[][], player: number): [number, numbe
 
 function getWallAtCoordinates(walls: [string, number][], x: number, y: number, orientation: number): [string, number] {
     for (let i = 0; i < walls.length; i++) {
-        if (walls[i][0] === `${x + 1}${y + 1}` && walls[i][1] === orientation) {
+        if (walls[i][0] === `${x}${y}` && walls[i][1] === orientation) {
             return walls[i];
         }
     }
@@ -184,6 +194,13 @@ function getNumberOfTurnsTillGoal(board: number[][], me: boolean, firstPlayer: b
     return path.length - 1;
 }
 
+function getNumTurnsDiff(board: number[][], firstPlayer: boolean, walls: [string, number][]): number {
+    // return 0 if player 1 and 2 are at the same amount of turns to goal
+    // return -x if the player 2 is x turns closer to the goal
+    // return x if the player 1 is x turns closer to the goal
+    return getNumberOfTurnsTillGoal(board, true, firstPlayer, walls) - getNumberOfTurnsTillGoal(board, false, !firstPlayer, walls);
+}
+
 // === A* ===
 
 class AStar {
@@ -197,11 +214,16 @@ class AStar {
         this.walls = walls;
 
         this.start = getPlayerCoordinates(board, me ? 1 : 2);
+        Logger.log(`Start: ${JSON.stringify(this.start)}`);
 
-        if (!firstPlayer) {
-            this.goals = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]]; // prettier-ignore
-        } else {
+        if (this.start === null) {
+            throw new Error('AStar: Start position not found!');
+        }
+
+        if (firstPlayer) {
             this.goals = [[0, 8], [1, 8], [2, 8], [3, 8], [4, 8], [5, 8], [6, 8], [7, 8], [8, 8]]; // prettier-ignore
+        } else {
+            this.goals = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0]]; // prettier-ignore
         }
     }
 
@@ -219,8 +241,8 @@ class AStar {
             // prettier-ignore
             if (
                 !(
-                    y > 0 && getWallAtCoordinates(this.walls, x - 1, y, Direction.VERTICAL) ||
-                    y < 8 && getWallAtCoordinates(this.walls, x - 1, y + 1, Direction.VERTICAL)
+                    y > 0 && getWallAtCoordinates(this.walls, (x+1) - 1, y, Direction.VERTICAL) ||
+                    y < 8 && getWallAtCoordinates(this.walls, (x+1) - 1, y + 1, Direction.VERTICAL)
                 )
             ) {
                 ret.push([x - 1, y]);
@@ -232,8 +254,8 @@ class AStar {
             // prettier-ignore
             if (
                 !(
-                    y > 0 && getWallAtCoordinates(this.walls, x, y, Direction.VERTICAL) ||
-                    y < 8 && getWallAtCoordinates(this.walls, x, y + 1, Direction.VERTICAL)
+                    y > 0 && getWallAtCoordinates(this.walls, (x+1), y, Direction.VERTICAL) ||
+                    y < 8 && getWallAtCoordinates(this.walls, (x+1), y + 1, Direction.VERTICAL)
                 )
             ) {
                 ret.push([x + 1, y]);
@@ -245,8 +267,8 @@ class AStar {
             // prettier-ignore
             if (
                 !(
-                    x > 0 && getWallAtCoordinates(this.walls, x - 1, y + 1, Direction.HORIZONTAL) ||
-                    x < 8 && getWallAtCoordinates(this.walls, x, y + 1, Direction.HORIZONTAL)
+                    x > 0 && getWallAtCoordinates(this.walls, (x+1) - 1, y + 1, Direction.HORIZONTAL) ||
+                    x < 8 && getWallAtCoordinates(this.walls, (x+1), y + 1, Direction.HORIZONTAL)
                 )
             ) {
                 ret.push([x, y + 1]);
@@ -258,8 +280,8 @@ class AStar {
             // prettier-ignore
             if (
                 !(
-                    x > 0 && getWallAtCoordinates(this.walls, x - 1, y, Direction.HORIZONTAL) ||
-                    x < 8 && getWallAtCoordinates(this.walls, x, y, Direction.HORIZONTAL)
+                    x > 0 && getWallAtCoordinates(this.walls, (x+1) - 1, y, Direction.HORIZONTAL) ||
+                    x < 8 && getWallAtCoordinates(this.walls, (x+1), y, Direction.HORIZONTAL)
                 )
             ) {
                 ret.push([x, y - 1]);
@@ -320,16 +342,22 @@ class AStar {
         let totalPath: [number, number][] = [current];
         let currentStr = `${current[0]}${current[1]}`;
 
+        let recur_depth = 0;
+
         while (cameFrom[currentStr]) {
             current = cameFrom[currentStr];
             currentStr = `${current[0]}${current[1]}`;
             totalPath.push(current);
+
             if (currentStr === `${this.start[0]}${this.start[1]}`) {
                 break;
             }
         }
 
-        return totalPath.reverse();
+        let path = totalPath.reverse();
+        Logger.log(`Reconstructed path: ${JSON.stringify(path)}`);
+
+        return path;
     }
 }
 
