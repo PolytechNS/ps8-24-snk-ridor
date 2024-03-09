@@ -22,40 +22,12 @@ enum Direction {
     VERTICAL = 1,
 }
 
-class Logger {
-    server: string = 'https://logs.ozeliurs.com';
-    session: string;
-
-    constructor() {
-        this.session = Math.random().toString(36).substring(7);
-    }
-
-    _log(message: string) {
-        const { exec, spawn } = require('child_process');
-
-        let data = JSON.stringify({ message: message, timestamp: new Date().getTime() });
-
-        exec('curl -X POST -H "Content-Type: application/json" -d \'' + data + "' " + this.server + '/log/' + this.session);
-        // spawn('curl', ['-X', 'POST', '-H', 'Content-Type: application/json', '-d', data, this.server + '/log/' + this.session]);
-    }
-
-    static log(message: string) {
-        console.log(new Date().getTime(), message);
-        if (logger !== undefined) {
-            logger._log(message);
-        }
-    }
-}
-
 let globalState: State;
-let logger: Logger;
 
 // === START OF AI ===
 
 function setup(AIplay: number): Promise<string> {
     // logger = new Logger();
-    Logger.log('Setup');
-
     globalState = {
         firstPlayer: AIplay === 1,
         player: 1,
@@ -82,24 +54,16 @@ function nextMove(gameState: GameState): Promise<Action> {
     globalState.stateHistory.push(gameState);
     globalState.turncount += 1;
 
-    Logger.log(JSON.stringify(gameState));
-
     if (getPlayerCoordinates(gameState.board, globalState.opponent) === null && globalState.turncount > 5) {
-        Logger.log('Opponent position not found, finding this motherfucker');
         let pos = guessPlayerPosition(gameState);
-        Logger.log(`Opponent found at ${JSON.stringify(pos)}.`);
         gameState.board[pos[0]][pos[1]] = 2;
     }
 
     if (getPlayerCoordinates(gameState.board, globalState.opponent) !== null) {
-        Logger.log('Opponent position found, placing a wall to fuck him up');
         if (gameState.ownWalls.length < 10) {
-            Logger.log("We have ammunition left, let's gooooooo !!!!!!!");
             let wall = optimal_wall(gameState);
 
-            Logger.log(`optimal_wall(gameState) = ${JSON.stringify(wall)}`);
-
-            if (wall !== undefined && wall !== null) {
+            if (wall !== undefined && wall !== null && wall.action !== undefined && wall.value !== undefined) {
                 return new Promise((resolve) => {
                     resolve(wall);
                 });
@@ -108,7 +72,8 @@ function nextMove(gameState: GameState): Promise<Action> {
     }
 
     return new Promise((resolve) => {
-        resolve(optimal_move(gameState));
+        let move = optimal_move(gameState);
+        resolve(move);
     });
 }
 
@@ -118,7 +83,7 @@ function optimal_move(gameState: GameState): Action {
     let path = aStar.search()[1];
 
     if (path === undefined) {
-        throw new Error('No path found');
+        return { action: 'move', value: '00' };
     }
 
     return { action: 'move', value: `${path[0] + 1}${path[1] + 1}` };
@@ -131,8 +96,6 @@ function optimal_wall(gameState: GameState): Action | undefined {
     let bestWall: [string, number] = possibleWalls[0];
     let diffNumMovesTillWin = getNumTurnsDiff(gameState.board, globalState.firstPlayer, allWalls);
     let diffNumMovesTillWinSave = diffNumMovesTillWin;
-
-    Logger.log(`getNumTurnsDiff(gameState.board, globalState.firstPlayer, allWalls) = ${diffNumMovesTillWin}`);
 
     let w = [];
 
@@ -149,13 +112,9 @@ function optimal_wall(gameState: GameState): Action | undefined {
         }
     }
 
-    Logger.log(JSON.stringify(w));
-
     if (diffNumMovesTillWin >= -1) {
         return;
     }
-
-    Logger.log(`Placing wall at ${bestWall[0]} with orientation ${bestWall[1]} will result in a difference of ${diffNumMovesTillWinSave} -> ${diffNumMovesTillWin}`);
 
     return { action: 'wall', value: bestWall };
 }
