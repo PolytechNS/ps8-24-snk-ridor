@@ -14,6 +14,7 @@ class State {
     player?: number;
     opponent?: number;
     stateHistory?: GameState[];
+    turncount: number;
 }
 
 enum Direction {
@@ -53,12 +54,14 @@ let logger: Logger;
 
 function setup(AIplay: number): Promise<string> {
     // logger = new Logger();
+    Logger.log('Setup');
 
     globalState = {
         firstPlayer: AIplay === 1,
         player: 1,
         opponent: 2,
         stateHistory: [],
+        turncount: 0,
     };
 
     let column = Math.ceil(Math.random() * 9);
@@ -77,22 +80,34 @@ function setup(AIplay: number): Promise<string> {
 
 function nextMove(gameState: GameState): Promise<Action> {
     globalState.stateHistory.push(gameState);
+    globalState.turncount += 1;
 
-    Logger.log(`Game state: ${JSON.stringify(gameState)}`);
+    Logger.log(JSON.stringify(gameState));
+
+    if (getPlayerCoordinates(gameState.board, globalState.opponent) === null && globalState.turncount > 5) {
+        Logger.log('Opponent position not found, finding this motherfucker');
+        let pos = guessPlayerPosition(gameState);
+        Logger.log(`Opponent found at ${JSON.stringify(pos)}.`);
+        gameState.board[pos[0]][pos[1]] = 2;
+    }
 
     if (getPlayerCoordinates(gameState.board, globalState.opponent) !== null) {
-        let wall = optimal_wall(gameState);
+        Logger.log('Opponent position found, placing a wall to fuck him up');
+        if (gameState.ownWalls.length < 10) {
+            Logger.log("We have ammunition left, let's gooooooo !!!!!!!");
+            let wall = optimal_wall(gameState);
 
-        if (wall !== undefined && wall !== null) {
-            return new Promise((resolve) => {
-                Logger.log(`Wall: ${JSON.stringify(wall)}`);
-                resolve(wall);
-            });
+            Logger.log(`optimal_wall(gameState) = ${JSON.stringify(wall)}`);
+
+            if (wall !== undefined && wall !== null) {
+                return new Promise((resolve) => {
+                    resolve(wall);
+                });
+            }
         }
     }
 
     return new Promise((resolve) => {
-        Logger.log('Optimal move');
         resolve(optimal_move(gameState));
     });
 }
@@ -106,8 +121,6 @@ function optimal_move(gameState: GameState): Action {
         throw new Error('No path found');
     }
 
-    Logger.log(`Move: ${path[0]}${path[1]}`);
-
     return { action: 'move', value: `${path[0] + 1}${path[1] + 1}` };
 }
 
@@ -117,20 +130,32 @@ function optimal_wall(gameState: GameState): Action | undefined {
 
     let bestWall: [string, number] = possibleWalls[0];
     let diffNumMovesTillWin = getNumTurnsDiff(gameState.board, globalState.firstPlayer, allWalls);
+    let diffNumMovesTillWinSave = diffNumMovesTillWin;
+
+    Logger.log(`getNumTurnsDiff(gameState.board, globalState.firstPlayer, allWalls) = ${diffNumMovesTillWin}`);
+
+    let w = [];
 
     for (let wall of possibleWalls) {
         let newWalls = allWalls.concat([wall]);
         let diff = getNumTurnsDiff(gameState.board, globalState.firstPlayer, newWalls);
 
-        if (diffNumMovesTillWin < diff) {
+        w.push({ wall, diff });
+
+        // Maximize the difference
+        if (diff < diffNumMovesTillWin) {
             diffNumMovesTillWin = diff;
             bestWall = wall;
         }
     }
 
-    if (diffNumMovesTillWin <= 1) {
+    Logger.log(JSON.stringify(w));
+
+    if (diffNumMovesTillWin >= -1) {
         return;
     }
+
+    Logger.log(`Placing wall at ${bestWall[0]} with orientation ${bestWall[1]} will result in a difference of ${diffNumMovesTillWinSave} -> ${diffNumMovesTillWin}`);
 
     return { action: 'wall', value: bestWall };
 }
@@ -147,6 +172,131 @@ function updateBoard(gameState: GameState): Promise<boolean> {
     return new Promise((resolve) => {
         resolve(true);
     });
+}
+
+function calculateFOW(gameState: GameState): number[][] {
+    let vert_filter = [
+        [0, 0],
+        [-1, 0],
+        [0, 1],
+        [1, 0],
+        [0, -1],
+        [-1, -1],
+        [0, -2],
+        [1, -1],
+    ];
+
+    let horiz_filter = [
+        [0, 0],
+        [0, 1],
+        [-1, 0],
+        [0, -1],
+        [1, 0],
+        [1, 1],
+        [2, 0],
+        [1, -1],
+    ];
+
+    let base_board: number[][];
+
+    if (globalState.firstPlayer) {
+        base_board = [
+            [0, 0, 0, 0, 0, -1, -1, -1, -1],
+            [0, 0, 0, 0, 0, -1, -1, -1, -1],
+            [0, 0, 0, 0, 0, -1, -1, -1, -1],
+            [0, 0, 0, 0, 0, -1, -1, -1, -1],
+            [0, 0, 0, 0, 0, -1, -1, -1, -1],
+            [0, 0, 0, 0, 0, -1, -1, -1, -1],
+            [0, 0, 0, 0, 0, -1, -1, -1, -1],
+            [0, 0, 0, 0, 0, -1, -1, -1, -1],
+            [0, 0, 0, 0, 0, -1, -1, -1, -1],
+        ];
+    } else {
+        base_board = [
+            [-1, -1, -1, -1, 0, 0, 0, 0, 0],
+            [-1, -1, -1, -1, 0, 0, 0, 0, 0],
+            [-1, -1, -1, -1, 0, 0, 0, 0, 0],
+            [-1, -1, -1, -1, 0, 0, 0, 0, 0],
+            [-1, -1, -1, -1, 0, 0, 0, 0, 0],
+            [-1, -1, -1, -1, 0, 0, 0, 0, 0],
+            [-1, -1, -1, -1, 0, 0, 0, 0, 0],
+            [-1, -1, -1, -1, 0, 0, 0, 0, 0],
+            [-1, -1, -1, -1, 0, 0, 0, 0, 0],
+        ];
+    }
+
+    for (let wall of gameState.opponentWalls.concat(gameState.ownWalls)) {
+        let modifier: number;
+
+        if (gameState.opponentWalls.includes(wall)) {
+            modifier = -1;
+        }
+
+        if (gameState.ownWalls.includes(wall)) {
+            modifier = 1;
+        }
+
+        for (let ownWall of gameState.ownWalls) {
+            let fil: number[][];
+            if (ownWall[1] === Direction.HORIZONTAL) {
+                fil = horiz_filter;
+            }
+
+            if (ownWall[1] === Direction.VERTICAL) {
+                fil = vert_filter;
+            }
+
+            for (let filter of fil) {
+                let x = parseInt(ownWall[0][0]) + filter[0];
+                let y = parseInt(ownWall[0][1]) + filter[1];
+
+                if (x >= 0 && x < 9 && y >= 0 && y < 9) {
+                    base_board[x][y] += modifier;
+                }
+            }
+        }
+    }
+
+    // find player 1 position and apply a +1 all around
+    let [x, y] = getPlayerCoordinates(gameState.board, 1);
+    let filter = [
+        [0, 0],
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+    ];
+
+    for (let f of filter) {
+        let x_ = x + f[0];
+        let y_ = y + f[1];
+
+        if (x_ >= 0 && x_ < 9 && y_ >= 0 && y_ < 9) {
+            base_board[x_][y_] += 1;
+        }
+    }
+
+    return base_board;
+}
+
+function guessPlayerPosition(gameState: GameState): [number, number] {
+    // Guess the player position based on the FOW
+    let fow = calculateFOW(gameState);
+    let max = 0;
+    let x = 0;
+    let y = 0;
+
+    for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+            if (fow[i][j] > max) {
+                max = fow[i][j];
+                x = i;
+                y = j;
+            }
+        }
+    }
+
+    return [x, y];
 }
 
 // === END OF AI ===
@@ -214,7 +364,6 @@ class AStar {
         this.walls = walls;
 
         this.start = getPlayerCoordinates(board, me ? 1 : 2);
-        Logger.log(`Start: ${JSON.stringify(this.start)}`);
 
         if (this.start === null) {
             throw new Error('AStar: Start position not found!');
@@ -239,9 +388,7 @@ class AStar {
         // Left
         if (x > 0) {
             // prettier-ignore
-            Logger.log(`Checking Wall at ${(x + 1) - 1}, ${(y + 1)}, ${Direction.VERTICAL})} and ${(x + 1) - 1}, ${(y + 1) + 1}, ${Direction.VERTICAL})`);
             if (!((y > 0 && getWallAtCoordinates(this.walls, x + 1 - 1, y + 1, Direction.VERTICAL)) || (y < 8 && getWallAtCoordinates(this.walls, x + 1 - 1, y + 1 + 1, Direction.VERTICAL)))) {
-                Logger.log('Left');
                 ret.push([x - 1, y]);
             }
         }
@@ -249,9 +396,7 @@ class AStar {
         // Right
         if (x < 8) {
             // prettier-ignore
-            Logger.log(`Checking Wall at ${(x + 1)}, ${(y + 1)}, ${Direction.VERTICAL})} and ${(x + 1)}, ${(y + 1) + 1}, ${Direction.VERTICAL})`);
             if (!((y > 0 && getWallAtCoordinates(this.walls, x + 1, y + 1, Direction.VERTICAL)) || (y < 8 && getWallAtCoordinates(this.walls, x + 1, y + 1 + 1, Direction.VERTICAL)))) {
-                Logger.log('Right');
                 ret.push([x + 1, y]);
             }
         }
@@ -259,9 +404,7 @@ class AStar {
         // Up
         if (y < 8) {
             // prettier-ignore
-            Logger.log(`Checking Wall at ${(x + 1) - 1}, ${(y + 1) + 1}, ${Direction.HORIZONTAL})} and ${(x + 1)}, ${(y + 1) + 1}, ${Direction.HORIZONTAL})`);
             if (!((x > 0 && getWallAtCoordinates(this.walls, x + 1 - 1, y + 1 + 1, Direction.HORIZONTAL)) || (x < 8 && getWallAtCoordinates(this.walls, x + 1, y + 1 + 1, Direction.HORIZONTAL)))) {
-                Logger.log('Up');
                 ret.push([x, y + 1]);
             }
         }
@@ -269,14 +412,10 @@ class AStar {
         // Down
         if (y > 0) {
             // prettier-ignore
-            Logger.log(`Checking Wall at ${(x + 1) - 1}, ${(y + 1)}, ${Direction.HORIZONTAL})} and ${(x + 1)}, ${(y + 1)}, ${Direction.HORIZONTAL})`);
             if (!((x > 0 && getWallAtCoordinates(this.walls, x + 1 - 1, y + 1, Direction.HORIZONTAL)) || (x < 8 && getWallAtCoordinates(this.walls, x + 1, y + 1, Direction.HORIZONTAL)))) {
-                Logger.log('Down');
                 ret.push([x, y - 1]);
             }
         }
-
-        Logger.log(`Neighbors of ${x}${y}: ${JSON.stringify(ret)}`);
 
         return ret;
     }
@@ -345,7 +484,6 @@ class AStar {
         }
 
         let path = totalPath.reverse();
-        Logger.log(`Reconstructed path: ${JSON.stringify(path)}`);
 
         return path;
     }
@@ -353,4 +491,4 @@ class AStar {
 
 // === END OF A* ===
 
-export { setup, nextMove, correction, updateBoard, AStar, getWallAtCoordinates, getPossibleWallPositions, getNumberOfTurnsTillGoal };
+export { setup, nextMove, correction, updateBoard, AStar, getWallAtCoordinates, getPossibleWallPositions, getNumberOfTurnsTillGoal, getNumTurnsDiff };

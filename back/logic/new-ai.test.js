@@ -1,4 +1,4 @@
-const { AStar, getPossibleWallPositions, getNumberOfTurnsTillGoal, nextMove, setup } = require('./new-ai');
+const { AStar, getPossibleWallPositions, getNumberOfTurnsTillGoal, nextMove, setup, getNumTurnsDiff } = require('./new-ai');
 const { describe, test } = require('mocha');
 const { performance } = require('node:perf_hooks');
 const chai = require('chai');
@@ -74,6 +74,62 @@ describe('getNumberOfTurnsTillGoal', () => {
         board[0][0] = 1;
         const turns = getNumberOfTurnsTillGoal(board, true, true, []);
         chai.expect(turns).to.equal(8);
+    });
+});
+
+describe('getNumTurnsDiff', () => {
+    let board;
+
+    beforeEach(() => {
+        board = getBoard();
+    });
+
+    test('should return 0 when there is a tie', () => {
+        board[1][1] = 1;
+        board[7][7] = 2;
+
+        const turns = getNumTurnsDiff(board, true, []);
+        chai.expect(turns).to.equal(0);
+    });
+
+    test('should return 1 when player 1 is winning by one turn', () => {
+        board[1][1] = 1;
+        board[7][6] = 2;
+
+        const turns = getNumTurnsDiff(board, true, []);
+        chai.expect(turns).to.equal(1);
+    });
+
+    test('should return -1 when player 2 is winning by one turn', () => {
+        board[1][2] = 1;
+        board[7][7] = 2;
+
+        const turns = getNumTurnsDiff(board, true, []);
+        chai.expect(turns).to.equal(-1);
+    });
+
+    test('should return -1 when player 2 is winning by one turn', () => {
+        board[1][1] = 2;
+        board[7][6] = 1;
+
+        const turns = getNumTurnsDiff(board, false, []);
+        chai.expect(turns).to.equal(-1);
+    });
+
+    test('should return 2 when player 1 is winning by two turns', () => {
+        board[1][1] = 1;
+        board[7][5] = 2;
+
+        const turns = getNumTurnsDiff(board, true, []);
+        chai.expect(turns).to.equal(2);
+    });
+
+    test('should return -2 when player 2 is winning by two turns', () => {
+        board[1][3] = 1;
+        board[7][7] = 2;
+
+        const turns = getNumTurnsDiff(board, true, []);
+        chai.expect(turns).to.equal(-2);
     });
 });
 
@@ -445,13 +501,39 @@ describe('nextMove', () => {
         test(`should return ${t.expected.length} neighbors with ${t.walls} (${t.label})`, async () => {
             setup(1);
             board[t.x][t.y] = 1;
-            let move = await nextMove({ board: board, ownWalls: t.walls, opponentWalls: [] });
+            let move = await nextMove({ board: board, ownWalls: [], opponentWalls: t.walls });
             chai.expect(move).to.be.an('object');
             chai.expect(move).to.have.property('action');
             chai.expect(move).to.have.property('value');
             chai.expect(move.action).to.be.oneOf(['move']);
             chai.expect(move.value).to.be.an('string');
             chai.expect(t.expected.map((x) => x.join(''))).to.deep.include(`${move.value[0] - 1}${move.value[1] - 1}`);
+        });
+    });
+
+    describe('fuzzing', () => {
+        // Fuzzing Test
+        let fuzzSet = Array.from({ length: 1000 }, () => {
+            return {
+                p1pos: [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)],
+                p2pos: [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)],
+                walls: Array.from({ length: Math.ceil(Math.random() * 18) }, () => {
+                    return [`${Math.floor(Math.random() * 9)}${Math.floor(Math.random() * 9)}`, Math.floor(Math.random() * 2)];
+                }),
+            };
+        });
+
+        fuzzSet.forEach((t) => {
+            test(`should return a valid action (p1: ${t.p1pos}, p2: ${t.p2pos} ${t.walls}) under 20ms`, async () => {
+                setup(1);
+                board[t.p1pos[0]][t.p1pos[1]] = 1;
+                board[t.p2pos[0]][t.p2pos[1]] = 2;
+                let move = await nextMove({ board: board, ownWalls: [], opponentWalls: t.walls });
+                chai.expect(move).to.be.an('object');
+                chai.expect(move).to.have.property('action');
+                chai.expect(move).to.have.property('value');
+                chai.expect(move.action).to.be.oneOf(['move', 'wall']);
+            });
         });
     });
 });
