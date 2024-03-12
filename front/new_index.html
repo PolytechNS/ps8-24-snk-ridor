@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>SNK'ridor</title>
+        <link rel="stylesheet" href="styles/style.css" />
+        <link rel="stylesheet" href="styles/layout.css" />
+        <link rel="stylesheet" href="styles/fogwar.css" />
+        <script type="module" src="js/new_display.js"></script>
+    </head>
+
+    <body>
+        <nav>
+            <a href="home.html"><img src="resources/icon_home.jpg" /></a>
+            <p>Shingeki No Korridor • New index</p>
+            <div id="nav-login">
+                <a class="nav-button" id="login-button" href="/login">Login</a>
+                <a class="nav-button" id="register-button" href="/signup">Register</a>
+            </div>
+        </nav>
+        <aside id="aside-left">
+            <div id="other_profile" class="profile profile_adversaire">
+                <div class="identity">
+                    <image src="resources/persons/humain_annie.png" alt="avatar" class="avatar" />
+                    <a id="other_pseudo">Pseudo</a>
+                </div>
+                <div>Score : <a id="other_score">54 827</a></div>
+                <div class="profile-game-infos">walls : <a class="other_walls" id="other_walls">0</a><br /></div>
+            </div>
+            <div id="self-profile" class="profile profile_self">
+                <div class="identity">
+                    <image src="resources/persons/titan_eren.png" alt="avatar" class="avatar" />
+                    <a id="other_pseudo">Pseudo</a>
+                </div>
+                <div>Score : <a id="self_score">72 845</a></div>
+                <div class="profile-game-infos">walls : <a class="walls" id="self_walls">0</a><br /></div>
+            </div>
+        </aside>
+        <main class="game">
+            <div id="board" class="board"></div>
+            <div id="game-infos" class="game-infos">
+                <a class="container">Au tour du joueur&nbsp;<a id="player">A</a><br /></a>
+                <a class="container">tour&nbsp;<a id="turn">1</a><br /></a>
+                <div class="final_blocker" id="final_div">
+                    <div class="final_message">
+                        <p id="final_message">Victoire du joueur A</p>
+                        <button id="reload">Rejouer</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <aside>
+            <div id="chat">
+                <div id="chatbox">
+                    <div id="chatbox-content">
+                        <!-- démo provisoire des messages, à supprimer quand on aura implémenté la messagerie -->
+                        <div class="message self">coucou le monde</div>
+                        <div class="message">hello world</div>
+                    </div>
+                </div>
+                <div id="chatbox-input">
+                    <input type="text" id="chatbox-input-text" placeholder="Message..." />
+                    <button id="chatbox-input-send">Envoyer</button>
+                </div>
+            </div>
+        </aside>
+        <footer>this is copyright</footer>
+    </body>
+</html>
