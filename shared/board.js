@@ -1,7 +1,3 @@
-import { BoardEvent } from '../back/logic/board/boardEvent';
-import { Action } from '../back/logic/board/action';
-import { findPath } from '../front/js/pathFinding';
-
 export class Board {
     constructor(local_multiplayer = false) {
         this.board = JSON.parse(

@@ -131,6 +131,7 @@ export function display_board(board) {
 }
 
 export function display_initial_board(playerId, board) {
+    console.log('display_initial_board');
     let BOARD_W = board.width();
     let BOARD_H = board.height();
 
