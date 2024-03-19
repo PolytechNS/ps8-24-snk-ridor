@@ -1,13 +1,6 @@
-import { Board } from './board/board.js';
-import {
-    onCellClick,
-    onWallClick,
-    onWallOut,
-    onWallOver,
-    convertCoordinatesToId,
-    convertCoordinatesFromId,
-    onBoardInit
-} from './engine_final.js';
+import { Board } from '../../shared/board.js';
+import { newGame } from '../../shared/engine.js';
+import { onCellClick, onWallClick, onWallOut, onWallOver } from '../../shared/engine.js';
 
 /*
  * Uses the board to display the game board
@@ -18,13 +11,10 @@ import {
  */
 export function display_board(board) {
     // change variabe in css
-    document.documentElement.style.setProperty(
-        '--number-of-row',
-        board.getHeight()
-    );
+    document.documentElement.style.setProperty('--number-of-row', board.height());
 
-    let BOARD_W = board.getWidth();
-    let BOARD_H = board.getHeight();
+    let BOARD_W = board.width();
+    let BOARD_H = board.height();
 
     // reset the board
     let board_div = document.getElementById('board');
@@ -83,61 +73,55 @@ export function display_board(board) {
 
         // display placed walls
         let walls = board.getWalls();
+        let wall;
         for (let i = 0; i < walls.length; i++) {
-            for (let j = 0; j < walls[i].length; j++) {
-                if (walls[i][j] != 0) {
-                    let walls = convertCoordinatesToId(i, j);
-                    for (let w = 0; w < 2; w++) {
-                        // if walls[2] == true then it's a 'v' wall, else it's a 'h' wall
-                        let id = `${(walls[w][2]) ? "v" : "h"}-wall-${walls[w][0]}-${walls[w][1]}`
-                        let wall = document.getElementById(id);
-                        wall.classList.add('placed');
-                    }
+            wall = walls[e];
+            // a wall is composed of two "unit walls"
+            // 1 vertical, 2 horizontal
+            // a wall have the coordinates of the top left cell
 
-                    // set the small wall
-                    let wall = document.getElementById(
-                        's-wall-' + walls[0][0] + '-' + walls[0][1]
-                    );
-                    wall.classList.add('placed');
-                }
+            // if the wall is horizontal
+            if (wall[1] === 0) {
+                //
+            } else if (wall[1] === 1) {
+            } else {
+                throw new Error(`Invalid wall orientation: ${x}, ${y}, ${r}`);
             }
         }
     }
 
     // add the players to the board
-    for (let i = 0; i < 2; i++) {
+    for (let i = 1; i <= 2; i++) {
         // for the two players, create a player and add it to the board
-        let position = board.getPlayer(i).getPosition();
+        let position = board.getPlayerPosition(i);
 
         // if the player is not on the board yet, or hide by fog of war
         // do not display it
-        if (position != null && position != undefined) {
+        if (position[0] != null && position[1] != null && position[0] != undefined && position[1] != undefined) {
             let player = document.createElement('div');
             player.classList.add('player', 'player-' + i);
             player.id = 'player-' + i;
 
             let img = document.createElement('img');
-            img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
+            //img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
+            img.src = 'resources/persons/humain_annie.png';
             img.alt = 'paw ' + i;
             img.classList.add('pawn-avatar');
             player.appendChild(img);
 
             console.log('cell-' + position.y + '-' + position.x);
 
-            let cell = document.getElementById(
-                'cell-' + position.y + '-' + position.x
-            );
+            let cell = document.getElementById('cell-' + position.y + '-' + position.x);
             cell.appendChild(player);
         }
 
         // change the number of walls for the player
         console.log('player-' + (1 + i) + '-profile');
-        let player_profile = document.getElementById(
-            'player-' + (1 + i) + '-profile'
-        );
-        player_profile.getElementsByClassName('walls')[0].textContent = board
-            .getPlayer(i)
-            .remainingWalls();
+        if (i == board.getPlayer) {
+            console.log('player-' + (1 + i) + '-profile');
+        }
+        let player_profile = document.getElementById('player-' + (1 + i) + '-profile');
+        player_profile.getElementsByClassName('walls')[0].textContent = board.getPlayer(i).remainingWalls();
 
         // change the profile picture
         let img = player_profile.getElementsByClassName('avatar')[0];
@@ -166,7 +150,7 @@ export function display_overviews(positions) {
     if (positions == null || positions == undefined || positions.length == 0) {
         return;
     }
-    
+
     for (let i = 0; i < positions.length; i++) {
         let position = positions[i];
         let cell = document.getElementById('cell-' + position.y + '-' + position.x);
@@ -184,23 +168,17 @@ export function wall_over_display(positions, vertical = true) {
         wall.classList.add('wall-over');
     }
     // add the small wall to made the junction
-    document
-        .getElementById('s-wall-' + positions[0].y + '-' + positions[0].x)
-        .classList.add('wall-over');
+    document.getElementById('s-wall-' + positions[0].y + '-' + positions[0].x).classList.add('wall-over');
 }
 
 export function wall_out_display(positions, vertical = true) {
     for (let i = 0; i < positions.length; i++) {
         let position = positions[i];
-        let wall = document.getElementById(
-            (vertical ? 'v' : 'h') + '-wall-' + position.y + '-' + position.x
-        );
+        let wall = document.getElementById((vertical ? 'v' : 'h') + '-wall-' + position.y + '-' + position.x);
         wall.classList.remove('wall-over');
     }
     // remove the small wall that made the junction
-    document
-        .getElementById('s-wall-' + positions[0].y + '-' + positions[0].x)
-        .classList.remove('wall-over');
+    document.getElementById('s-wall-' + positions[0].y + '-' + positions[0].x).classList.remove('wall-over');
 }
 
 /*
@@ -222,7 +200,7 @@ export function display_message(message, { category = 'info_message', timeout = 
     message_div.classList.add('alert', category);
     message_div.textContent = message;
     message_div.style.display = 'block';
-    document.getElementsByTagName("body")[0].appendChild(message_div)
+    document.getElementsByTagName('body')[0].appendChild(message_div);
     if (timeout > 0) {
         setTimeout(function () {
             message_div.style.display = 'none';
@@ -261,7 +239,7 @@ export function display_action_message(message, timeout = 0, buttons = [], cance
     }
     message_div.textContent = message;
     message_div.style.display = 'block';
-    document.getElementsByTagName("body")[0].appendChild(message_div)
+    document.getElementsByTagName('body')[0].appendChild(message_div);
     if (timeout > 0) {
         setTimeout(function () {
             message_div.style.display = 'none';
@@ -271,7 +249,5 @@ export function display_action_message(message, timeout = 0, buttons = [], cance
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    let board = new Board();
-    display_message('Welcome to Quoridor', { timeout: 1000 });
-    onBoardInit(board);
+    newGame('player1', 'player2', true);
 });

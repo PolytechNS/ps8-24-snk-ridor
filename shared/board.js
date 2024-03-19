@@ -1,4 +1,4 @@
-class Board {
+export class Board {
     constructor(local_multiplayer = false) {
         this.board = JSON.parse(
             JSON.stringify(
@@ -21,17 +21,14 @@ class Board {
     }
 
     getCellAt(x, y) {
-        return this.board[x + 1][y + 1];
+        if (x > this.height || y > this.width || x < 1 || y < 1) {
+            throw new Error(`invalid cell coordinates ${x}, ${y}`);
+        }
+        return this.board[x - 1][y - 1];
     }
 
     getWallAt(x, y, r) {
-        if (
-            x < 1 ||
-            x > this.width() + 1 ||
-            y < 1 ||
-            y > this.height() + 1 ||
-            ![0, 1].includes(r)
-        ) {
+        if (x < 1 || x > this.width() + 1 || y < 1 || y > this.height() + 1 || ![0, 1].includes(r)) {
             throw new Error(`Invalid wall position: ${x}, ${y}, ${r}`);
         }
 
@@ -40,17 +37,11 @@ class Board {
             // If x = 1, then there is no wall to the left to check for
             if (x !== 1) {
                 for (let i = 0; i < this.ownWalls.length; i++) {
-                    if (
-                        this.ownWalls[i][0] === `${x - 1}${y}` &&
-                        this.ownWalls[i][1] === r
-                    ) {
+                    if (this.ownWalls[i][0] === `${x - 1}${y}` && this.ownWalls[i][1] === r) {
                         return 1;
                     }
 
-                    if (
-                        this.opponentWalls[i][0] === `${x - 1}${y}` &&
-                        this.opponentWalls[i][1] === r
-                    ) {
+                    if (this.opponentWalls[i][0] === `${x - 1}${y}` && this.opponentWalls[i][1] === r) {
                         return 2;
                     }
                 }
@@ -58,17 +49,11 @@ class Board {
 
             if (x !== this.width()) {
                 for (let i = 0; i < this.ownWalls.length; i++) {
-                    if (
-                        this.ownWalls[i][0] === `${x}${y}` &&
-                        this.ownWalls[i][1] === r
-                    ) {
+                    if (this.ownWalls[i][0] === `${x}${y}` && this.ownWalls[i][1] === r) {
                         return 1;
                     }
 
-                    if (
-                        this.opponentWalls[i][0] === `${x}${y}` &&
-                        this.opponentWalls[i][1] === r
-                    ) {
+                    if (this.opponentWalls[i][0] === `${x}${y}` && this.opponentWalls[i][1] === r) {
                         return 2;
                     }
                 }
@@ -79,17 +64,11 @@ class Board {
         if (r === 1) {
             if (y !== 1) {
                 for (let i = 0; i < this.ownWalls.length; i++) {
-                    if (
-                        this.ownWalls[i][0] === `${x}${y - 1}` &&
-                        this.ownWalls[i][1] === r
-                    ) {
+                    if (this.ownWalls[i][0] === `${x}${y - 1}` && this.ownWalls[i][1] === r) {
                         return 1;
                     }
 
-                    if (
-                        this.opponentWalls[i][0] === `${x}${y - 1}` &&
-                        this.opponentWalls[i][1] === r
-                    ) {
+                    if (this.opponentWalls[i][0] === `${x}${y - 1}` && this.opponentWalls[i][1] === r) {
                         return 2;
                     }
                 }
@@ -97,17 +76,11 @@ class Board {
 
             if (y !== this.height()) {
                 for (let i = 0; i < this.ownWalls.length; i++) {
-                    if (
-                        this.ownWalls[i][0] === `${x}${y}` &&
-                        this.ownWalls[i][1] === r
-                    ) {
+                    if (this.ownWalls[i][0] === `${x}${y}` && this.ownWalls[i][1] === r) {
                         return 1;
                     }
 
-                    if (
-                        this.opponentWalls[i][0] === `${x}${y}` &&
-                        this.opponentWalls[i][1] === r
-                    ) {
+                    if (this.opponentWalls[i][0] === `${x}${y}` && this.opponentWalls[i][1] === r) {
                         return 2;
                     }
                 }
@@ -118,13 +91,7 @@ class Board {
     }
 
     isWallAt(x, y, r) {
-        if (
-            x < 1 ||
-            x > this.width() ||
-            y < 1 ||
-            y > this.height() ||
-            ![0, 1].includes(r)
-        ) {
+        if (x < 1 || x > this.width() || y < 1 || y > this.height() || ![0, 1].includes(r)) {
             throw new Error(`Invalid wall position: ${x}, ${y}, ${r}`);
         }
         return this.getWallAt(x, y, r) !== 0;
@@ -142,81 +109,49 @@ class Board {
     }
 
     placePlayer(playerId, x, y) {
-        if (
-            x < 1 ||
-            x > this.width() ||
-            y < 1 ||
-            y > this.height() ||
-            ![1, 2].includes(playerId)
-        ) {
-            throw new Error(
-                `Invalid player initial position: ${x}, ${y}, ${playerId}`
-            );
+        if (x < 1 || x > this.width() || y < 1 || y > this.height() || ![1, 2].includes(playerId)) {
+            throw new Error(`Invalid player initial position: ${x}, ${y}, ${playerId}`);
         }
-        //if (playerId != )
     }
 
     movePlayer(playerId, x, y) {
-        if (
-            x < 1 ||
-            x > this.width() ||
-            y < 1 ||
-            y > this.height() ||
-            ![1, 2].includes(playerId)
-        ) {
+        if (x < 1 || x > this.width() || y < 1 || y > this.height() || ![1, 2].includes(playerId)) {
             throw new Error(`Invalid player move: ${x}, ${y}, ${playerId}`);
         }
     }
 
     placeWall(playerId, x, y, r) {
-        if (
-            x < 1 ||
-            x > this.width() ||
-            y < 1 ||
-            y > this.height() ||
-            ![0, 1].includes(r) ||
-            ![1, 2].includes(playerId)
-        ) {
-            throw new Error(
-                `Invalid place wall: ${x}, ${y}, ${r}, ${playerId}`
-            );
+        if (x < 1 || x > this.width() || y < 1 || y > this.height() || ![0, 1].includes(r) || ![1, 2].includes(playerId)) {
+            throw new Error(`Invalid place wall: ${x}, ${y}, ${r}, ${playerId}`);
         }
         // Check if the wall is possible
         if (!this.isWallPossibleAt(x, y, r)) return false;
     }
 
     isWallPossibleAt(x, y, r) {
-        if (
-            x < 1 ||
-            x >= this.width() ||
-            y < 1 ||
-            y >= this.height() ||
-            ![0, 1].includes(r)
-        ) {
+        if (x < 1 || x >= this.width() || y < 1 || y >= this.height() || ![0, 1].includes(r)) {
             throw new Error(`Invalid wall position: ${x}, ${y}, ${r}`);
         }
 
         if (r === 0) {
             // mur horizontal
-            if (
-                this.isWallAt(x, y, 0) ||
-                this.isWallAt(x, y, 1) ||
-                this.isWallAt(x + 1, y, 0) ||
-                this.isWallAt(x - 1, y, 0)
-            ) {
+            if (this.isWallAt(x, y, 0) || this.isWallAt(x, y, 1) || this.isWallAt(x + 1, y, 0) || this.isWallAt(x - 1, y, 0)) {
                 return false; //a verif
             }
         } else {
             //mur vertical
-            if (
-                this.isWallAt(x, y, 0) ||
-                this.isWallAt(x, y, 1) ||
-                this.isWallAt(x, y + 1, 1) ||
-                this.isWallAt(x, y - 1, 1)
-            ) {
+            if (this.isWallAt(x, y, 0) || this.isWallAt(x, y, 1) || this.isWallAt(x, y + 1, 1) || this.isWallAt(x, y - 1, 1)) {
                 return false; //a verif
             }
         }
+    }
+
+    getWalls() {
+        return this.ownWalls;
+    }
+
+    getPlayer() {
+        return this.player;
     }
 }
 
@@ -233,11 +168,7 @@ class GameState {
     }
 
     static fromDict(dict) {
-        return new GameState(
-            dict['opponentWalls'],
-            dict['ownWalls'],
-            dict['board']
-        );
+        return new GameState(dict['opponentWalls'], dict['ownWalls'], dict['board']);
     }
 
     static fromBoard(board, player) {
@@ -311,6 +242,8 @@ class GameState {
 }
 
 // Export Board for the frontend and the backend
+/*
 (function (exports) {
     exports.Board = new Board();
 })(typeof exports === 'undefined' ? (this.share = {}) : exports);
+*/
