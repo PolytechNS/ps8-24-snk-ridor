@@ -59,7 +59,7 @@ export function movePlayer(board, player, x, y) {
 
 export function placeWall(board, player, x, y, orientation) {
     board.placeWall(player, x, y, orientation);
-    (0, display_1.display_board)(board);
+    display_board(board);
 }
 
 /* HTML events */

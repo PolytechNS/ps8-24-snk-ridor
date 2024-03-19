@@ -1,3 +1,7 @@
+import { BoardEvent } from '../back/logic/board/boardEvent';
+import { Action } from '../back/logic/board/action';
+import { findPath } from '../front/js/pathFinding';
+
 export class Board {
     constructor(local_multiplayer = false) {
         this.board = JSON.parse(
@@ -120,12 +124,35 @@ export class Board {
         }
     }
 
+    /*
+     * @param {playerId} the id of the player placing the wall
+     * @param {x} the x coordinate of the wall
+     * @param {y} the y coordinate of the wall
+     * @param {r} the orientation of the wall (0 for horizontal, 1 for vertical)
+     * @return {boolean} true if the wall is possible, false otherwise
+     */
     placeWall(playerId, x, y, r) {
+        this.player = playerId;
+        //Check if the player is on the board
+        if (this.getPlayerPosition(this.player)[0] === null) {
+            throw new Error('Player not placed');
+        }
+
         if (x < 1 || x > this.width() || y < 1 || y > this.height() || ![0, 1].includes(r) || ![1, 2].includes(playerId)) {
             throw new Error(`Invalid place wall: ${x}, ${y}, ${r}, ${playerId}`);
         }
+
         // Check if the wall is possible
         if (!this.isWallPossibleAt(x, y, r)) return false;
+
+        // Place the wall
+        if (this.player === 1) {
+            this.ownWalls.push([`${x}${y}`, r]);
+        } else {
+            this.opponentWalls.push([`${x}${y}`, r]);
+        }
+
+        return true;
     }
 
     isWallPossibleAt(x, y, r) {
@@ -136,14 +163,21 @@ export class Board {
         if (r === 0) {
             // mur horizontal
             if (this.isWallAt(x, y, 0) || this.isWallAt(x, y, 1) || this.isWallAt(x + 1, y, 0) || this.isWallAt(x - 1, y, 0)) {
-                return false; //a verif
+                return false;
             }
         } else {
             //mur vertical
             if (this.isWallAt(x, y, 0) || this.isWallAt(x, y, 1) || this.isWallAt(x, y + 1, 1) || this.isWallAt(x, y - 1, 1)) {
-                return false; //a verif
+                return false;
             }
         }
+
+        // Check if the wall is blocking the path
+        if (!findPath(this, this.player)) {
+            return false;
+        }
+
+        return true;
     }
 
     getWalls() {
