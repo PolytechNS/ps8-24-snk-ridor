@@ -1,10 +1,9 @@
-'use strict';
 // engine of quoridor with the new coordinate system
 // 1, 1 is the bottom lext corner, 9, 9 is the top right corner
 // a wall have for coordinates the top left cell coords and the orientation (0 for horizontal, 1 for vertical)
 
 import { Board } from './board.js';
-import { display_board } from '../front/js/display.js';
+import { display_board, display_initial_board, display_message } from '../front/js/display.js';
 
 export class Engine {
     constructor() {
@@ -44,7 +43,9 @@ export function newGame(player1, player2, local1v1) {
         local1v1 = false;
     }
     let board = new Board(local1v1);
-    display_board(board);
+    display_initial_board(1, board);
+    console.log('Nouvelle partie');
+    display_message('Place un joueur sur la ligne 1');
 }
 
 export function initPlayer(board, player, x, y) {
@@ -69,7 +70,7 @@ export function onCellClick(event) {
         .split('-')
         .slice(1)
         .map((x) => parseInt(x));
-    movePlayer(board, 1, coords[0], coords[1]);
+    movePlayer(1, coords[0], coords[1]);
 }
 
 export function onWallClick(event) {

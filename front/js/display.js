@@ -10,9 +10,6 @@ import { onCellClick, onWallClick, onWallOut, onWallOver } from '../../shared/en
  * @side-effect: add event listeners to the cells and walls
  */
 export function display_board(board) {
-    // change variabe in css
-    document.documentElement.style.setProperty('--number-of-row', board.height());
-
     let BOARD_W = board.width();
     let BOARD_H = board.height();
 
@@ -131,6 +128,71 @@ export function display_board(board) {
     // change the turn number
     let turn_number = document.getElementById('turn');
     turn_number.textContent = board.getTurnCount();
+}
+
+export function display_initial_board(playerId, board) {
+    let BOARD_W = board.width();
+    let BOARD_H = board.height();
+
+    // reset the board
+    let board_div = document.getElementById('board');
+    board_div.innerHTML = '';
+
+    // create the cells and walls
+    for (let k = BOARD_W; k > 0; k--) {
+        // for each row, create a line of cells and vertical walls
+        for (let j = 1; j <= BOARD_H; j++) {
+            // create a cell and add it to the board
+            let cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.id = 'cell-' + k + '-' + j;
+            if ((playerId === 1 && k === 1) || (playerId === 2 && k === BOARD_W)) {
+                cell.addEventListener('click', placePlayer);
+            }
+
+            board_div.appendChild(cell);
+
+            // create a vertical wall and add it to the board
+            // if this is not the last column
+            if (j < BOARD_H) {
+                let wall = document.createElement('div');
+                wall.classList.add('v-wall', 'wall');
+                wall.id = 'v-wall-' + k + '-' + j;
+                board_div.appendChild(wall);
+            }
+        }
+
+        // for each row, create a line of horizontal walls and "small walls"
+        for (let j = 1; j <= BOARD_H; j++) {
+            // create a horizontal wall and add it to the board
+            // if this is not the last row
+            if (k < BOARD_W) {
+                let wall = document.createElement('div');
+                wall.classList.add('h-wall', 'wall');
+                wall.id = 'h-wall-' + k + '-' + j;
+                board_div.appendChild(wall);
+            }
+
+            // create a "small wall" and add it to the board
+            // if this is not the last row and the last column
+            if (k < BOARD_W && j < BOARD_H) {
+                let wall = document.createElement('div');
+                wall.classList.add('s-wall', 'wall');
+                wall.id = 's-wall-' + k + '-' + j;
+                board_div.appendChild(wall);
+            }
+        }
+    }
+    document.documentElement.style.setProperty('--board-width', BOARD_W);
+}
+
+function placePlayer(event) {
+    let cell = event.target;
+    let coords = cell.id
+        .split('-')
+        .slice(1)
+        .map((x) => parseInt(x));
+    board.placePlayer(1, coords[0], coords[1]);
 }
 
 function resetOverviews() {
