@@ -1,4 +1,4 @@
-export class Event {
+export class BoardEvent {
     player;
     action;
     position;

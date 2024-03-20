@@ -1,10 +1,21 @@
+import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
+
+// Broadcast Chat
+const socket = io();
+
+socket.connect();
+
+socket.emit('chat', 'Hello world!');
+
 function sendMessage() {
     let input = document.getElementById('chatbox-input-text');
     let message = input.value;
     if (message == '') {
         return;
     }
-    console.log('Message: ' + message);
+
+    socket.emit('chat', message);
+
     let messageElement = document.createElement('div');
     messageElement.className = 'message self';
     messageElement.innerHTML = '<div class="message-content"></div>';
@@ -15,11 +26,13 @@ function sendMessage() {
     input.value = '';
 }
 
-function onChatboxInput(event) {
-    if (event.keyCode == 13) { // && !event.shiftKey  pour ne pas envoyer le message si on appuie sur shift+enter
-        sendMessage();
-    }
-}
-
-document.getElementById('chatbox-input-text').addEventListener('keydown', onChatboxInput);
-document.getElementById('chatbox-input-send').addEventListener('click', sendMessage);
+document
+    .getElementById('chatbox-input-send')
+    .addEventListener('click', sendMessage);
+document
+    .getElementById('chatbox-input-text')
+    .addEventListener('keydown', (event) => {
+        if (event.keyCode === 13) {
+            sendMessage();
+        }
+    });

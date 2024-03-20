@@ -5,6 +5,8 @@ import {
     display_overviews,
     wall_over_display,
     wall_out_display,
+    display_message,
+    display_action_message,
 } from './display.js';
 
 /*
@@ -15,13 +17,43 @@ import {
  * @side-effect: trigger the right action
  */
 export function onCellClick(event) {
-    let cell = event.target;
-    // if the event target is not a cell, it must be a child of a cell
-    // so we get the parent cell (player or move display on the cell)
-    if (!cell.classList.contains('cell')) {
-        cell = cell.parentElement;
+    let target;
+    if (!event.target.classList.contains('wall')) {
+        target = event.target.parentElement;
+    } else {
+        target = event.target;
     }
-    let position = new Position(cell.id.split('-')[1], cell.id.split('-')[2]);
+
+    let position = new Position(target.id.split('-')[2], target.id.split('-')[1]);
+
+    let board = getBoard();
+    // if the player 1 has not placed its pawn yet, we display the possible moves
+    if (board.getPlayer(0).getPosition() == null) {
+
+        placePawn(board.getPlayer(0), position);
+        display_board(board);
+        display_action_message("")
+        display_message('Place the player 2 pawn on the first line', { timeout: 1000 });
+        let overviews = [];
+        for (let i = 0; i < board.getWidth(); i++) {
+            let j = 0;
+            overviews.push(new Position(i, j));
+        }
+        display_overviews(overviews);
+        return;
+    } else {
+        console.log("position 1 : ", board.getPlayer(1).getPosition());
+        // if the player 2 has not placed its pawn yet, we display the possible moves
+        if (board.getPlayer(1).getPosition() == null) {
+            placePawn(board.getPlayer(1), position);
+            display_board(board);
+            display_message('The game can start', { timeout: 1000 });
+            display_overviews();
+            return;
+        }
+        console.log("position 2 : ", board.getPlayer(1).getPosition());
+    }
+
     if (isPlayerOnPosition(position)) {
         display_overviews(getCorridorPossiblePositions(position));
     } else {
@@ -81,21 +113,50 @@ export function onWallClick(event) {
             event.target.id.split('-')[2]
         );
         let vertical = event.target.classList.contains('v-wall');
-        let walls = get_walls_for_board(position, vertical);
-        console.log(walls);
-        getBoard().placeWalls(myPlayer(), walls);
-        let wall_event = new Event('wall', myPlayer(), walls);
+        let coordinate = convertCoordinatesFromId(position.x, position.y, vertical);
+        position = new Position(coordinate[0], coordinate[1]);
+        getBoard().placeWall(myPlayer(), coordinate);
+        let wall_event = new Event('wall', myPlayer(), coordinate);
         send_event(wall_event);
         display_board(getBoard());
     }
 }
 
-export function onPlayerClick(event) {
-    console.log('player click');
+export function send_event(event) {
+    console.log("DoEvent : ", event);
+    let board = getBoard();
+    let retour = board.doEvent(event);
+    console.log(retour);
 }
 
-export function send_event(event) {
-    console.log('event sent');
+export function onBoardInit() {
+    display_board(getBoard());
+
+    // display the overviews on the first line to let the player place its pawn
+    let overviews = [];
+    for (let i = 0; i < getBoard().getWidth(); i++) {
+        let j = getBoard().getHeight() - 1;
+
+        overviews.push(new Position(i, j));
+    }
+    display_overviews(overviews);
+    display_action_message('Place the player 1 pawn on the first line');
+    // TODO : change for multiplayer
+}
+
+
+/*
+ * Let the player place it's pawn on the board for the first turn
+ * @param {Position} the position of the pawn
+ * @return {void}
+ * @side-effect: change the position of the player
+ */
+export function placePawn(player, position) {
+    if (player.getPosition() != null) {
+        // raise an error
+        throw new Error('The player has already placed its pawn');
+    }
+    player.setPosition(position);
 }
 
 /*
@@ -113,7 +174,8 @@ function isItMyTurn() {
  */
 function myPlayer() {
     // TODO : implement the function
-    return getBoard().getPlayer(0);
+    let board = getBoard();
+    return board.getPlayer(0);
 }
 
 /*
@@ -126,7 +188,7 @@ export function getCorridorPossiblePositions(position) {
     let board = getBoard();
     if (position.x > 0) {
         // if the player is not on the left border
-        if (board.getWalls()[position.y][position.x - 1] == 0) {
+        if (board.getWalls()[position.x - 1][position.y] == 0) {
             // if there is no wall on the left
             // if there is no player on the left
             if (!isPlayerOnPosition(new Position(position.x - 1, position.y))) {
@@ -135,7 +197,7 @@ export function getCorridorPossiblePositions(position) {
                 // if there is a player on the left check if there is no wall behind
                 if (
                     position.x > 1 &&
-                    board.getWalls()[position.y][position.x - 2] == 0
+                    board.getWalls()[position.x - 2][position.y] == 0
                 ) {
                     // if there is another player next to the first one, he can jump over
                     positions.push(new Position(position.x - 2, position.y));
@@ -143,28 +205,28 @@ export function getCorridorPossiblePositions(position) {
             }
         }
     }
-    if (position.y < board.getSize()[0] - 1) {
+    if (position.x < board.getSize()[0] - 1) {
         // if the player is not on the right border
-        if (board.getWalls()[position.y + 1][position.x] == 0) {
+        if (board.getWalls()[position.x + 1][position.y] == 0) {
             // if there is no wall on the right
             // if there is no player on the right
-            if (!isPlayerOnPosition(new Position(position.x, position.y + 1))) {
-                positions.push(new Position(position.x, position.y + 1));
+            if (!isPlayerOnPosition(new Position(position.x + 1, position.y))) {
+                positions.push(new Position(position.x + 1, position.y));
             } else {
                 // if there is a player on the right check if there is no wall behind
                 if (
-                    position.x < board.getSize()[0] - 2 &&
-                    board.getWalls()[position.y + 2][position.x] == 0
+                    position.x < board.getSize()[1] - 2 &&
+                    board.getWalls()[position.x + 2][position.y] == 0
                 ) {
                     // if there is another player next to the first one, he can jump over
-                    positions.push(new Position(position.x, position.y + 2));
+                    positions.push(new Position(position.x + 2, position.y));
                 }
             }
         }
     }
     if (position.y > 0) {
         // if the player is not on the top border
-        if (board.getWalls()[position.y - 1][position.x] == 0) {
+        if (board.getWalls()[position.x][position.y - 1] == 0) {
             // if there is no wall on the top
             // if there is no player on the top
             if (!isPlayerOnPosition(new Position(position.x, position.y - 1))) {
@@ -173,7 +235,7 @@ export function getCorridorPossiblePositions(position) {
                 // if there is a player on the top check if there is no wall behind
                 if (
                     position.y > 1 &&
-                    board.getWalls()[position.y - 2][position.x] == 0
+                    board.getWalls()[position.x][position.y - 2] == 0
                 ) {
                     // if there is another player next to the first one, he can jump over
                     positions.push(new Position(position.x, position.y - 2));
@@ -181,21 +243,21 @@ export function getCorridorPossiblePositions(position) {
             }
         }
     }
-    if (position.x < board.getSize()[1] - 1) {
+    if (position.y < board.getSize()[1] - 1) {
         // if the player is not on the bottom border
-        if (board.getWalls()[position.y][position.x + 1] == 0) {
+        if (board.getWalls()[position.x][position.y + 1] == 0) {
             // if there is no wall on the bottom
             // if there is no player on the bottom
-            if (!isPlayerOnPosition(new Position(position.x + 1, position.y))) {
-                positions.push(new Position(position.x + 1, position.y));
+            if (!isPlayerOnPosition(new Position(position.x, position.y + 1))) {
+                positions.push(new Position(position.x, position.y + 1));
             } else {
                 // if there is a player on the bottom check if there is no wall behind
                 if (
-                    position.y < board.getSize()[1] - 2 &&
-                    board.getWalls()[position.y][position.x + 2] == 0
+                    position.y < board.getSize()[0] - 2 &&
+                    board.getWalls()[position.x][position.y + 2] == 0
                 ) {
                     // if there is another player next to the first one, he can jump over
-                    positions.push(new Position(position.x + 2, position.y));
+                    positions.push(new Position(position.x, position.y + 2));
                 }
             }
         }
@@ -274,3 +336,71 @@ function get_walls_for_board(position, vertical) {
     }
     return walls;
 }
+
+/*
+ * convert the coordinates of the board to the coordinates of the display
+ * @param {int} the i coordinate of the board
+ * @param {int} the j coordinate of the board
+ * @return {int[]} the x and y coordinates of the display
+ */
+export function convertCoordinatesFromId(i, j, vertical) {
+    let x;
+    let y;
+    if (vertical) {
+        x = j;
+        y = i * 2;
+    }
+    else {
+        x = j;
+        y = i * 2 + 1;
+    }
+    console.log("convertCoordinatesFromId : ", x, y);
+    return new Position(x, y);
+}
+
+/*
+ * convert the coordinates of the display to the coordinates of the board
+ * @param {int} the x coordinate of the display
+ * @param {int} the y coordinate of the display
+ * @return {int[][]} the i and j coordinates of the board
+ * @return {boolean} true if the wall is vertical, false if the wall is horizontal
+ */
+export function convertCoordinatesToId(x, y) {
+    let vertical;
+    let i1;
+    let i2;
+    let j1;
+    let j2;
+
+    j1 = x;
+    if (y % 2 === 0) {
+        vertical = true;
+        i1 = y / 2;
+        i2 = i1 + 1;
+        j2 = j1;
+    } else {
+        vertical = false;
+        i1 = (y - 1) / 2;
+        i2 = i1;
+        j2 = j1 + 1;
+    }
+    return [
+        [i1, j1],
+        [i2, j2],
+        vertical,
+    ];
+}
+
+/*
+// unit tests, to be removed in final version
+document.addEventListener('DOMContentLoaded', function () {
+    for (let e of [[0, 0], [2, 2], [0, 1], [1, 0], [1, 1], [2, 0], [2, 1], [1, 2], [0, 2]]) {
+        console.log("====================================")
+        console.log(e[0], e[1])
+        let id = convertCoordinatesToId(e[0], e[1]);
+        console.log(id);
+        console.log(convertCoordinatesFromId(id[0][0], id[0][1], id[2]));
+        console.log("====================================")
+    }
+});
+*/

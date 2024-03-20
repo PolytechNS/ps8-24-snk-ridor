@@ -1,12 +1,12 @@
-import { Action } from './action.js';
-import { GameState } from './gameState.js';
-import { Position } from './position.js';
-import { Player } from './player.js';
-import { BoardEvent } from './boardEvent.js';
+let { Action } = require('./action.js');
+let { GameState } = require('./gameState.js');
+let { Position } = require('./position.js');
+let { Player } = require('./player.js');
+let { BoardEvent } = require('./boardEvent.js');
 
 let board;
 
-export function getBoard() {
+function getBoard() {
     if (!board) {
         board = new Board();
     }
@@ -23,7 +23,7 @@ export function getBoard() {
  * Represents the game board
  * Contains the players, the walls, the history and the game state
  */
-export class Board {
+class Board {
     players;
     walls; // list of int (0 or 1 or 2) representing no wall, wall placed by player 1, wall placed by player 2
     history; // list of Events
@@ -66,16 +66,26 @@ export class Board {
                     fogOfWar[rowIndex][colIndex / 2] += modifier * 2;
                     fogOfWar[rowIndex][colIndex / 2 + 1] += modifier * 2;
                     if (colIndex > 0) {
-                        fogOfWar[rowIndex - 1][colIndex / 2] += modifier;
-                        fogOfWar[rowIndex - 1][colIndex / 2 + 1] += modifier;
+                        try {
+                            fogOfWar[rowIndex - 1][colIndex / 2] += modifier;
+                        } catch (e) {}
+                        try {
+                            fogOfWar[rowIndex - 1][colIndex / 2 + 1] +=
+                                modifier;
+                        } catch (e) {}
                     }
 
                     // Right cells
                     fogOfWar[rowIndex + 1][colIndex / 2] += modifier * 2;
                     fogOfWar[rowIndex + 1][colIndex / 2 + 1] += modifier * 2;
                     if (colIndex < this.getWidth() - 1) {
-                        fogOfWar[rowIndex + 2][colIndex / 2] += modifier;
-                        fogOfWar[rowIndex + 2][colIndex / 2 + 1] += modifier;
+                        try {
+                            fogOfWar[rowIndex + 2][colIndex / 2] += modifier;
+                        } catch (e) {}
+                        try {
+                            fogOfWar[rowIndex + 2][colIndex / 2 + 1] +=
+                                modifier;
+                        } catch (e) {}
                     }
                 } else {
                     // Else, it's a horizontal wall
@@ -121,7 +131,7 @@ export class Board {
             }
         });
 
-        return null;
+        return fogOfWar;
     }
 
     /*
@@ -157,7 +167,7 @@ export class Board {
             position.getY() < 0 ||
             position.getY() >= this.getWidth()
         ) {
-            throw new Error('Invalid position');
+            throw new Error(`Invalid position ${position} is out of the board`);
         }
 
         // If placing player 1, check that it is on the first row
@@ -168,7 +178,7 @@ export class Board {
         // If placing player 2, check that it is on the last row
         if (player.getId() === 2 && position.getY() !== this.getHeight() - 1) {
             throw new Error(
-                `Player 2 must be placed on the last row (${position.getY()} !== ${this.getHeight() - 1})`
+                `Player 2 must be placed on the last row (${position.getY()} !== ${this.getHeight() - 1}) you sent ${position}`
             );
         }
 
@@ -285,7 +295,6 @@ export class Board {
      * @return {Player} the player
      */
     getPlayer(int) {
-        console.log(`getPlayer(${int})`); // `getPlayer(${int})
         return this.players[int];
     }
 
@@ -606,3 +615,5 @@ export class Board {
 
     fromJson() {}
 }
+
+module.exports = { getBoard, Board };

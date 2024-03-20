@@ -1,6 +1,4 @@
-import { getBoard } from './board.js';
-
-export class Player {
+class Player {
     id;
     position;
     avatar;
@@ -31,6 +29,7 @@ export class Player {
      * @return {int} the number of remaining walls for the player
      */
     remainingWalls() {
+        let { getBoard } = require('./board.js');
         // dynamically calculate the remaining walls from the board
         let b = getBoard();
         let placed_walls = 0;
@@ -45,3 +44,5 @@ export class Player {
         // we divide by 2 because each wall is represented by 2 semi-walls
     }
 }
+
+module.exports = { Player };
