@@ -1,46 +1,58 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const loginForm = document.querySelector('.form-container .login-form');
+import { API_URL, HOME_URL, LOGIN_API, SIGNUP_URL } from '../util/path.js';
+import { BASE_URL_API, BASE_URL_PAGE } from '../util/frontPath.js';
 
-    loginForm.addEventListener('submit', function (event) {
+document.getElementById('signup-login').addEventListener('click', function () {
+    window.location.replace(BASE_URL_PAGE + SIGNUP_URL);
+});
+
+document
+    .getElementById('login-form')
+    .addEventListener('submit', function (event) {
         event.preventDefault();
+        const values = {
+            username: document.getElementById('login-username').value,
+            password: document.getElementById('login-password').value,
+        };
 
-        const email = loginForm.querySelector('input[type="email"]').value;
-        const password = loginForm.querySelector(
-            'input[type="password"]'
-        ).value;
-
-        const loginData = { email, password };
-
-        fetch('http://localhost:8000/api/login', {
-            method: 'POST',
+        fetch(BASE_URL_API + API_URL + LOGIN_API, {
+            method: 'post',
             headers: {
+                Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(loginData),
-        })
-            .then((response) =>
-                response
-                    .json()
-                    .then((data) => ({ status: response.status, body: data }))
-            )
-            .then(({ status, body }) => {
-                if (status !== 200) {
-                    console.log(`Login failed with status: ${status}`, body);
-                    throw new Error(
-                        'Invalid login credentials. Please try again.'
-                    );
-                }
-                console.log('Login successful with data:', body);
-                window.location.href = '/';
-            })
-            .catch((error) => {
-                console.error('Error during login:', error);
-                alert(error.message);
-            });
+            body: JSON.stringify(values),
+        }).then(async (response) => {
+            if (!response.ok) {
+                alert(
+                    "La combinaison nom d'utilisateur/mot de passe est incorrecte."
+                );
+                return;
+            }
+            let jwtToken = await response.text();
+            localStorage.setItem('token', jwtToken);
+
+            let parsedJwt = parseJwt(jwtToken);
+
+            let username = parsedJwt.username;
+            localStorage.setItem('username', username);
+
+            let userId = parsedJwt.userId;
+            localStorage.setItem('userId', userId);
+            window.location.replace(BASE_URL_PAGE + HOME_URL);
+        });
     });
 
-    const signupButton = document.getElementById('signup-login');
-    signupButton.addEventListener('click', function () {
-        window.location.href = '/signup/';
-    });
-});
+function parseJwt(token) {
+    if (token === null || token.indexOf('.') === -1) return null;
+    let base64Url = token.split('.')[1];
+    let base64 = base64Url.replace('-', '+').replace('_', '/');
+    return JSON.parse(window.atob(base64));
+}
+
+function isTokenValid(token) {
+    let parsedJwt = parseJwt(token);
+    if (parsedJwt === null) return false;
+    let expirationTime = parsedJwt.exp;
+    let currentTime = Date.now() / 1000;
+    return currentTime < expirationTime;
+}

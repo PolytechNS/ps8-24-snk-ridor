@@ -1,49 +1,38 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const signupForm = document.querySelector('.form-container .login-form');
+import { API_URL, LOGIN_URL, SIGNUP_API } from '../util/path.js';
+import { BASE_URL_API, BASE_URL_PAGE } from '../util/frontPath.js';
 
-    signupForm.addEventListener('submit', function (event) {
-        event.preventDefault();
+document.getElementById('signup-login').addEventListener('click', function () {
+    window.location.replace(BASE_URL_PAGE + LOGIN_URL);
+});
 
-        const username = signupForm.querySelector('input[type="text"]').value;
-        const email = signupForm.querySelector('input[type="email"]').value;
-        const password = signupForm.querySelectorAll(
-            'input[type="password"]'
-        )[0].value;
-        const confirmPassword = signupForm.querySelectorAll(
-            'input[type="password"]'
-        )[1].value;
+window.addEventListener('load', function () {
+    document
+        .getElementById('signup-form')
+        .addEventListener('submit', function (event) {
+            event.preventDefault();
+            const values = {
+                username: document.getElementById('signup-username').value,
+                mail: document.getElementById('signup-email').value,
+                password: document.getElementById('signup-password').value,
+            };
 
-        if (password !== confirmPassword) {
-            console.log('Passwords do not match.'); // Log for mismatched passwords
-            alert('Passwords do not match.');
-            return;
-        }
-
-        const userData = { email, username, password };
-
-        fetch('http://localhost:8000/api/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        })
-            .then((response) => {
+            fetch(BASE_URL_API + API_URL + SIGNUP_API, {
+                method: 'post',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
+            }).then((response) => {
                 if (!response.ok) {
-                    console.log(
-                        `Signup failed with status: ${response.status}`
+                    alert(
+                        "Le nom d'utilisateur ou l'adresse mail est déjà utilisé."
                     );
-                    throw new Error('Signup failed. Please try again later.');
+                    return;
                 }
-                return response.json();
-            })
-            .then((data) => {
-                console.log('Signup successful with data:', data);
-                window.location.href = '/login';
-            })
-            .catch((error) => {
-                console.error('Error during signup:', error);
-                alert(error.message);
+                if (response.status === 201) {
+                    window.location.replace(BASE_URL_PAGE + LOGIN_URL);
+                }
             });
-    });
+        });
 });

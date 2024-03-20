@@ -21,15 +21,14 @@ async function getUsers() {
     return db.collection('users');
 }
 
-async function getUser(email) {
+async function getUser(username) {
     const users = await getUsers();
 
-    return await users.findOne({ email: email });
+    return await users.findOne({ username: username });
 }
 
 async function createUser(user) {
     const users = await getUsers();
-
     return await users.insertOne(user);
 }
 
