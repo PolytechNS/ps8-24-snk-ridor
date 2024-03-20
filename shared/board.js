@@ -117,8 +117,11 @@ export class Board {
          * @returns {void}
          */
         this.player = playerId;
-        if (x < 1 || x > this.width() || y < 1 || y > this.height() || ![1, 2].includes(playerId)) {
-            throw new Error(`Invalid player position: ${x}, ${y}, ${playerId}`);
+        if (![1, 2].includes(playerId)) {
+            throw new Error(`Invalid player id: ${playerId}`);
+        }
+        if (x < 1 || x > this.width() || y < 1 || y > this.height()) {
+            throw new Error(`Player position out of board: ${x}, ${y}, ${playerId}`);
         }
 
         // if the player is already placed

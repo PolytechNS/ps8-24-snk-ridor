@@ -2,6 +2,7 @@ import { Board } from '../../shared/board.js';
 import { newGame } from '../../shared/engine.js';
 import { onCellClick, onWallClick, onWallOut, onWallOver } from '../../shared/engine.js';
 
+let global_board;
 /*
  * Uses the board to display the game board
  * @param {Board} the board to display
@@ -19,22 +20,22 @@ export function display_board(board) {
     board_div.innerHTML = '';
 
     // create the cells and walls
-    for (let k = 0; k < BOARD_W; k++) {
+    for (let y = BOARD_H; y > 0; y--) {
         // for each row, create a line of cells and vertical walls
-        for (let j = 0; j < BOARD_H; j++) {
+        for (let x = 1; x <= BOARD_W; x++) {
             // create a cell and add it to the board
             let cell = document.createElement('div');
             cell.className = 'cell';
-            cell.id = 'cell-' + k + '-' + j;
+            cell.id = 'cell-' + x + '-' + y;
             cell.addEventListener('click', onCellClick);
             board_div.appendChild(cell);
 
             // create a vertical wall and add it to the board
             // if this is not the last column
-            if (j < BOARD_H - 1) {
+            if (x < BOARD_W) {
                 let wall = document.createElement('div');
                 wall.classList.add('v-wall', 'wall');
-                wall.id = 'v-wall-' + k + '-' + j;
+                wall.id = 'v-wall-' + x + '-' + y;
                 wall.addEventListener('mouseover', onWallOver);
                 wall.addEventListener('mouseout', onWallOut);
                 wall.addEventListener('click', onWallClick);
@@ -43,13 +44,13 @@ export function display_board(board) {
         }
 
         // for each row, create a line of horizontal walls and "small walls"
-        for (let j = 0; j < BOARD_H; j++) {
+        for (let x = 1; x <= BOARD_W; x++) {
             // create a horizontal wall and add it to the board
             // if this is not the last row
-            if (k < BOARD_W - 1) {
+            if (1 < y && y <= BOARD_H) {
                 let wall = document.createElement('div');
                 wall.classList.add('h-wall', 'wall');
-                wall.id = 'h-wall-' + k + '-' + j;
+                wall.id = 'h-wall-' + x + '-' + y;
                 wall.addEventListener('mouseover', onWallOver);
                 wall.addEventListener('mouseout', onWallOut);
                 wall.addEventListener('click', onWallClick);
@@ -57,33 +58,15 @@ export function display_board(board) {
             }
 
             // create a "small wall" and add it to the board
-            // if this is not the last row and the last column
-            if (k < BOARD_W - 1 && j < BOARD_H - 1) {
+            // if this is not the first or the last row and the last column
+            if (1 < y && y <= BOARD_W && x < BOARD_W) {
                 let wall = document.createElement('div');
                 wall.classList.add('s-wall', 'wall');
-                wall.id = 's-wall-' + k + '-' + j;
+                wall.id = 's-wall-' + x + '-' + y;
                 wall.addEventListener('mouseover', onWallOver);
                 wall.addEventListener('mouseout', onWallOut);
                 wall.addEventListener('click', onWallClick);
                 board_div.appendChild(wall);
-            }
-        }
-
-        // display placed walls
-        let walls = board.getWalls();
-        let wall;
-        for (let i = 0; i < walls.length; i++) {
-            wall = walls[e];
-            // a wall is composed of two "unit walls"
-            // 1 vertical, 2 horizontal
-            // a wall have the coordinates of the top left cell
-
-            // if the wall is horizontal
-            if (wall[1] === 0) {
-                //
-            } else if (wall[1] === 1) {
-            } else {
-                throw new Error(`Invalid wall orientation: ${x}, ${y}, ${r}`);
             }
         }
     }
@@ -107,9 +90,9 @@ export function display_board(board) {
             img.classList.add('pawn-avatar');
             player.appendChild(img);
 
-            console.log('cell-' + position.y + '-' + position.x);
+            console.log('cell-' + position[0] + '-' + position[1]);
 
-            let cell = document.getElementById('cell-' + position.y + '-' + position.x);
+            let cell = document.getElementById('cell-' + position[0] + '-' + position[1]);
             cell.appendChild(player);
         }
 
@@ -132,6 +115,7 @@ export function display_board(board) {
 }
 
 export function display_initial_board(playerId, board) {
+    global_board = board;
     console.log('display_initial_board');
     let BOARD_W = board.width();
     let BOARD_H = board.height();
@@ -141,14 +125,14 @@ export function display_initial_board(playerId, board) {
     board_div.innerHTML = '';
 
     // create the cells and walls
-    for (let k = BOARD_W; k > 0; k--) {
+    for (let y = BOARD_H; y > 0; y--) {
         // for each row, create a line of cells and vertical walls
-        for (let j = 1; j <= BOARD_H; j++) {
+        for (let x = 1; x <= BOARD_W; x++) {
             // create a cell and add it to the board
             let cell = document.createElement('div');
             cell.className = 'cell';
-            cell.id = 'cell-' + k + '-' + j;
-            if ((playerId === 1 && k === 1) || (playerId === 2 && k === BOARD_W)) {
+            cell.id = 'cell-' + x + '-' + y;
+            if ((playerId === 1 && y === 1) || (playerId === 2 && y === BOARD_H)) {
                 cell.addEventListener('click', placePlayer);
             }
 
@@ -156,31 +140,31 @@ export function display_initial_board(playerId, board) {
 
             // create a vertical wall and add it to the board
             // if this is not the last column
-            if (j < BOARD_H) {
+            if (x < BOARD_W) {
                 let wall = document.createElement('div');
                 wall.classList.add('v-wall', 'wall');
-                wall.id = 'v-wall-' + k + '-' + j;
+                wall.id = 'v-wall-' + x + '-' + y;
                 board_div.appendChild(wall);
             }
         }
 
         // for each row, create a line of horizontal walls and "small walls"
-        for (let j = 1; j <= BOARD_H; j++) {
+        for (let x = 1; x <= BOARD_W; x++) {
             // create a horizontal wall and add it to the board
             // if this is not the last row
-            if (1 < k && k <= BOARD_W && 1 < j < BOARD_H) {
+            if (1 < y && y <= BOARD_H) {
                 let wall = document.createElement('div');
                 wall.classList.add('h-wall', 'wall');
-                wall.id = 'h-wall-' + k + '-' + j;
+                wall.id = 'h-wall-' + x + '-' + y;
                 board_div.appendChild(wall);
             }
 
             // create a "small wall" and add it to the board
             // if this is not the first or the last row and the last column
-            if (1 < k && k <= BOARD_W && j < BOARD_H) {
+            if (1 < y && y <= BOARD_W && x < BOARD_W) {
                 let wall = document.createElement('div');
                 wall.classList.add('s-wall', 'wall');
-                wall.id = 's-wall-' + k + '-' + j;
+                wall.id = 's-wall-' + x + '-' + y;
                 board_div.appendChild(wall);
             }
         }
@@ -189,12 +173,20 @@ export function display_initial_board(playerId, board) {
 }
 
 function placePlayer(event) {
+    let board = global_board;
     let cell = event.target;
     let coords = cell.id
         .split('-')
         .slice(1)
         .map((x) => parseInt(x));
-    board.placePlayer(1, coords[0], coords[1]);
+    try {
+        board.placePlayer(1, coords[0], coords[1]);
+        display_board(board);
+    } catch (e) {
+        display_message('Une erreur est survenue, regarder les logs pour savoir pourquoi', { category: 'forbidden_message' });
+        console.log(e);
+        return;
+    }
 }
 
 function resetOverviews() {
