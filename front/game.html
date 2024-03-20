@@ -11,51 +11,35 @@
 
     <body>
         <nav>
-            <a href="home.html"><img src="resources/icon_home.jpg" /></a>
+            <a href="home/home.html"><img src="resources/icon_home.jpg" /></a>
             <p>Shingeki No Korridor</p>
             <div id="nav-login">
                 <a class="nav-button" id="login-button" href="/login">Login</a>
-                <a class="nav-button" id="register-button" href="/signup"
-                    >Register</a
-                >
+                <a class="nav-button" id="register-button" href="/signup">Register</a>
             </div>
         </nav>
         <aside id="aside-left">
             <div id="player-2-profile" class="profile profile_adversaire">
                 <div class="identity">
-                    <image
-                        src="resources/persons/humain_annie.png"
-                        alt="avatar"
-                        class="avatar"
-                    />
+                    <image src="resources/persons/humain_annie.png" alt="avatar" class="avatar" />
                     <a id="player-2-pseudo">Pseudo</a>
                 </div>
                 <a id="score">Score : 54 827</a>
-                <div class="profile-game-infos">
-                    walls : <a class="walls">0</a><br />
-                </div>
+                <div class="profile-game-infos">walls : <a class="walls">0</a><br /></div>
             </div>
             <div id="player-1-profile" class="profile profile_self">
                 <div class="identity">
-                    <image
-                        src="resources/persons/titan_eren.png"
-                        alt="avatar"
-                        class="avatar"
-                    />
+                    <image src="resources/persons/titan_eren.png" alt="avatar" class="avatar" />
                     <a id="player-1-pseudo">Pseudo</a>
                 </div>
                 <a id="player-1-score">Score : 72 845</a>
-                <div class="profile-game-infos">
-                    walls : <a class="walls">0</a><br />
-                </div>
+                <div class="profile-game-infos">walls : <a class="walls">0</a><br /></div>
             </div>
         </aside>
         <main class="game">
             <div id="board" class="board"></div>
             <div id="game-infos" class="game-infos">
-                <a class="container"
-                    >Au tour du joueur&nbsp;<a id="player">A</a><br
-                /></a>
+                <a class="container">Au tour du joueur&nbsp;<a id="player">A</a><br /></a>
                 <a class="container">tour&nbsp;<a id="turn">1</a><br /></a>
                 <a class="container" id="clock">&#128336; 0:00</a>
                 <div class="final_blocker" id="final_div">
@@ -76,11 +60,7 @@
                     </div>
                 </div>
                 <div id="chatbox-input">
-                    <input
-                        type="text"
-                        id="chatbox-input-text"
-                        placeholder="Message..."
-                    />
+                    <input type="text" id="chatbox-input-text" placeholder="Message..." />
                     <button id="chatbox-input-send">Envoyer</button>
                 </div>
             </div>

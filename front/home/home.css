@@ -1,0 +1,67 @@
+/* styles/home.css */
+
+/* Stylisation spécifique de la page d'accueil */
+main {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/login-background.jpg');
+    background-size: cover;
+    color: #ffffff;
+}
+
+h1 {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 0.5em;
+}
+
+/*!* Paragraphe avec une ombre portée pour améliorer la lisibilité sur l'arrière-plan *!*/
+/*p {*/
+/*    text-shadow: 1px 1px 2px black;*/
+/*}*/
+
+/* Amélioration des boutons pour qu'ils ressemblent plus à des éléments d'un jeu vidéo */
+.play_button {
+    font-weight: bold;
+    box-shadow: 0 5px #999;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.play_button:active {
+    box-shadow: 0 2px #666;
+    transform: translateY(4px);
+}
+
+/* Styles spécifiques pour les boutons de jeu */
+#online-play_button {
+    background-color: #4caf50; /* Vert */
+}
+
+#online-play_button:hover {
+    background-color: #3d8b40; /* Vert foncé */
+}
+
+#vs-bot-play_button,
+#local-play_button {
+    background-color: #f44336; /* Rouge */
+}
+
+#vs-bot-play_button:hover,
+#local-play_button:hover {
+    background-color: #d32f2f; /* Rouge foncé */
+}
+
+/* Stylisation du footer pour qu'il s'intègre mieux dans le thème */
+footer {
+    font-size: 0.8em;
+    opacity: 0.8;
+}
+
+/* Ajouter un effet au survol des liens dans la barre de navigation */
+nav a:hover {
+    opacity: 0.7;
+}
+
+/* Spécifique à la barre de navigation pour l'alignement et la distribution des éléments */
+nav img {
+    border-radius: 50%; /* Rend les icônes circulaires */
+}
