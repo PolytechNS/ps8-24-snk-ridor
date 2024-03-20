@@ -10,6 +10,7 @@ import { onCellClick, onWallClick, onWallOut, onWallOver } from '../../shared/en
  * @side-effect: add event listeners to the cells and walls
  */
 export function display_board(board) {
+    console.log('display_board');
     let BOARD_W = board.width();
     let BOARD_H = board.height();
 
@@ -167,7 +168,7 @@ export function display_initial_board(playerId, board) {
         for (let j = 1; j <= BOARD_H; j++) {
             // create a horizontal wall and add it to the board
             // if this is not the last row
-            if (k < BOARD_W) {
+            if (1 < k && k <= BOARD_W && 1 < j < BOARD_H) {
                 let wall = document.createElement('div');
                 wall.classList.add('h-wall', 'wall');
                 wall.id = 'h-wall-' + k + '-' + j;
@@ -175,8 +176,8 @@ export function display_initial_board(playerId, board) {
             }
 
             // create a "small wall" and add it to the board
-            // if this is not the last row and the last column
-            if (k < BOARD_W && j < BOARD_H) {
+            // if this is not the first or the last row and the last column
+            if (1 < k && k <= BOARD_W && j < BOARD_H) {
                 let wall = document.createElement('div');
                 wall.classList.add('s-wall', 'wall');
                 wall.id = 's-wall-' + k + '-' + j;
