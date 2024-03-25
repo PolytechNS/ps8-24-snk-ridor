@@ -4,14 +4,12 @@ meta {
   seq: 4
 }
 
-post {
+get {
   url: http://localhost:8000/api/friend/list
   body: json
   auth: none
 }
 
-body:json {
-  {
-    "user_email": "test@example.com"
-  }
+headers {
+  Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MTEzODc2ODZ9.IKXM3DtrtzkgbRAzxNjN_ELMTiweiP40Cdnqp-2YOco
 }
