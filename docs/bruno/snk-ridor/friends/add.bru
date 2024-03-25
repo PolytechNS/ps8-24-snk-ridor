@@ -1,0 +1,18 @@
+meta {
+  name: add
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8000/api/friend/add
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "user_email": "test@example.com",
+    "friend_email": "test3@example.com"
+  }
+}
