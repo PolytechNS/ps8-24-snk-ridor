@@ -1,4 +1,5 @@
 const { verify } = require('./jwt');
+const { logger } = require('./logging');
 
 function getJsonBody(request) {
     return new Promise((resolve) => {
@@ -14,18 +15,24 @@ function getJsonBody(request) {
 }
 
 function getCurrentUser(request) {
-    let token = request.headers['authorization'];
-    if (!token) {
-        return null;
-    }
+    return new Promise((resolve) => {
+        let token = request.headers['authorization'];
+        if (!token) {
+            resolve(null);
+            return;
+        }
 
-    let data = verify(token);
+        let data = verify(token);
 
-    if (!data) {
-        return null;
-    }
+        if (!data) {
+            resolve(null);
+            return;
+        }
 
-    return data.email;
+        logger.debug(`Current user: ${data.email}`);
+
+        resolve(data.email);
+    });
 }
 
-module.exports = { getJsonBody };
+module.exports = { getJsonBody, getCurrentUser };

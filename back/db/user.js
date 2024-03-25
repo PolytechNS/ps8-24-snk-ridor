@@ -1,5 +1,6 @@
 const { getMongoDatabase } = require('./db');
 const crypto = require('crypto');
+const { logger } = require('../libs/logging');
 
 class User {
     name;
@@ -76,6 +77,8 @@ class User {
         const db = await getMongoDatabase();
         const users = db.collection('users');
 
+        logger.debug(`Updating user: ${email} with ${JSON.stringify(user)}`);
+
         return await users.updateOne({ email: email }, { $set: user });
     }
 }
@@ -84,4 +87,4 @@ function hashPassword(password) {
     return crypto.createHash('sha512').update(password).digest('hex');
 }
 
-module.exports = { User };
+module.exports = { User, hashPassword };
