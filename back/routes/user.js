@@ -1,7 +1,5 @@
 const { User, hashPassword } = require('../db/user');
 const { getCurrentUser, getJsonBody } = require('../libs/jenkspress');
-const { logger } = require('../libs/logging');
-const { json } = require('mocha/lib/reporters');
 
 function manageRequest(request, response) {
     let url = new URL(request.url, `http://${request.headers.host}`);
@@ -24,43 +22,43 @@ function manageRequest(request, response) {
 }
 
 function updatePassword(request, response) {
-    getCurrentUser(request).then((email) => {
-        if (!email) {
-            response.statusCode = 401;
-            response.end('Unauthorized');
+    let email = getCurrentUser(request);
+
+    if (!email) {
+        response.statusCode = 401;
+        response.end('Unauthorized');
+        return;
+    }
+
+    getJsonBody(request).then((jsonBody) => {
+        if (!jsonBody.password) {
+            response.statusCode = 400;
+            response.end('Password is required');
             return;
         }
 
-        getJsonBody(request).then((jsonBody) => {
-            if (!jsonBody.password) {
+        let hashedPassword = hashPassword(jsonBody.password);
+
+        User.update(email, { password_hash: hashedPassword }).then((result) => {
+            if (!result || result.error) {
                 response.statusCode = 400;
-                response.end('Password is required');
+
+                if (result) {
+                    response.end(result.error);
+                    return;
+                }
+
+                response.end('Password not updated');
                 return;
             }
 
-            let hashedPassword = hashPassword(jsonBody.password);
+            if (result.modifiedCount === 0) {
+                response.statusCode = 400;
+                response.end('Password not updated');
+                return;
+            }
 
-            User.update(email, { password_hash: hashedPassword }).then((result) => {
-                if (!result || result.error) {
-                    response.statusCode = 400;
-
-                    if (result) {
-                        response.end(result.error);
-                        return;
-                    }
-
-                    response.end('Password not updated');
-                    return;
-                }
-
-                if (result.modifiedCount === 0) {
-                    response.statusCode = 400;
-                    response.end('Password not updated');
-                    return;
-                }
-
-                response.end('Password updated');
-            });
+            response.end('Password updated');
         });
     });
 }

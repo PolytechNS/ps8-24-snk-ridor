@@ -15,24 +15,20 @@ function getJsonBody(request) {
 }
 
 function getCurrentUser(request) {
-    return new Promise((resolve) => {
-        let token = request.headers['authorization'];
-        if (!token) {
-            resolve(null);
-            return;
-        }
+    let token = request.headers['authorization'];
+    if (!token) {
+        return null;
+    }
 
-        let data = verify(token);
+    let data = verify(token);
 
-        if (!data) {
-            resolve(null);
-            return;
-        }
+    if (!data) {
+        return null;
+    }
 
-        logger.debug(`Current user: ${data.email}`);
+    logger.debug(`Current user: ${data.email}`);
 
-        resolve(data.email);
-    });
+    return data.email;
 }
 
 module.exports = { getJsonBody, getCurrentUser };

@@ -37,6 +37,10 @@ class User {
         let user = new User('', '');
 
         return users.findOne({ email: email }).then((result) => {
+            if (!result) {
+                return null;
+            }
+
             user.email = result.email;
             user.password_hash = result.password_hash;
 
