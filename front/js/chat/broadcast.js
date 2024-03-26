@@ -5,6 +5,19 @@ const socket = io();
 
 socket.connect();
 
+socket.on('connect', () => {
+    console.log('Connected to socket-io server');
+    socket.emit('message', { sender: 'client', receiver: 'server', content: 'Hello server!' });
+});
+
+socket.on('disconnect', () => {
+    console.log('Disconnected from socket-io server');
+});
+
+socket.on('message', (msg) => {
+    console.log('Received message: ' + msg);
+});
+
 socket.on('broadcast-chat', (msg) => {
     let messageElement = document.createElement('div');
     messageElement.className = 'message';
