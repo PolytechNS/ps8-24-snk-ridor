@@ -1,7 +1,3 @@
-import { BoardEvent } from '../back/logic/board/boardEvent';
-import { Action } from '../back/logic/board/action';
-import { findPath } from '../front/js/pathFinding';
-
 export class Board {
     constructor(local_multiplayer = false) {
         this.board = JSON.parse(
@@ -90,7 +86,6 @@ export class Board {
                 }
             }
         }
-
         return 0;
     }
 
@@ -113,12 +108,52 @@ export class Board {
     }
 
     placePlayer(playerId, x, y) {
-        if (x < 1 || x > this.width() || y < 1 || y > this.height() || ![1, 2].includes(playerId)) {
-            throw new Error(`Invalid player initial position: ${x}, ${y}, ${playerId}`);
+        /*
+         * Place a player on the board
+         * @param {int} playerId - the id of the player to place
+         * @param {int} x - the x coordinate of the player
+         * @param {int} y - the y coordinate of the player
+         * @throws {Error} - if the placement is invalid
+         * @returns {void}
+         */
+        this.player = playerId;
+        if (![1, 2].includes(playerId)) {
+            throw new Error(`Invalid player id: ${playerId}`);
         }
+        if (x < 1 || x > this.width() || y < 1 || y > this.height()) {
+            throw new Error(`Player position out of board: ${x}, ${y}, ${playerId}`);
+        }
+
+        // if the player is already placed
+        if (this.getPlayerPosition(playerId)[0] !== null) {
+            throw new Error(`Player already placed: ${x}, ${y}, ${playerId}`);
+        }
+
+        if (this.player === 1) {
+            if (y !== 1) {
+                // le player 1 doit être placé sur la ligne
+                throw new Error(`Invalid player position: ${x}, ${y}, ${playerId}`);
+            }
+        } else if (this.player === 2) {
+            if (y !== 9) {
+                // le player 2 doit être placé sur la ligne 9
+                throw new Error(`Invalid player position: ${x}, ${y}, ${playerId}`);
+            }
+        }
+        // place the player
+        this.board[x - 1][y - 1] = playerId;
     }
 
     movePlayer(playerId, x, y) {
+        /*
+         * Move a player to a new position (for initial placement, use placePlayer instead)
+         * @param {int} playerId - the id of the player to move
+         * @param {int} x - the x coordinate of the player
+         * @param {int} y - the y coordinate of the player
+         * @throws {Error} - if the move is invalid
+         * @returns {void}
+         */
+        console.log('movePlayer', playerId, x, y);
         if (x < 1 || x > this.width() || y < 1 || y > this.height() || ![1, 2].includes(playerId)) {
             throw new Error(`Invalid player move: ${x}, ${y}, ${playerId}`);
         }

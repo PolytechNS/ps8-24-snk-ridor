@@ -1,6 +1,6 @@
-import { display_message } from "./board.js";
-import { getCorridorPossiblePositionForPath } from "./engine.js";
-import { LOG } from "./main.js";
+import { display_message } from './board.js';
+import { getCorridorPossiblePositionForPath } from './engine.js';
+import { LOG } from './main.js';
 
 function getNearestPosition(positions, goal) {
     var nearest = positions[0];
@@ -32,7 +32,7 @@ function recursivePF(position, goal, list) {
     }
     for (var a of sortByNearest(getCorridorPossiblePositionForPath(position[0], position[1]), goal)) {
         if (list[a[0]][a[1]] == 0) {
-            if (LOG) document.getElementById("cell-" + a[0] + "-" + a[1]).style.setProperty("border", "#44BB44 4px solid");
+            if (LOG) document.getElementById('cell-' + a[0] + '-' + a[1]).style.setProperty('border', '#44BB44 4px solid');
             list[a[0]][a[1]] = 1;
             var path = recursivePF(a, goal, list);
             if (path != null) {
@@ -43,34 +43,34 @@ function recursivePF(position, goal, list) {
     return null;
 }
 
-export function findPath(player) {
-    var list = [];
-    for (var i = 0; i < 9; i++) {
-        list.push([]);
-        for (var j = 0; j < 9; j++) {
-            list[i].push(0);
-        }
-    }
-    var path = recursivePF(player.position, player.goal, list);
-    if (path == null) {
-        if (LOG) display_message("No path found", "dev_message");
-    }
-    if (LOG) console.log(path);
-    return path;
-}
+// export function findPath(player) {
+//     var list = [];
+//     for (var i = 0; i < 9; i++) {
+//         list.push([]);
+//         for (var j = 0; j < 9; j++) {
+//             list[i].push(0);
+//         }
+//     }
+//     var path = recursivePF(player.position, player.goal, list);
+//     if (path == null) {
+//         if (LOG) display_message("No path found", "dev_message");
+//     }
+//     if (LOG) console.log(path);
+//     return path;
+// }
 
 export function updatePath(player) {
     var path = findPath(player);
 
     if (!LOG) return;
-    var cells = document.getElementsByClassName("cell");
+    var cells = document.getElementsByClassName('cell');
     for (var i = 0; i < cells.length; i++) {
-        cells[i].style.setProperty("border", "none");
+        cells[i].style.setProperty('border', 'none');
     }
     for (var i = 0; i < path.length; i++) {
         for (var j = 0; j < path[i].length; j++) {
             if (path[i][j] == 1) {
-                document.getElementById("cell-" + i + "-" + j).style.setProperty("border", "#44BB44 4px solid");
+                document.getElementById('cell-' + i + '-' + j).style.setProperty('border', '#44BB44 4px solid');
             }
         }
     }
@@ -87,12 +87,12 @@ export function arePathPossible() {
     var position = [0, 4];
     var goal = 8;
     for (let player of getGame().players) {
-            position = player.position;
-            goal = player.goal;
-            if (LOG) console.log(`Player ${player.id} : ${position} -> ${goal}`);
-            if (recursivePF(position, goal, list) == null) {
-                return false;
-            }
+        position = player.position;
+        goal = player.goal;
+        if (LOG) console.log(`Player ${player.id} : ${position} -> ${goal}`);
+        if (recursivePF(position, goal, list) == null) {
+            return false;
+        }
     }
     return true;
 }
