@@ -22,6 +22,10 @@ function manageRequest(request, response) {
 
     logger.debug(`Requested endpoint: ${sanitizedEndpoint}`);
 
+    if (sanitizedEndpoint[0] === 'shared') {
+        sanitizedEndpoint.unshift('..');
+    }
+
     let filePath = path.join(FRONT_PATH, ...sanitizedEndpoint);
 
     logger.debug(`Requested file: ${filePath}`);

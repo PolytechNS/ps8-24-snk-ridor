@@ -3,4 +3,9 @@ function notFoundHandler(req, res) {
     res.end('Not found');
 }
 
-module.exports = { notFoundHandler };
+function methodNotAllowedHandler(req, res) {
+    res.statusCode = 405;
+    res.end('Method not allowed');
+}
+
+module.exports = { notFoundHandler, methodNotAllowedHandler };
