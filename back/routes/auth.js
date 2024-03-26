@@ -1,6 +1,7 @@
 const { User } = require('../db/user');
 const { sign, verify } = require('../libs/jwt');
 const { getJsonBody } = require('../libs/jenkspress');
+const { methodNotAllowedHandler } = require('./errors');
 
 function manageRequest(request, response) {
     let url = new URL(request.url, `http://${request.headers.host}`);
@@ -23,6 +24,11 @@ function manageRequest(request, response) {
 }
 
 function register(request, response) {
+    if (request.method !== 'POST') {
+        methodNotAllowedHandler(request, response);
+        return;
+    }
+
     getJsonBody(request).then((jsonBody) => {
         let user = new User(jsonBody.email, jsonBody.password);
 
@@ -44,6 +50,11 @@ function register(request, response) {
 }
 
 function login(request, response) {
+    if (request.method !== 'POST') {
+        methodNotAllowedHandler(request, response);
+        return;
+    }
+
     getJsonBody(request).then((jsonBody) => {
         User.get(jsonBody.email).then((result) => {
             if (!result || !result.validate_password(jsonBody.password)) {
