@@ -6,37 +6,34 @@
         <link rel="stylesheet" href="styles/style.css" />
         <link rel="stylesheet" href="styles/layout.css" />
         <link rel="stylesheet" href="styles/fogwar.css" />
-        <script type="module" src="js/engine.js"></script>
-        <script type="module" src="js/main.js"></script>
-        <script type="module" src="js/models.js"></script>
-        <script type="module" src="js/board.js"></script>
-        <script type="module" src="js/chat/broadcast.js"></script>
+        <script type="module" src="js/display.js"></script>
     </head>
+
     <body>
         <nav>
-            <a href="home/home.html"><img src="resources/icon_home.jpg" /></a>
-            <p>Shingeki No Korridor</p>
+            <a href="home.html"><img src="resources/icon_home.jpg" /></a>
+            <p>Shingeki No Korridor • New index</p>
             <div id="nav-login">
                 <a class="nav-button" id="login-button" href="/login">Login</a>
                 <a class="nav-button" id="register-button" href="/signup">Register</a>
             </div>
         </nav>
         <aside id="aside-left">
-            <div id="player-2-profile" class="profile profile_adversaire">
+            <div id="other_profile" class="profile profile_adversaire">
                 <div class="identity">
                     <image src="resources/persons/humain_annie.png" alt="avatar" class="avatar" />
-                    <a id="pseudo">Pseudo</a>
+                    <a id="other_pseudo">Pseudo</a>
                 </div>
-                <a id="score">Score : 54 827</a>
-                <div class="profile-game-infos">walls : <a class="walls">0</a><br /></div>
+                <div>Score : <a id="other_score">54 827</a></div>
+                <div class="profile-game-infos">walls : <a class="other_walls" id="other_walls">0</a><br /></div>
             </div>
-            <div id="player-1-profile" class="profile profile_self">
+            <div id="self-profile" class="profile profile_self">
                 <div class="identity">
                     <image src="resources/persons/titan_eren.png" alt="avatar" class="avatar" />
-                    <a id="pseudo">Pseudo</a>
+                    <a id="other_pseudo">Pseudo</a>
                 </div>
-                <a id="score">Score : 72 845</a>
-                <div class="profile-game-infos">walls : <a class="walls">0</a><br /></div>
+                <div>Score : <a id="self_score">72 845</a></div>
+                <div class="profile-game-infos">walls : <a class="walls" id="self_walls">0</a><br /></div>
             </div>
         </aside>
         <main class="game">
@@ -44,7 +41,6 @@
             <div id="game-infos" class="game-infos">
                 <a class="container">Au tour du joueur&nbsp;<a id="player">A</a><br /></a>
                 <a class="container">tour&nbsp;<a id="turn">1</a><br /></a>
-                <a class="container" id="clock">&#128336; 0:00</a>
                 <div class="final_blocker" id="final_div">
                     <div class="final_message">
                         <p id="final_message">Victoire du joueur A</p>
