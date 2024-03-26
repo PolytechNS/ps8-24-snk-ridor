@@ -40,11 +40,11 @@ function register(request, response) {
                     return;
                 }
 
-                response.end('User not created');
+                response.end(JSON.stringify({ error: 'User not created' }));
                 return;
             }
 
-            response.end('User created');
+            response.end(JSON.stringify({ message: 'User created' }));
         });
     });
 }
@@ -59,12 +59,12 @@ function login(request, response) {
         User.get(jsonBody.email).then((result) => {
             if (!result || !result.validate_password(jsonBody.password)) {
                 response.statusCode = 400;
-                response.end('Invalid credentials');
+                response.end(JSON.stringify({ error: 'Invalid credentials' }));
                 return;
             }
 
             let token = sign({ email: result.email });
-            response.end(token);
+            response.end(JSON.stringify({ token: token }));
         });
     });
 }

@@ -1,11 +1,11 @@
 function notFoundHandler(req, res) {
     res.statusCode = 404;
-    res.end('Not found');
+    res.end(JSON.stringify({ error: 'Not found' }));
 }
 
 function methodNotAllowedHandler(req, res) {
     res.statusCode = 405;
-    res.end('Method not allowed');
+    res.end(JSON.stringify({ error: 'Method not allowed' }));
 }
 
 module.exports = { notFoundHandler, methodNotAllowedHandler };
