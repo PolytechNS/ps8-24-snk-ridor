@@ -10,6 +10,7 @@ export class Board {
         this.ownWalls = [];
         this.opponentWalls = [];
         this.player = 1;
+        this.turn = 0;
     }
 
     height() {
@@ -157,6 +158,9 @@ export class Board {
         if (x < 1 || x > this.width() || y < 1 || y > this.height() || ![1, 2].includes(playerId)) {
             throw new Error(`Invalid player move: ${x}, ${y}, ${playerId}`);
         }
+
+        // increment the turn count
+        this.turn++;
     }
 
     /*
@@ -186,6 +190,9 @@ export class Board {
         } else {
             this.opponentWalls.push([`${x}${y}`, r]);
         }
+
+        // Increment the turn count
+        this.turn++;
 
         return true;
     }
@@ -219,8 +226,16 @@ export class Board {
         return this.ownWalls;
     }
 
+    remainingWalls() {
+        return 10 - this.ownWalls.length;
+    }
+
     getPlayer() {
         return this.player;
+    }
+
+    getTurnCount() {
+        return this.turn;
     }
 }
 
@@ -245,74 +260,4 @@ class GameState {
         let ownWalls = [];
         let b = board.getFogOfWarForPlayer(player);
     }
-
-    //         // replace all true with 0 and false with -1
-    //         for (let i = 0; i < b.length; i++) {
-    //             for (let j = 0; j < b[i].length; j++) {
-    //                 if (b[i][j] === true) {
-    //                     b[i][j] = 0;
-    //                 } else {
-    //                     b[i][j] = -1;
-    //                 }
-    //             }
-    //         }
-    //
-    //         let position = board.getPlayer(player.getId() - 1).getPosition();
-    //         b[position.getX()][position.getY()] = 1;
-    //
-    //         let opponentPosition = board
-    //             .getPlayer(player.getId() === 2 ? 0 : 1)
-    //             .getPosition();
-    //         if (opponentPosition) {
-    //             if (b[opponentPosition.getX()][opponentPosition.getY()] === 0) {
-    //                 b[opponentPosition.getX()][opponentPosition.getY()] = 2;
-    //             }
-    //         }
-    //
-    //         let bcopy = [];
-    //         // Change coordinates
-    //         for (let i = b.length - 1; i >= 0; i--) {
-    //             bcopy.push(b[i]);
-    //         }
-    //
-    //         return new GameState(opponentWalls, ownWalls, bcopy);
-    //     }
-    //
-    //     getPlayer() {
-    //         return this.findCell('1');
-    //     }
-    //
-    //     isOpponentVisible() {
-    //         for (let i = 0; i < this.board.length; i++) {
-    //             for (let j = 0; j < this.board[i].length; j++) {
-    //                 if (this.board[i][j] === 2) {
-    //                     return true;
-    //                 }
-    //             }
-    //         }
-    //         return false;
-    //     }
-    //
-    //     findCell(searchedValue) {
-    //         let x = 0;
-    //         let y = 0;
-    //
-    //         for (let i = 0; i < this.board.length; i++) {
-    //             for (let j = 0; j < this.board[i].length; j++) {
-    //                 if (this.board[i][j] === searchedValue) {
-    //                     x = i;
-    //                     y = j;
-    //                 }
-    //             }
-    //         }
-    //
-    //         return `${parseInt(x) + 1}${parseInt(y) + 1}`;
-    //     }
 }
-
-// Export Board for the frontend and the backend
-/*
-(function (exports) {
-    exports.Board = new Board();
-})(typeof exports === 'undefined' ? (this.share = {}) : exports);
-*/
