@@ -3,7 +3,7 @@
 // a wall have for coordinates the top left cell coords and the orientation (0 for horizontal, 1 for vertical)
 
 import { Board } from './board.js';
-import { display_board, display_initial_board, display_message } from '../front/js/display.js';
+import { display_board, display_initial_board, display_message } from '../js/display.js';
 
 export class Engine {
     constructor() {
