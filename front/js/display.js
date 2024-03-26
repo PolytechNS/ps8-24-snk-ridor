@@ -98,11 +98,19 @@ export function display_board(board) {
 
         // change the number of walls for the player
         console.log('player-' + (1 + i) + '-profile');
-        if (i == board.getPlayer) {
-            console.log('player-' + (1 + i) + '-profile');
+        if (i + 1 == board.getPlayer) {
+            console.log('self_profile');
+        } else {
+            console.log('other_profile');
         }
-        let player_profile = document.getElementById('player-' + (1 + i) + '-profile');
-        player_profile.getElementsByClassName('walls')[0].textContent = board.getPlayer(i).remainingWalls();
+
+        let player_profile;
+        if (i + 1 == board.getPlayer) {
+            player_profile = document.getElementById('self_profile');
+        } else {
+            player_profile = document.getElementById('other_profile');
+        }
+        player_profile.getElementsByClassName('walls')[0].textContent = board.remainingWalls();
 
         // change the profile picture
         let img = player_profile.getElementsByClassName('avatar')[0];
@@ -170,6 +178,33 @@ export function display_initial_board(playerId, board) {
         }
     }
     document.documentElement.style.setProperty('--board-width', BOARD_W);
+
+    // add the players profile
+    for (let i = 1; i <= 2; i++) {
+        // change the number of walls for the player
+        console.log('player-' + (1 + i) + '-profile');
+        if (i + 1 == board.getPlayer) {
+            console.log('self_profile');
+        } else {
+            console.log('other_profile');
+        }
+
+        let player_profile;
+        if (i + 1 == board.getPlayer) {
+            player_profile = document.getElementById('self_profile');
+        } else {
+            player_profile = document.getElementById('other_profile');
+        }
+        player_profile.getElementsByClassName('walls')[0].textContent = board.remainingWalls();
+
+        // change the profile picture
+        let img = player_profile.getElementsByClassName('avatar')[0];
+        img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
+    }
+
+    // change the turn number
+    let turn_number = document.getElementById('turn');
+    turn_number.textContent = board.getTurnCount();
 }
 
 function placePlayer(event) {

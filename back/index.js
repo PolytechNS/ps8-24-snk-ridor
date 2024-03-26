@@ -1,5 +1,5 @@
 const http = require('http');
-// const { Server } = require("socket.io");
+const { Server } = require('socket.io');
 
 const { logger } = require('./libs/logging');
 
@@ -9,33 +9,39 @@ const front = require('./routes/front/front.js');
 
 const PORT = process.env.PORT || 8000;
 
-const server = http
-    .createServer(function (request, response) {
-        let filePath = request.url.split('/').filter(function (elem) {
-            return elem !== '..';
-        });
+const server = http.createServer(function (request, response) {
+    let filePath = request.url.split('/').filter(function (elem) {
+        return elem !== '..';
+    });
 
-        response.setHeader('Access-Control-Allow-Origin', '*');
-        response.setHeader('Access-Control-Allow-Methods', '*');
-        response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        response.setHeader('Access-Control-Allow-Credentials', 'true');
+    response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Access-Control-Allow-Methods', '*');
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    response.setHeader('Access-Control-Allow-Credentials', 'true');
 
-        try {
-            if (filePath[1] === 'api') {
-                logger.info(`API request: ${request.url}`);
-                api.manageRequest(request, response);
-            } else {
-                logger.info(`Front request: ${request.url}`);
-                front.manageRequest(request, response);
-            }
-        } catch (error) {
-            console.log(`error while processing ${request.url}: ${error}`);
-            response.statusCode = 400;
-            response.end(`Something in your request (${request.url}) is strange...`);
+    try {
+        if (filePath[1] === 'api') {
+            logger.info(`API request: ${request.url}`);
+            api.manageRequest(request, response);
+        } else {
+            logger.info(`Front request: ${request.url}`);
+            front.manageRequest(request, response);
         }
-    })
-    .listen(PORT);
+    } catch (error) {
+        console.log(`error while processing ${request.url}: ${error}`);
+        response.statusCode = 400;
+        response.end(`Something in your request (${request.url}) is strange...`);
+    }
+});
 
-// export const io = Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: '*',
+    },
+});
+
+server.listen(PORT);
 
 logger.info(`Server running at http://localhost:${PORT}/`);
+
+module.exports = { server, io };
