@@ -63,7 +63,7 @@ function login(request, response) {
                 return;
             }
 
-            let token = sign({ email: result.email });
+            let token = sign({ username: result.name, email: result.email });
             response.end(JSON.stringify({ token: token }));
         });
     });
