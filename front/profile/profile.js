@@ -5,43 +5,41 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log(username, email);
 
     if (!token || !username || !email) {
-        // Token or user information not found, redirect to login page
         window.location.href = '/login/login.html';
         return;
     }
+    console.log(token);
 
     // Update profile information on the page
     document.getElementById('profile-name').textContent = username;
     document.getElementById('profile-email').textContent = email;
-    /*
-    // Make API request to fetch user's friend list
+
     fetch('http://localhost:8000/api/friend/list', {
         headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `${token}`,
         },
     })
-        .then((response) => response.json().then((data) => ({ status: response.status, body: data })))
-        .then(({ status, body }) => {
-            if (status === 200) {
-                // Friend list retrieved successfully
-                console.log('Friend list:', body);
-                // Update friends list on the page
-                const friendsList = document.getElementById('friends-list');
-                body.forEach((friend) => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = friend.email; // Assuming the friend object has an 'email' property
-                    friendsList.appendChild(listItem);
-                });
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
             } else {
-                // Friend list retrieval failed
-                console.log(`Friend list retrieval failed with status: ${status}`, body);
-                // Display an error message to the user
-                alert('Failed to retrieve friend list. Please try again later.');
+                throw new Error(`Friend list retrieval failed with status: ${response.status}`);
             }
+        })
+        .then((data) => {
+            console.log('Friend list:', data);
+            const friendsList = document.getElementById('friend-list');
+            data.forEach((friend) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = friend.friend_email;
+                friendsList.appendChild(listItem);
+            });
         })
         .catch((error) => {
             console.error('Error during friend list retrieval:', error);
-            alert('An error occurred while retrieving friend list. Please try again later.');
         });
-     */
+    const addFriendBtn = document.getElementById('add-friend-btn');
+    addFriendBtn.addEventListener('click', function () {
+        window.location.href = '/friend/friend.html';
+    });
 });

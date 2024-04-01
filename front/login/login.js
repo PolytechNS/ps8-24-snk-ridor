@@ -25,8 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     localStorage.setItem('token', body.token);
                     localStorage.setItem('username', body.username);
                     localStorage.setItem('email', body.email);
-                    console.log(body.email, body.username, body.token);
-                    // window.location.href = '/';
+                    window.location.href = '/';
                 } else {
                     // Login failed
                     console.log(`Login failed with status: ${status}`, body);

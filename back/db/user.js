@@ -7,7 +7,8 @@ class User {
     email;
     password_hash;
 
-    constructor(email, password) {
+    constructor(name, email, password) {
+        this.name = name;
         this.email = email;
         this.password_hash = hashPassword(password);
     }
@@ -34,13 +35,14 @@ class User {
         const db = await getMongoDatabase();
         const users = db.collection('users');
 
-        let user = new User('', '');
+        let user = new User('', '', '');
 
         return users.findOne({ email: email }).then((result) => {
             if (!result) {
                 return null;
             }
 
+            user.name = result.name;
             user.email = result.email;
             user.password_hash = result.password_hash;
 

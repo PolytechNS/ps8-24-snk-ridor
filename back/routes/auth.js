@@ -30,7 +30,7 @@ function register(request, response) {
     }
 
     getJsonBody(request).then((jsonBody) => {
-        let user = new User(jsonBody.email, jsonBody.password);
+        let user = new User(jsonBody.username, jsonBody.email, jsonBody.password);
 
         User.create(user).then((result) => {
             if (!result || result.error) {
@@ -64,7 +64,13 @@ function login(request, response) {
             }
 
             let token = sign({ username: result.name, email: result.email });
-            response.end(JSON.stringify({ token: token }));
+            response.end(
+                JSON.stringify({
+                    token: token,
+                    username: result.name,
+                    email: result.email,
+                })
+            );
         });
     });
 }

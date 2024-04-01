@@ -137,7 +137,6 @@ function remove(request, response) {
 
 function list(request, response) {
     let email = getCurrentUser(request);
-
     if (!email) {
         response.statusCode = 401;
         response.end('Unauthorized');
@@ -145,12 +144,10 @@ function list(request, response) {
     }
 
     Friend.getAll(email).then((result) => {
-        if (!result) {
-            response.statusCode = 400;
-            response.end('No friends found');
+        if (!result || result.length === 0) {
+            response.end(JSON.stringify([]));
             return;
         }
-
         response.end(JSON.stringify(result));
     });
 }
@@ -165,7 +162,7 @@ function find(request, response) {
     }
 
     User.getAll().then((result) => {
-        if (!result) {
+        if (!result || result.length === 0) {
             response.statusCode = 400;
             response.end('No users found');
             return;
