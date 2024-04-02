@@ -44,6 +44,7 @@ import { LOG } from './main.js';
 import { updateFogOfWar } from './fogwar.js';
 import { updatePath } from './pathFinding.js';
 import { display_message } from './board.js';
+import { placePlayer } from './display.js';
 
 const LINES = BOARD_HEIGHT;
 const COLUMNS = BOARD_WIDTH;
@@ -240,6 +241,15 @@ function checkVictory(player) {
     return false;
 }
 
+export function place_player(player, line, column) {
+    if (LOG) console.log(`place_player(${player}, ${line}, ${column}) called`);
+
+    let event = new Event('place', player.player, [null, null], [line, column]);
+    placePlayer(event);
+
+    next_player(event);
+}
+
 export function move_player(player, line, column) {
     if (LOG) console.log(`move_player(${player}, ${line}, ${column}) called`);
     let old_line = player.line;
@@ -339,6 +349,21 @@ function deleteOverview() {
         element.parentElement.overviewed = false;
         element.remove();
     });
+}
+
+export function firstOnCellClick(event) {
+    if (LOG) console.log(`firstOnCellClick(${event}) called`);
+    let cell = event.target;
+    let id = cell.id.split('-');
+    let line = parseInt(id[1]);
+    let column = parseInt(id[2]);
+
+    if (event.target.className == 'position_overview') {
+        cell = event.target.parentElement;
+    } else {
+        cell = event.target;
+    }
+    place_player(player_a, line, column);
 }
 
 export function onCellClick(event) {

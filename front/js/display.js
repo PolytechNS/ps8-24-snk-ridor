@@ -206,7 +206,8 @@ export function display_initial_board(playerId, board) {
     turn_number.textContent = board.getTurnCount();
 }
 
-function placePlayer(event) {
+export function placePlayer(event) {
+    console.log('placePlayer called ' + event.target);
     let board = global_board;
     let cell = event.target;
     let coords = cell.id
