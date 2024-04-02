@@ -1,5 +1,5 @@
-import { Board } from '../../shared/board.js';
-import { newGame, onCellClick, onWallClick, onWallOut, onWallOver } from '../../shared/engine.js';
+import { newGame } from './engine.js';
+import { onCellClick, onWallClick, onWallOut, onWallOver } from './dealer.js';
 
 let global_board;
 /*
