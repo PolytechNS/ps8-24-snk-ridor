@@ -91,6 +91,16 @@ function initialise_game() {
     updateFogOfWar('beginning', null);
 }
 
+export function newGame() {
+    if (LOG) console.log(`newGame() called`);
+    board_data = [];
+    board_visibility = [];
+    player_a = null;
+    player_b = null;
+    turn = 0;
+    main();
+}
+
 export function next_player(event = null) {
     if (LOG) console.log(`next_player() called`);
     getGame().getCurrentPlayer().updateProfile();
@@ -230,7 +240,7 @@ function checkVictory(player) {
     return false;
 }
 
-function move_player(player, line, column) {
+export function move_player(player, line, column) {
     if (LOG) console.log(`move_player(${player}, ${line}, ${column}) called`);
     let old_line = player.line;
     let old_column = player.column;

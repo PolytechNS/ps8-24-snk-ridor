@@ -1,5 +1,5 @@
-import { Board } from '../../shared/board.js';
-import { newGame, onCellClick, onWallClick, onWallOut, onWallOver } from '../../shared/engine.js';
+import { newGame } from './engine.js';
+import { onCellClick, onWallClick, onWallOut, onWallOver } from './dealer.js';
 
 let global_board;
 /*
@@ -336,6 +336,8 @@ export function display_action_message(message, timeout = 0, buttons = [], cance
             message_div.remove();
         }, timeout);
     }
+
+    return message_div;
 }
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -43,21 +43,21 @@ function recursivePF(position, goal, list) {
     return null;
 }
 
-// export function findPath(player) {
-//     var list = [];
-//     for (var i = 0; i < 9; i++) {
-//         list.push([]);
-//         for (var j = 0; j < 9; j++) {
-//             list[i].push(0);
-//         }
-//     }
-//     var path = recursivePF(player.position, player.goal, list);
-//     if (path == null) {
-//         if (LOG) display_message("No path found", "dev_message");
-//     }
-//     if (LOG) console.log(path);
-//     return path;
-// }
+export function findPath(player) {
+    var list = [];
+    for (var i = 0; i < 9; i++) {
+        list.push([]);
+        for (var j = 0; j < 9; j++) {
+            list[i].push(0);
+        }
+    }
+    var path = recursivePF(player.position, player.goal, list);
+    if (path == null) {
+        if (LOG) display_message('No path found', 'dev_message');
+    }
+    if (LOG) console.log(path);
+    return path;
+}
 
 export function updatePath(player) {
     var path = findPath(player);

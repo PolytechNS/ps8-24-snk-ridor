@@ -3,7 +3,7 @@
 // a wall have for coordinates the top left cell coords and the orientation (0 for horizontal, 1 for vertical)
 
 import { Board } from './board.js';
-import { display_board, display_initial_board, display_message } from '../js/display.js';
+import { display_board, display_initial_board, display_action_message } from '../js/display.js';
 
 export class Engine {
     constructor() {
@@ -44,8 +44,7 @@ export function newGame(player1, player2, local1v1) {
     }
     let board = new Board(local1v1);
     display_initial_board(1, board);
-    console.log('Nouvelle partie');
-    display_message('Place un joueur sur la ligne 1');
+    display_action_message('Place un joueur sur la ligne 1');
 }
 
 export function initPlayer(board, player, x, y) {
