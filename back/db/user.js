@@ -61,7 +61,7 @@ class User {
                 let users_objs = [];
 
                 result.forEach((user) => {
-                    let user_obj = new User('', '');
+                    let user_obj = new User('', '', '');
                     user_obj.email = user.email;
                     user_obj.password_hash = user.password_hash;
 

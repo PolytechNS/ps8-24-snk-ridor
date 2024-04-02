@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then((data) => {
             console.log('Friend list:', data);
-            const friendsList = document.getElementById('friend-list');
+            const friendsList = document.getElementById('friends-list');
             data.forEach((friend) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = friend.friend_email;

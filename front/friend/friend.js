@@ -19,6 +19,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Users found
                 console.log('Users found:', data);
                 allUsers = data;
+                allUsers.forEach((user) => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <span>${user.name} (${user.email})</span>
+                        <button class="add-friend" data-email="${user.email}">Add</button>
+                    `;
+                    userList.appendChild(listItem);
+                });
             })
             .catch((error) => {
                 console.error('Error during user list retrieval:', error);
@@ -54,8 +62,23 @@ document.addEventListener('DOMContentLoaded', function () {
     userList.addEventListener('click', function (event) {
         if (event.target.classList.contains('add-friend')) {
             const email = event.target.dataset.email;
-            // Make API request to add the friend
-            // ...
+            fetch('http://localhost:8000/api/friend/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `${token}`,
+                },
+                body: JSON.stringify({ friend_email: email }),
+            })
+                .then((data) => {
+                    console.log('Friend added:', data);
+                    userList.innerHTML = '';
+                    fetchUserList();
+                })
+                .catch((error) => {
+                    console.error('Error during friend addition:', error);
+                    userList.innerHTML = '<li>An error occurred. Please try again later.</li>';
+                });
         }
     });
 
