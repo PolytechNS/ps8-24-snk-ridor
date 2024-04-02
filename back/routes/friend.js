@@ -76,6 +76,7 @@ function accept(request, response) {
 
     getJsonBody(request).then((jsonBody) => {
         Friend.get(email, jsonBody.friend_email).then((result) => {
+            logger.info('Accepting friend request    =     ' + jsonBody);
             if (!result) {
                 response.statusCode = 400;
                 response.end('Friend not found');
@@ -100,7 +101,7 @@ function accept(request, response) {
                     response.end('Friend not accepted');
                     return;
                 }
-
+                console.log('friend add request accepted');
                 response.end('Friend accepted');
             });
         });

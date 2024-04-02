@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 filteredUsers.forEach((user) => {
                     const listItem = document.createElement('li');
                     listItem.innerHTML = `
-                        <span>${user.name} (${user.email})</span>
+                        <span>${user.name} ${user.email}</span>
                         <button class="add-friend" data-email="${user.email}">Add</button>
                     `;
                     userList.appendChild(listItem);
@@ -81,7 +81,5 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         }
     });
-
-    // Fetch the user list when the page loads
     fetchUserList();
 });
