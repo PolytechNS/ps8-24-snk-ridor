@@ -336,6 +336,8 @@ export function display_action_message(message, timeout = 0, buttons = [], cance
             message_div.remove();
         }, timeout);
     }
+
+    return message_div;
 }
 
 document.addEventListener('DOMContentLoaded', function () {

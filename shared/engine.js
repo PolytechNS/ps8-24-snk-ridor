@@ -44,7 +44,6 @@ export function newGame(player1, player2, local1v1) {
     }
     let board = new Board(local1v1);
     display_initial_board(1, board);
-    console.log('Nouvelle partie');
     display_action_message('Place un joueur sur la ligne 1');
 }
 
