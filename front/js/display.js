@@ -1,5 +1,4 @@
 import { newGame } from './engine.js';
-import { onCellClick, onWallClick, onWallOut, onWallOver } from './dealer.js';
 
 let global_board;
 /*
