@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Test Page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://unpkg.com/chota@latest" />
+        <!-- THIS IS TEMPORARY, DO NOT INCLUDE IN FINAL BUILD TODO -->
+        <script type="module">
+            import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
+
+            const socket = io();
+
+            socket.on('connect', () => {
+                console.log('connected');
+            });
+
+            function sendMessage() {
+                const message = document.getElementById('message').value;
+                console.log('sending message:', message);
+                socket.emit('message:send', message);
+            }
+
+            function getChannels() {
+                console.log('getting channels');
+                socket.emit('message:list');
+            }
+
+            socket.on('message:rooms', (rooms) => {
+                console.log('rooms:', rooms);
+                const template = document.getElementById('room-template');
+                const tbody = document.getElementById('rooms');
+                tbody.innerHTML = '';
+
+                for (const room in rooms) {
+                    const tr = template.content.cloneNode(true);
+                    tr.querySelector('#room_hash').textContent = room;
+                    tr.querySelector('#players').textContent = rooms[room].length;
+                    tr.querySelector('#join_button').addEventListener('click', () => {
+                        console.log('joining room:', room);
+                        socket.emit('message:join', room);
+                    });
+
+                    // if the user's socket id is in the room, display a leave button
+                    if (rooms[room].includes(socket.id)) {
+                        tr.querySelector('#join_button').textContent = 'Leave';
+                        tr.querySelector('#join_button').classList.remove('primary');
+                        tr.querySelector('#join_button').classList.add('error');
+                        tr.querySelector('#join_button').addEventListener('click', leaveChannel);
+                    }
+
+                    tbody.appendChild(tr);
+                }
+            });
+
+            function leaveChannel() {
+                console.log('leaving channel');
+                socket.emit('message:leave');
+            }
+
+            function createRoom() {
+                // generate a random room name and join it
+                const room = Math.random().toString(36).substring(7);
+                socket.emit('message:join', room);
+            }
+
+            socket.on('message:receive', (message) => {
+                console.log('received message:', message);
+                const messages = document.getElementById('messages');
+                const li = document.createElement('li');
+                li.textContent = message;
+                messages.appendChild(li);
+            });
+
+            window.sendMessage = sendMessage;
+            window.getChannels = getChannels;
+            window.createRoom = createRoom;
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row" style="margin-top: 20px">
+                <div class="col-6 card">
+                    <h2>List of the rooms</h2>
+                    <table class="striped">
+                        <thead>
+                            <tr>
+                                <th>Room</th>
+                                <th>Players</th>
+                                <th>Join</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rooms"></tbody>
+                    </table>
+                    <div class="row" style="margin-top: 10px">
+                        <button class="button primary" onclick="getChannels()">Refresh</button>
+                        <button class="button primary" onclick="createRoom()">Create Room</button>
+                    </div>
+                </div>
+                <div class="col-6 card">
+                    <h2>Chat</h2>
+                    <div id="chat">
+                        <ul id="messages"></ul>
+                    </div>
+                    <div class="row">
+                        <input class="col-9" type="text" id="message" />
+                        <button class="col-3" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+            <template id="room-template">
+                <tr>
+                    <td id="room_hash"></td>
+                    <td id="players"></td>
+                    <td>
+                        <button id="join_button" class="button primary">Join</button>
+                    </td>
+                </tr>
+            </template>
+        </div>
+    </body>
+</html>

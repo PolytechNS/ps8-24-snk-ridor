@@ -6,6 +6,8 @@ const { logger } = require('./libs/logging');
 // routes
 const api = require('./routes/api.js');
 const front = require('./routes/front/front.js');
+const { handleSocket } = require('./routes/chat');
+const chat = require('./routes/chat');
 
 const PORT = process.env.PORT || 8000;
 
@@ -38,6 +40,15 @@ const io = new Server(server, {
     cors: {
         origin: '*',
     },
+});
+
+io.on('connection', (socket) => {
+    logger.info('Socket connected');
+    chat.registerHandlers(io, socket);
+});
+
+io.on('disconnect', () => {
+    logger.info('Socket disconnected');
 });
 
 server.listen(PORT);
