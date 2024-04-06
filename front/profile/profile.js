@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('back-button').addEventListener('click', () => {
+        window.location.href = '../home/home.html';
+    });
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
     const email = localStorage.getItem('email');

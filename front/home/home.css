@@ -1,18 +1,37 @@
+@font-face {
+    font-family: 'OptimusPrinceps';
+    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     margin: 0;
     padding: 0;
     height: 100vh;
+    font-family: 'OptimusPrinceps', Arial, sans-serif;
 }
 
 main {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/login-background.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
     background-size: cover;
     color: #ffffff;
     display: flex;
     align-items: center;
     flex-direction: column;
-    min-height: calc(100vh - 50px); /* Adjust the height based on the nav height */
-    padding-top: 50px; /* Add padding to the top to accommodate the nav */
+    min-height: 100vh;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.logo-link {
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 180px;
+    border-radius: 10px;
 }
 
 h1 {
@@ -28,55 +47,75 @@ p {
     max-width: 80%;
 }
 
-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
+.play-buttons {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    padding: 0 3vw;
     width: 100%;
-    background-color: rgba(153, 153, 153, 0.4);
-    height: 50px; /* Add a fixed height to the nav */
-    z-index: 1000; /* Ensure the nav stays on top */
+    max-width: 300px;
+    border-radius: 0px;
 }
 
 .play_button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-bottom: 1em;
+    display: block;
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 1.5em;
     border: none;
-    border-radius: 5px;
     color: #ffffff;
-    font-size: 1.2em;
+    font-size: 1.5em;
     font-weight: bold;
     text-align: center;
     text-decoration: none;
-    box-shadow: 0 5px #999;
+    background-color: #ff5722;
+    box-shadow: 0 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 2px;
+    border-radius: 0px;
+}
+
+.play_button:hover {
+    background-color: #f4511e;
+}
+
+.play_button:active {
+    box-shadow: 0 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(4px);
+}
+
+header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 20px;
+}
+
+.top-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.top-button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    color: #ffffff;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ff5722;
+    box-shadow: 0 3px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: all 0.2s;
 }
 
-.play_button:active {
-    box-shadow: 0 2px #666;
-    transform: translateY(4px);
+.top-button:hover {
+    background-color: #f4511e;
 }
 
-#online-play_button {
-    background-color: #4caf50; /* Green */
-}
-
-#online-play_button:hover {
-    background-color: #3d8b40; /* Dark Green */
-}
-
-#vs-bot-play_button,
-#local-play_button {
-    background-color: #f44336; /* Red */
-}
-
-#vs-bot-play_button:hover,
-#local-play_button:hover {
-    background-color: #d32f2f; /* Dark Red */
+.top-button:active {
+    box-shadow: 0 1px rgba(0, 0, 0, 0.3);
+    transform: translateY(2px);
 }

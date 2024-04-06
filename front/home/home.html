@@ -6,25 +6,23 @@
         <link rel="stylesheet" href="../styles/style.css" />
         <link rel="stylesheet" href="home.css" />
         <script src="home.js"></script>
-        <script src="../menu/burgermenu.js"></script>
-        <link rel="stylesheet" href="../menu/burgermenu.css" />
     </head>
     <body>
-        <nav>
-            <a href="home.html"><img src="../resources/icon_home.jpg" width="30px" /></a>
-            <p>Shingeki No Korridor</p>
-            <div id="nav-login">
-                <a class="nav-button" id="login-button" href="/login/login.html">Login</a>
-                <a class="nav-button" id="register-button" href="/signup/signup.html">Register</a>
+        <header>
+            <div class="top-buttons">
+                <a class="top-button" id="profile-button" href="../profile/profile.html">Profile</a>
+                <a class="top-button" id="logout-button">Logout</a>
             </div>
-        </nav>
+        </header>
         <main>
-            <h1>Welcome to SNK'ridor</h1>
-            <p>Shingeki no Kyojin (Attack on Titan) is a Japanese manga series written and illustrated by Hajime Isayama. It is set in a world where humanity lives within cities surrounded by enormous walls that protect them from gigantic</p>
-            <a class="play_button" id="online-play_button" href="../index.html">Jouer</a>
-            <a class="play_button" id="vs-bot-play_button" onclick="alert('la fonctionnalité arrive bientôt')">Jouer contre l'IA</a>
-            <a class="play_button" id="local-play_button" onclick="alert('la fonctionnalité arrive bientôt')">Multijoueur local</a>
-            <a class="play_button" id="online_button" href="../online/online.html">Multijoueur</a>
+            <a href="home.html" class="logo-link">
+                <img src="../resources/logo.png" alt="SNK'ridor Logo" class="logo" />
+            </a>
+            <div class="play-buttons">
+                <a class="play_button" id="online-play_button" href="../index.html">Jouer</a>
+                <a class="play_button" id="vs-bot-play_button" onclick="alert('la fonctionnalité arrive bientôt')">Jouer contre l'IA</a>
+                <a class="play_button" id="local-play_button" onclick="alert('la fonctionnalité arrive bientôt')">Multijoueur local</a>
+            </div>
         </main>
     </body>
 </html>
