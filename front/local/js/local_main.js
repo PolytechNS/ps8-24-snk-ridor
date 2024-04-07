@@ -1,10 +1,10 @@
-import { Game, Player, getGame } from 'models.js';
-import { init_board } from 'board.js';
-import { addPlayers, display } from 'engine.js';
-import { findPath, updatePath } from 'pathFinding.js';
-import { updateFogOfWar } from 'fogwar.js';
+import { Game, Player, getGame } from './local_models.js';
+import { init_board } from './local_board.js';
+import { addPlayers, display } from './local_engine.js';
+import { findPath, updatePath } from './local_pathFinding.js';
+import { updateFogOfWar } from './local_fogwar.js';
 
-export const LOG = false;
+export const LOG = true;
 
 function onload() {
     if (LOG) console.log('Loaded');

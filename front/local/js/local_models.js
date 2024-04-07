@@ -1,5 +1,5 @@
-import { display_message } from 'board.js';
-import { LOG } from 'main.js';
+import { display_message } from './local_board.js';
+import { LOG } from './local_main.js';
 
 export let BOARD_HEIGHT = 9;
 export let BOARD_WIDTH = 9;
