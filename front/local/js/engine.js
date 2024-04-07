@@ -1,9 +1,9 @@
-import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from '../js/models.js';
-import { LOG } from '../js/main.js';
-import { updateFogOfWar } from '../js/fogwar.js';
-import { updatePath } from '../js/pathFinding.js';
-import { display_message } from '../js/board.js';
-import { placePlayer } from '../js/display.js';
+import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from '../local/js/models.js';
+import { LOG } from '../local/js/main.js';
+import { updateFogOfWar } from '../local/js/fogwar.js';
+import { updatePath } from '../local/js/pathFinding.js';
+import { display_message } from '../local/js/board.js';
+import { placePlayer } from '../local/js/display.js';
 
 const LINES = BOARD_HEIGHT;
 const COLUMNS = BOARD_WIDTH;

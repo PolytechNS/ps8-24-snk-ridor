@@ -1,4 +1,4 @@
-import { newGame } from '../js/engine.js';
+import { newGame } from '../local/js/engine.js';
 
 let global_board;
 /*
