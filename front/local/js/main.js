@@ -1,8 +1,8 @@
-import { Game, Player, getGame } from '../local/js/models.js';
-import { init_board } from '../local/js/board.js';
-import { addPlayers, display } from '../local/js/engine.js';
-import { findPath, updatePath } from '../local/js/pathFinding.js';
-import { updateFogOfWar } from '../local/js/fogwar.js';
+import { Game, Player, getGame } from 'models.js';
+import { init_board } from 'board.js';
+import { addPlayers, display } from 'engine.js';
+import { findPath, updatePath } from 'pathFinding.js';
+import { updateFogOfWar } from 'fogwar.js';
 
 export const LOG = false;
 

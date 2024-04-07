@@ -1,7 +1,7 @@
-import { BOARD_WIDTH, BOARD_HEIGHT, Event, getGame } from '../local/js/models.js';
-import { onCellClick, next_player, firstOnCellClick } from '../local/js/engine.js';
-import { LOG } from '../local/js/main.js';
-import { findPath } from '../local/js/pathFinding.js';
+import { BOARD_WIDTH, BOARD_HEIGHT, Event, getGame } from 'models.js';
+import { onCellClick, next_player, firstOnCellClick } from 'engine.js';
+import { LOG } from 'main.js';
+import { findPath } from 'pathFinding.js';
 
 export function init_board(board_div, board) {
     board_div.style.gridTemplateColumns = `repeat(${board.h_size * 2 - 1}, min-content)`;

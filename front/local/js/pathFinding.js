@@ -1,6 +1,6 @@
-import { display_message } from '../local/js/board.js';
-import { getCorridorPossiblePositionForPath } from '../local/js/engine.js';
-import { LOG } from '../local/js/main.js';
+import { display_message } from 'board.js';
+import { getCorridorPossiblePositionForPath } from 'engine.js';
+import { LOG } from 'main.js';
 
 function getNearestPosition(positions, goal) {
     var nearest = positions[0];

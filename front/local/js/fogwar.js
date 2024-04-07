@@ -1,5 +1,5 @@
-import { LOG } from '../local/js/main.js';
-import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event } from '../local/js/models.js';
+import { LOG } from 'main.js';
+import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event } from 'models.js';
 
 let board_fow;
 
