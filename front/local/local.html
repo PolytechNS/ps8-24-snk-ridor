@@ -35,7 +35,17 @@
         </aside>
 
         <main class="game">
+            <!-- Ecran de transition -->
+            <div id="transition_screen" class="transition-screen" style="display: none">
+                <div class="final_message">
+                    <button id="continue_button">Continuer</button>
+                </div>
+            </div>
+
+            <!-- Plateau de jeu -->
             <div id="board" class="board"></div>
+
+            <!-- Informations de jeu -->
             <div id="game-infos" class="game-infos">
                 <a class="container">Au tour du joueur&nbsp;<a id="player">A</a><br /></a>
                 <a class="container">tour&nbsp;<a id="turn">1</a><br /></a>

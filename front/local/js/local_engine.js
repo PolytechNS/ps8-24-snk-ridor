@@ -68,12 +68,28 @@ export function next_player(event = null) {
     } else if (game.turn_count == 190) {
         display_message('10 derniers tours !', 'info_message');
     }
+
     game.nextPlayer();
     document.getElementById('turn').textContent = game.turn_count;
     updatePath(game.getCurrentPlayer());
     document.getElementById('player').textContent = ['', 'A', 'B'][game.getCurrentPlayer().id];
-
     updateFogOfWar(event);
+
+    showTransitionScreen(); // Montre l'écran de transition
+
+    document.getElementById('continue_button').addEventListener('click', function () {
+        hideTransitionScreen(); // Cache l'écran de transition
+    });
+}
+
+function showTransitionScreen() {
+    let transitionScreen = document.getElementById('transition_screen');
+    transitionScreen.style.display = 'flex';
+}
+
+function hideTransitionScreen() {
+    let transitionScreen = document.getElementById('transition_screen');
+    transitionScreen.style.display = 'none';
 }
 
 // rewrite the getCorridorPossiblePosition function with the new coordinates (column, line), from 1 to 9, x and y
