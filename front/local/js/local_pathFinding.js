@@ -73,7 +73,7 @@ export function updatePath(player) {
     for (var i = 0; i < path.length; i++) {
         for (var j = 0; j < path[i].length; j++) {
             if (path[i][j] == 1) {
-                document.getElementById('cell-' + i + '-' + j).style.setProperty('border', '#44BB44 4px solid');
+                document.getElementById(`cell-${i + 1}-${j + 1}`).style.setProperty('border', '#44BB44 4px solid');
             }
         }
     }

@@ -22,8 +22,8 @@ const PLAYER_B_START_LINE = LINES;
 let board_data = [];
 let board_visibility = [];
 
-let player_a;
-let player_b;
+let player_a = 1;
+let player_b = 2;
 
 let turn = 0;
 
@@ -61,71 +61,129 @@ export function newGame() {
 
 export function next_player(event = null) {
     if (LOG) console.log(`next_player() called`);
-    getGame().getCurrentPlayer().updateProfile();
-    updateFogOfWar(event);
+    let game = getGame();
+    game.getCurrentPlayer().updateProfile();
     deleteOverview();
-    turn++;
-    if (turn == 200) {
+    if (game.turn_count == 200) {
         display_message('Égalité', 'final_message');
         //alert('Draw'); // TODO : change this to a better way to display the victory
         return;
-    } else if (turn == 190) {
+    } else if (game.turn_count == 190) {
         display_message('10 derniers tours !', 'info_message');
     }
-    document.getElementById('turn').textContent = turn + 1;
-    getGame().nextPlayer();
-    updatePath(getGame().getCurrentPlayer());
+    game.nextPlayer();
+    document.getElementById('turn').textContent = game.turn_count;
+    updatePath(game.getCurrentPlayer());
     document.getElementById('player').textContent = ['', 'A', 'B'][getPlayerTurn().player];
+
+    updateFogOfWar(event);
 }
 
-export function getCorridorPossiblePosition(line, column) {
+// rewrite the getCorridorPossiblePosition function with the new coordinates (column, line), from 1 to 9, x and y
+
+export function getCorridorPossiblePosition(column, line) {
+    if (LOG) console.log(`getCorridorPossiblePosition(${column}, ${line}) called`);
     let cells = [];
-    if (line > 0) {
-        if (!document.getElementById('h-wall-' + (line - 1) + '-' + column).classList.contains('placed')) {
-            if (document.getElementById('cell-' + (line - 1) + '-' + column).childElementCount == 0) {
-                cells.push([line - 1, column]);
+    if (line > 1) {
+        if (!document.getElementById('h-wall-' + column + '-' + line).classList.contains('placed')) {
+            if (document.getElementById('cell-' + column + '-' + (line - 1)).childElementCount == 0) {
+                cells.push([column, line - 1]);
             } else {
-                if (line > 1 && !document.getElementById('h-wall-' + (line - 2) + '-' + column).classList.contains('placed')) {
-                    cells.push([line - 2, column]);
+                if (line > 2 && !document.getElementById('h-wall-' + column + '-' + (line - 2)).classList.contains('placed')) {
+                    cells.push([column, line - 2]);
                 }
             }
         }
     }
-    if (line < LINES - 1) {
-        if (!document.getElementById('h-wall-' + line + '-' + column).classList.contains('placed')) {
-            if (document.getElementById('cell-' + (line + 1) + '-' + column).childElementCount == 0) {
-                cells.push([line + 1, column]);
+    if (line < LINES) {
+        if (!document.getElementById('h-wall-' + column + '-' + (line + 1)).classList.contains('placed')) {
+            if (document.getElementById('cell-' + column + '-' + (line + 1)).childElementCount == 0) {
+                cells.push([column, line + 1]);
             } else {
-                if (line < LINES - 2 && !document.getElementById('h-wall-' + (line + 1) + '-' + column).classList.contains('placed')) {
-                    cells.push([line + 2, column]);
+                if (line < LINES - 1 && !document.getElementById('h-wall-' + column + '-' + (line + 1)).classList.contains('placed')) {
+                    cells.push([column, line + 2]);
                 }
             }
         }
     }
-    if (column > 0) {
-        if (!document.getElementById('v-wall-' + line + '-' + (column - 1)).classList.contains('placed')) {
-            if (document.getElementById('cell-' + line + '-' + (column - 1)).childElementCount == 0) {
-                cells.push([line, column - 1]);
+    if (column > 1) {
+        if (!document.getElementById('v-wall-' + (column - 1) + '-' + line).classList.contains('placed')) {
+            if (document.getElementById('cell-' + (column - 1) + '-' + line).childElementCount == 0) {
+                cells.push([column - 1, line]);
             } else {
-                if (column > 1 && !document.getElementById('v-wall-' + line + '-' + (column - 2)).classList.contains('placed')) {
-                    cells.push([line, column - 2]);
+                if (column > 2 && !document.getElementById('v-wall-' + (column - 2) + '-' + line).classList.contains('placed')) {
+                    cells.push([column - 2, line]);
                 }
             }
         }
     }
-    if (column < COLUMNS - 1) {
-        if (!document.getElementById('v-wall-' + line + '-' + column).classList.contains('placed')) {
-            if (document.getElementById('cell-' + line + '-' + (column + 1)).childElementCount == 0) {
-                cells.push([line, column + 1]);
+    if (column < COLUMNS) {
+        if (!document.getElementById('v-wall-' + column + '-' + line).classList.contains('placed')) {
+            if (document.getElementById('cell-' + (column + 1) + '-' + line).childElementCount == 0) {
+                cells.push([column + 1, line]);
             } else {
-                if (column < COLUMNS - 2 && !document.getElementById('v-wall-' + line + '-' + (column + 1)).classList.contains('placed')) {
-                    cells.push([line, column + 2]);
+                if (column < COLUMNS - 1 && !document.getElementById('v-wall-' + column + '-' + line).classList.contains('placed')) {
+                    cells.push([column + 2, line]);
                 }
             }
         }
     }
+
+    if (LOG) console.log(`getCorridorPossiblePosition(${column}, ${line}) returns ${cells}`);
     return cells;
 }
+
+// export function getCorridorPossiblePosition(line, column) {
+//     if (LOG) console.log(`getCorridorPossiblePosition(${line}, ${column}) called`);
+//     let cells = [];
+//     if (line > 0) {
+//         if (!document.getElementById('h-wall-' + (line - 1) + '-' + column).classList.contains('placed')) {
+//             if (document.getElementById('cell-' + (line - 1) + '-' + column).childElementCount == 0) {
+//                 cells.push([line - 1, column]);
+//             } else {
+//                 if (line > 1 && !document.getElementById('h-wall-' + (line - 2) + '-' + column).classList.contains('placed')) {
+//                     cells.push([line - 2, column]);
+//                 }
+//             }
+//         }
+//     }
+//     if (line < LINES - 1) {
+//         if (!document.getElementById('h-wall-' + line + '-' + column).classList.contains('placed')) {
+//             if (document.getElementById('cell-' + (line + 1) + '-' + column).childElementCount == 0) {
+//                 cells.push([line + 1, column]);
+//             } else {
+//                 if (line < LINES - 2 && !document.getElementById('h-wall-' + (line + 1) + '-' + column).classList.contains('placed')) {
+//                     cells.push([line + 2, column]);
+//                 }
+//             }
+//         }
+//     }
+//     if (column > 0) {
+//         if (!document.getElementById('v-wall-' + line + '-' + (column - 1)).classList.contains('placed')) {
+//             if (document.getElementById('cell-' + line + '-' + (column - 1)).childElementCount == 0) {
+//                 cells.push([line, column - 1]);
+//             } else {
+//                 if (column > 1 && !document.getElementById('v-wall-' + line + '-' + (column - 2)).classList.contains('placed')) {
+//                     cells.push([line, column - 2]);
+//                 }
+//             }
+//         }
+//     }
+//     if (column < COLUMNS - 1) {
+//         if (!document.getElementById('v-wall-' + line + '-' + column).classList.contains('placed')) {
+//             if (document.getElementById('cell-' + line + '-' + (column + 1)).childElementCount == 0) {
+//                 cells.push([line, column + 1]);
+//             } else {
+//                 if (column < COLUMNS - 2 && !document.getElementById('v-wall-' + line + '-' + (column + 1)).classList.contains('placed')) {
+//                     cells.push([line, column + 2]);
+//                 }
+//             }
+//         }
+//     }
+
+//     if (LOG) console.log(`getCorridorPossiblePosition(${line}, ${column}) returns ${cells}`);
+//     return cells;
+// }
 
 export function getCorridorPossiblePositionForPath(column, line) {
     if (LOG) console.log(`getCorridorPossiblePositionForPath(${column}, ${line}) called`);
@@ -209,27 +267,29 @@ export function place_player(player, line, column) {
     next_player(event);
 }
 
-export function move_player(player, line, column) {
-    if (LOG) console.log(`move_player(${player}, ${line}, ${column}) called`);
+export function move_player(player, column, line) {
+    if (LOG) console.log(`move_player(${player}, ${column}, ${line}) called`);
     let old_line = player.line;
     let old_column = player.column;
 
+    if (LOG) console.log(`Player ${player.player} moved from [${old_column}, ${old_line}] to [${column}, ${line}]`);
     player.line = line;
     player.column = column;
 
-    let cell = document.getElementById('cell-' + old_line + '-' + old_column);
-    cell.removeChild(player);
-    cell = document.getElementById('cell-' + line + '-' + column);
-    cell.appendChild(player);
-    getGame()['p' + player.player + '_pos'] = [line, column];
-    getGame().getCurrentPlayer().move([line, column]);
+    let cell = document.getElementById('cell-' + old_column + '-' + old_line);
+    let player_pow = document.getElementById('player-' + player.player);
+    cell.removeChild(player_pow);
+    cell = document.getElementById('cell-' + column + '-' + line);
+    cell.appendChild(player_pow);
+    getGame()['p' + player.player + '_pos'] = [column, line];
+    getGame().getCurrentPlayer().move([column, line]);
 
     if (checkVictory(player)) {
-        updateFogOfWar(new Event('end', player.player, [player.line, player.column]));
+        updateFogOfWar(new Event('end', player.player, [player.column, player.line]));
         deleteOverview();
         return;
     }
-    let event = new Event('move', player.player, [old_line, old_column], [line, column]);
+    let event = new Event('move', player.player, [old_column, old_line], [column, line]);
     next_player(event);
 }
 
@@ -328,19 +388,35 @@ export function firstOnCellClick(event) {
 
 export function onCellClick(event) {
     if (LOG) console.log(`onCellClick(${event}) called`);
-    let cell = event.target;
-    let id = cell.id.split('-');
-    let column = parseInt(id[1]); // x
-    let line = parseInt(id[2]); // y
-
-    if (event.target.className == 'position_overview') {
+    let cell;
+    if (event.target.className == 'position_overview' || event.target.className.includes('player')) {
         cell = event.target.parentElement;
     } else {
         cell = event.target;
     }
 
+    let id = cell.id.split('-');
+    let column = parseInt(id[1]); // x
+    let line = parseInt(id[2]); // y
+
     // if cell contains a player
-    if (cell.contains(player_a) || cell.contains(player_b)) {
+    let board = getGame();
+    let cells;
+    console.log(`Player ${board.getCurrentPlayer().position}, ${column}, ${line} clicked`);
+    if (board.getCurrentPlayer().position[0] == column && board.getCurrentPlayer().position[1] == line) {
+        console.log(`Player ${board.getCurrentPlayer().id} clicked`);
+        cells = getCorridorPossiblePosition(column, line);
+        console.log(`cells : ${cells}`);
+        for (let cell of cells) {
+            let cellElement = document.getElementById('cell-' + cell[0] + '-' + cell[1]);
+            let overview = document.createElement('div');
+            overview.className = 'position_overview';
+            overview.line = cell[0];
+            overview.column = cell[1];
+            overview.id = 'overview-' + cell[0] + '-' + cell[1];
+            cellElement.appendChild(overview);
+            cellElement.overviewed = true;
+        }
         return;
     }
 
@@ -349,7 +425,7 @@ export function onCellClick(event) {
     }
     if (cell.overviewed) {
         getPlayerTurn().classList.toggle('border-active');
-        move_player(getPlayerTurn(), line, column);
+        move_player(getPlayerTurn(), column, line);
     } else {
         deleteOverview();
     }
