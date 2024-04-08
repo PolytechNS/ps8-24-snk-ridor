@@ -272,23 +272,46 @@ function allBoardFogOfWar() {
 function setVisibility(x, y, value) {
     let cell = document.getElementById(`cell-${x + 1}-${y + 1}`);
     if (LOG) console.log(`Setting visibility of cell`);
-    if (value > 0) {
-        if (!cell.classList.contains('visible')) {
-            cell.classList.add('visible');
-            cell.classList.remove('invisible');
-            cell.classList.remove('middle');
+    let player = getGame().getCurrentPlayer();
+    if (player.id == 1) {
+        if (value > 0) {
+            if (!cell.classList.contains('visible')) {
+                cell.classList.add('visible');
+                cell.classList.remove('invisible');
+                cell.classList.remove('middle');
+            }
+        } else if (value == 0) {
+            if (!cell.classList.contains('middle')) {
+                cell.classList.add('middle');
+                cell.classList.remove('visible');
+                cell.classList.remove('invisible');
+            }
+        } else {
+            if (!cell.classList.contains('invisible')) {
+                cell.classList.add('invisible');
+                cell.classList.remove('visible');
+                cell.classList.remove('middle');
+            }
         }
-    } else if (value == 0) {
-        if (!cell.classList.contains('middle')) {
-            cell.classList.add('middle');
-            cell.classList.remove('visible');
-            cell.classList.remove('invisible');
-        }
-    } else {
-        if (!cell.classList.contains('invisible')) {
-            cell.classList.add('invisible');
-            cell.classList.remove('visible');
-            cell.classList.remove('middle');
+    } else if (player.id == 2) {
+        if (value < 0) {
+            if (!cell.classList.contains('visible')) {
+                cell.classList.add('visible');
+                cell.classList.remove('invisible');
+                cell.classList.remove('middle');
+            }
+        } else if (value == 0) {
+            if (!cell.classList.contains('middle')) {
+                cell.classList.add('middle');
+                cell.classList.remove('visible');
+                cell.classList.remove('invisible');
+            }
+        } else {
+            if (!cell.classList.contains('invisible')) {
+                cell.classList.add('invisible');
+                cell.classList.remove('visible');
+                cell.classList.remove('middle');
+            }
         }
     }
 }
