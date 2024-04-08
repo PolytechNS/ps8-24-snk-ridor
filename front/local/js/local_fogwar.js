@@ -213,7 +213,7 @@ function allBoardFogOfWar() {
                 ]) {
                     let i = a[0] - 1;
                     let j = a[1] - 1;
-                    if (x + i > 0 && x + i <= BOARD_WIDTH) {
+                    if (x + i > 0 && x + i < BOARD_WIDTH) {
                         if (y + j > 0 && y + j <= BOARD_HEIGHT) {
                             if (wall.player == 1) {
                                 board_fow[x + i][y + j] += 1;
