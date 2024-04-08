@@ -196,7 +196,7 @@ function allBoardFogOfWar() {
 
     // for the walls placed, change the visibility of cells around them
     // for all the vertical walls
-    for (let y = BOARD_HEIGHT - 1; y > 0; y--) {
+    for (let y = BOARD_HEIGHT; y > 0; y--) {
         for (let x = 1; x < BOARD_WIDTH; x++) {
             let wall = document.getElementById(`v-wall-${x}-${y}`);
             if (wall.player != null) {
@@ -213,8 +213,8 @@ function allBoardFogOfWar() {
                 ]) {
                     let i = a[0] - 1;
                     let j = a[1] - 1;
-                    if (x + i >= 0 && x + i < BOARD_WIDTH) {
-                        if (y + j >= 0 && y + j < BOARD_HEIGHT) {
+                    if (x + i > 0 && x + i <= BOARD_WIDTH) {
+                        if (y + j > 0 && y + j <= BOARD_HEIGHT) {
                             if (wall.player == 1) {
                                 board_fow[x + i][y + j] += 1;
                             } else {
@@ -228,7 +228,7 @@ function allBoardFogOfWar() {
     }
 
     // for all the horizontal walls
-    for (let y = BOARD_HEIGHT - 1; y > 1; y--) {
+    for (let y = BOARD_HEIGHT; y > 1; y--) {
         for (let x = 1; x < BOARD_WIDTH; x++) {
             let wall = document.getElementById(`h-wall-${x}-${y}`);
             if (wall.player != null) {
@@ -245,8 +245,8 @@ function allBoardFogOfWar() {
                 ]) {
                     let i = a[0] - 1;
                     let j = a[1] - 1;
-                    if (x + i >= 0 && x + i < BOARD_WIDTH) {
-                        if (y + j >= 0 && y + j < BOARD_HEIGHT) {
+                    if (x + i > 0 && x + i <= BOARD_WIDTH) {
+                        if (y + j > 0 && y + j <= BOARD_HEIGHT) {
                             if (wall.player == 1) {
                                 board_fow[x + i][y + j] += 1;
                             } else {
@@ -318,10 +318,10 @@ function updatePlayerVisibility() {
     // Vérifier et mettre à jour la visibilité en fonction du brouillard de guerre et du joueur actuel
     if (currentPlayer.id === game.players[0].id) {
         player1Element.style.visibility = 'visible'; // Le joueur actuel est toujours visible pour lui-même
-        player2Element.style.visibility = boardFow[player2Pos[0]][player2Pos[1]] >= 0 ? 'visible' : 'hidden';
+        player2Element.style.visibility = boardFow[player2Pos[0] - 1][player2Pos[1] - 1] >= 0 ? 'visible' : 'hidden';
     } else {
         player2Element.style.visibility = 'visible'; // Le joueur actuel est toujours visible pour lui-même
-        player1Element.style.visibility = boardFow[player1Pos[0]][player1Pos[1]] <= 0 ? 'visible' : 'hidden';
+        player1Element.style.visibility = boardFow[player1Pos[0] - 1][player1Pos[1] - 1] <= 0 ? 'visible' : 'hidden';
     }
 
     if (LOG) console.log('PlayerVisibility updated');
