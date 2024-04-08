@@ -1,3 +1,5 @@
+import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
+
 const chatTemplate = document.createElement('template');
 
 chatTemplate.innerHTML = `
@@ -39,6 +41,37 @@ class Chat extends HTMLElement {
         this.chatWindowVisible = false;
         this.userEmail = localStorage.getItem('email');
         this.authToken = localStorage.getItem('token');
+        this.activeFriendEmail = null;
+        this.socket = io();
+        this.initializeSocketListeners();
+    }
+
+    initializeSocketListeners() {
+        this.socket.on('connect', () => {
+            console.log('Socket.IO Connected');
+            this.socket.emit('friend:login', this.userEmail);
+            this.fetchFriendList();
+        });
+
+        this.socket.on('friend:receive', (message) => {
+            console.log('Received message:', message);
+            if (message.sender === this.activeFriendEmail) {
+                this.addMessage(message.message, false);
+            } else {
+                // Show a notification or update the friend list to indicate a new message
+                console.log(`New message from ${message.sender}: ${message.message}`);
+            }
+        });
+
+        this.socket.on('friend:friends', (friends) => {
+            console.log('Received friend list:', friends);
+            this.displayFriendList(friends);
+        });
+
+        this.socket.on('friend:message_history', (messages) => {
+            console.log('Received message history:', messages);
+            this.displayMessageHistory(messages);
+        });
     }
 
     logElementStyles(elementId) {
@@ -72,6 +105,7 @@ class Chat extends HTMLElement {
     }
 
     openChatWindow(friendName) {
+        this.activeFriendEmail = friendName;
         console.log(`Attempting to open chat window for: ${friendName}`);
         let chatWindow = this.shadowRoot.getElementById('chatWindow');
         let chatHeader = this.shadowRoot.getElementById('chatHeader');
@@ -81,11 +115,14 @@ class Chat extends HTMLElement {
         chatWindow.style.display = 'block';
         this.chatWindowVisible = true;
 
-        friendList.style.display = 'none'; // Directly hide the friend list without toggling
-        this.friendListVisible = false; // Ensure the state reflects this change
+        friendList.style.display = 'none';
+        this.friendListVisible = false;
 
         console.log(`Chat window should now be visible for: ${friendName}`);
         this.logElementStyles('chatWindow');
+
+        // Request message history when opening the chat window
+        this.socket.emit('friend:history', friendName);
     }
 
     closeChatWindow() {
@@ -104,32 +141,38 @@ class Chat extends HTMLElement {
     }
 
     sendMessage() {
-        console.log('Sending message...');
         let messageInput = this.shadowRoot.getElementById('messageInput');
         let message = messageInput.value.trim();
-
-        if (message !== '') {
-            let chatMessages = this.shadowRoot.getElementById('chatMessages');
-            let messageElement = document.createElement('p');
-            messageElement.textContent = message;
-            chatMessages.appendChild(messageElement);
+        if (message) {
+            this.socket.emit('friend:send', {
+                receiver: this.activeFriendEmail,
+                message: message,
+            });
+            this.addMessage(message, true);
             messageInput.value = '';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            console.log('Message sent and appended to chat.');
-        } else {
-            console.log('No message to send (input was empty).');
         }
     }
 
-    displayFriendList(data) {
-        console.log('Displaying friend list...', data);
+    addMessage(message, isSender) {
+        let chatMessages = this.shadowRoot.getElementById('chatMessages');
+        let messageElement = document.createElement('p');
+        messageElement.textContent = message;
+        messageElement.className = isSender ? 'sent' : 'received';
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        console.log(`Message ${isSender ? 'sent' : 'received'}: ${message}`);
+    }
+
+    displayFriendList(friends) {
+        console.log('Displaying friend list...', friends);
         const friendListElement = this.shadowRoot.getElementById('friendList').querySelector('ul');
         friendListElement.innerHTML = '';
 
-        data.forEach((friend) => {
+        friends.forEach((friend) => {
             console.log('Adding friend to list:', friend);
             const listItem = document.createElement('li');
-            const displayEmail = friend.user_email === this.userEmail ? friend.friend_email : friend.user_email;
+            const displayEmail = friend.email;
             listItem.textContent = displayEmail;
             listItem.addEventListener('click', () => {
                 console.log(`Friend list item clicked: ${displayEmail}`);
@@ -138,20 +181,19 @@ class Chat extends HTMLElement {
             friendListElement.appendChild(listItem);
         });
     }
+    displayMessageHistory(messages) {
+        let chatMessages = this.shadowRoot.getElementById('chatMessages');
+        chatMessages.innerHTML = '';
+
+        messages.forEach((message) => {
+            const isSender = message.sender === this.userEmail;
+            this.addMessage(message.message, isSender);
+        });
+    }
 
     fetchFriendList() {
         console.log('Fetching friend list...');
-        fetch('http://localhost:8000/api/friend/list', {
-            headers: {
-                Authorization: this.authToken,
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Friend list data fetched:', data);
-                this.displayFriendList(data);
-            })
-            .catch((error) => console.error('Error fetching friend list:', error));
+        this.socket.emit('friend:list');
     }
 
     connectedCallback() {
