@@ -66,9 +66,6 @@ export function display_board(board) {
                 let wall = document.createElement('div');
                 wall.classList.add('s-wall', 'wall');
                 wall.id = 's-wall-' + x + '-' + y;
-                wall.addEventListener('mouseover', on_wall_over);
-                wall.addEventListener('mouseout', on_wall_out);
-                wall.addEventListener('click', on_wall_click);
                 board_div.appendChild(wall);
             }
         }
