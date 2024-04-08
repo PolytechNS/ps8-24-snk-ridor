@@ -2,7 +2,7 @@ import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from './local_model
 import { LOG } from './local_main.js';
 import { updateFogOfWar } from './local_fogwar.js';
 import { updatePath } from './local_pathFinding.js';
-import { display_message } from './local_board.js';
+import { display_message, on_wall_over, on_wall_out, on_wall_click } from './local_board.js';
 import { placePlayer } from './local_display.js';
 
 const LINES = BOARD_HEIGHT;
@@ -257,9 +257,9 @@ export function display() {
                 let wall = document.createElement('div');
                 wall.classList.add('v-wall', 'wall');
                 wall.id = 'v-wall-' + i + '-' + j;
-                wall.addEventListener('mouseover', onWallOver);
-                wall.addEventListener('mouseout', onWallOut);
-                wall.addEventListener('click', onWallClick);
+                wall.addEventListener('mouseover', on_wall_over);
+                wall.addEventListener('mouseout', on_wall_out);
+                wall.addEventListener('click', on_wall_click);
                 board.appendChild(wall);
             }
         }
@@ -271,9 +271,9 @@ export function display() {
                 let wall = document.createElement('div');
                 wall.classList.add('wall', 'h-wall');
                 wall.id = 'h-wall-' + i + '-' + j;
-                wall.addEventListener('mouseover', onWallOver);
-                wall.addEventListener('mouseout', onWallOut);
-                wall.addEventListener('click', onWallClick);
+                wall.addEventListener('mouseover', on_wall_over);
+                wall.addEventListener('mouseout', on_wall_out);
+                wall.addEventListener('click', on_wall_click);
                 board.appendChild(wall);
 
                 // Create horizontal wall-s

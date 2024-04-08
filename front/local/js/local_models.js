@@ -97,7 +97,12 @@ export class Player {
 
     updateProfile() {
         if (LOG) console.log(`Player ${this.id} updated his profile`);
-        let profile = document.getElementById(`player-${this.id}-profile`);
-        profile.getElementsByClassName('walls')[0].textContent = this.walls;
+        if (this.id == 1) {
+            let profile = document.getElementById(`self_profile`);
+            profile.getElementsByClassName('walls')[0].textContent = this.walls;
+        } else if (this.id == 2) {
+            let profile = document.getElementById(`other_profile`);
+            profile.getElementsByClassName('walls')[0].textContent = this.walls;
+        }
     }
 }

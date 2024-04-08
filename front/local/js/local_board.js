@@ -93,7 +93,7 @@ export function display_message(message, category = 'dev_message') {
 
 // Callback functions for visuals only
 
-function on_wall_over(event) {
+export function on_wall_over(event) {
     if (getGame().getCurrentPlayer().remainingWalls() == 0) return;
     let walls = get_walls(event);
 
@@ -107,7 +107,7 @@ function on_wall_over(event) {
     }
 }
 
-function on_wall_out(event) {
+export function on_wall_out(event) {
     let walls = get_walls(event);
 
     // If any of the walls is black, we do nothing
@@ -120,7 +120,7 @@ function on_wall_out(event) {
     }
 }
 
-function on_wall_click(event) {
+export function on_wall_click(event) {
     let wall_player = getGame().getCurrentPlayer();
     if (wall_player.remainingWalls() == 0) {
         display_message("Vous n'avez plus de murs !", 'forbidden_message');
