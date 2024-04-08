@@ -440,7 +440,7 @@ function addPlayer(board_div, board, column) {
         if (LOG) player_a.textContent = 'A';
         if (!LOG) {
             let img = document.createElement('img');
-            img.src = '../../resources/persons/titan_eren.png';
+            img.src = '../resources/persons/titan_eren.png';
             img.alt = 'Eren';
             img.classList.add('pawn-avatar');
             player_a.appendChild(img);

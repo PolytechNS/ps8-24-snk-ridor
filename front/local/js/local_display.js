@@ -88,7 +88,11 @@ export function display_board(board) {
 
             let img = document.createElement('img');
             //img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
-            img.src = '../../resources/persons/humain_annie.png';
+            if (i == 1) {
+                img.src = '../resources/persons/titan_eren.png';
+            } else {
+                img.src = '../resources/persons/humain_annie.png';
+            }
             img.alt = 'paw ' + i;
             img.classList.add('pawn-avatar');
             player.appendChild(img);
