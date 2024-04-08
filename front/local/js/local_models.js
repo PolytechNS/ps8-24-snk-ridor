@@ -32,8 +32,8 @@ export class Game {
         this.v_size = BOARD_WIDTH;
         this.current_player = 1;
         this.players = [];
-        this.p1_pos = [1, 1];
-        this.p2_pos = [this.h_size, this.v_size];
+        this.p1_pos = [-1, -1];
+        this.p2_pos = [-1, -1];
         this.board_fow = BOARD_FOW;
         this.turn_count = 1;
     }

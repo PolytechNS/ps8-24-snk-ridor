@@ -2,6 +2,7 @@ import { newGame, onCellClick } from './local_engine.js';
 import { BOARD_HEIGHT, BOARD_WIDTH } from './local_models.js';
 import { on_wall_click, on_wall_over, on_wall_out } from './local_board.js';
 import { LOG } from './local_main.js';
+import { updateFogOfWar } from './local_fogwar.js';
 
 let global_board;
 /*
@@ -122,6 +123,7 @@ export function display_board(board) {
     // change the turn number
     let turn_number = document.getElementById('turn');
     turn_number.textContent = board.getTurnCount();
+    updateFogOfWar();
 }
 
 // do not use this function, use local_board/init_board instead
