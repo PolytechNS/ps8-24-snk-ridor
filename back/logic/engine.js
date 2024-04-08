@@ -1,4 +1,3 @@
-const { setup, endGame, nextMove } = require('../routes/games');
 const { logger } = require('../libs/logging');
 
 function playerLost(player, room_hash, meta) {
@@ -8,6 +7,7 @@ function playerLost(player, room_hash, meta) {
         logger.trace(`Player ${player} lost.`);
     }
     displayState(meta);
+    const { endGame } = require('../routes/games');
     endGame(player, room_hash, meta);
 }
 
@@ -615,6 +615,7 @@ function startGame(room_hash, meta) {
 
     // p1 setup;
     logger.trace('Calling Player 1 setup...');
+    const { setup } = require('../routes/games');
     setup(1, room_hash, meta);
 }
 
@@ -632,6 +633,7 @@ function setup1(room_hash, data, meta) {
 
     if (meta.keepPlaying) {
         logger.trace('Calling Player 2 setup...');
+        const { setup } = require('../routes/games');
         setup(2, room_hash, meta);
     }
 }
@@ -649,6 +651,7 @@ function setup2(room_hash, data, meta) {
     logger.trace(`... ... Content received: ${data.data}`);
 
     meta.nbIter = 1;
+    const { nextMove } = require('../routes/games');
     nextMove(1, room_hash, meta);
     logger.trace('');
     logger.trace('####################');
@@ -679,6 +682,7 @@ function nextMove1(room_hash, data, meta) {
         logger.trace(`Player 2 turn ${meta.nbIter}.`);
         logger.trace('####################\n');
         logger.trace(`Calling nextMove...`);
+        const { nextMove } = require('../routes/games');
         nextMove(2, room_hash, meta, getGameState(2, meta));
     }
 }
@@ -711,6 +715,7 @@ function nextMove2(room_hash, data, meta) {
         logger.trace(`Player 1 turn ${meta.nbIter}.`);
         logger.trace('####################\n');
         logger.trace(`Calling nextMove...`);
+        const { nextMove } = require('../routes/games');
         nextMove(1, room_hash, meta, getGameState(1, meta));
     }
 
