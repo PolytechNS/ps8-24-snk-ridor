@@ -1,7 +1,6 @@
 const { logger } = require('../libs/logging');
 
 rooms = {};
-friends = {};
 
 function purgeEmptyRooms() {
     for (let room in rooms) {
@@ -12,7 +11,7 @@ function purgeEmptyRooms() {
 }
 
 function registerHandlers(io, socket) {
-    logger.debug('Registering chat socket handlers');
+    logger.debug('Registering room chat socket handlers');
 
     socket.on('message:list', (_) => {
         logger.info('Socket request: message:list');
@@ -78,18 +77,6 @@ function registerHandlers(io, socket) {
         }
         purgeEmptyRooms();
         io.emit('message:rooms', rooms);
-    });
-
-    socket.on('message:login', (username) => {
-        logger.info('Socket request: message:login');
-        friends[socket.id] = username;
-        io.emit('message:friends', friends);
-    });
-
-    socket.on('message:friend', (friend) => {
-        logger.info('Socket request: message:friend');
-        friends[socket.id] = friend;
-        io.emit('message:friends', friends);
     });
 }
 
