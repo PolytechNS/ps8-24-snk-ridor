@@ -1,5 +1,5 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, Event, getGame } from './models.js';
-import { onCellClick, next_player } from './engine.js';
+import { onCellClick, next_player, firstOnCellClick } from './engine.js';
 import { LOG } from './main.js';
 import { findPath } from './pathFinding.js';
 
@@ -16,7 +16,11 @@ export function init_board(board_div, board) {
             if ((i == 0 || i == board.h_size - 1) && !LOG) {
                 cell.classList.add('finish');
             }
-            cell.addEventListener('click', onCellClick);
+            if (i == board.h_size - 1) {
+                cell.addEventListener('click', firstOnCellClick);
+            } else {
+                cell.addEventListener('click', onCellClick);
+            }
 
             // TODO: Add event listeners to cells
             if (LOG) cell.textContent = `[${i}, ${j}]`;
@@ -135,17 +139,9 @@ function on_wall_click(event) {
     for (let p of getGame().players) {
         if (findPath(p) == null) {
             if (LOG) {
-                console.log(
-                    'No path found from ' +
-                        getGame().getCurrentPlayer().position +
-                        ' to ' +
-                        getGame().getCurrentPlayer().goal
-                );
+                console.log('No path found from ' + getGame().getCurrentPlayer().position + ' to ' + getGame().getCurrentPlayer().goal);
             }
-            display_message(
-                'Impossible de bloquer le chemin avec un mur !',
-                'forbidden_message'
-            );
+            display_message('Impossible de bloquer le chemin avec un mur !', 'forbidden_message');
             return;
         }
     }
@@ -157,10 +153,7 @@ function on_wall_click(event) {
         wall.player = wall_player.id;
     }
     wall_player.placeWall();
-    display_message(
-        `il reste ${wall_player.remaining_walls} murs`,
-        'dev_message'
-    );
+    display_message(`il reste ${wall_player.remaining_walls} murs`, 'dev_message');
     let wall_event = new Event('wall', wall_player, event.walls);
     next_player(wall_event);
 }
@@ -189,17 +182,9 @@ function get_walls(event) {
     if (main_wall.classList.contains('v-wall')) {
         // If there is a vertical wall below
         if (i < BOARD_HEIGHT - 1) {
-            return [
-                main_wall,
-                document.getElementById(`s-wall-${i}-${j}`),
-                document.getElementById(`v-wall-${i + 1}-${j}`),
-            ];
+            return [main_wall, document.getElementById(`s-wall-${i}-${j}`), document.getElementById(`v-wall-${i + 1}-${j}`)];
         } else {
-            return [
-                main_wall,
-                document.getElementById(`s-wall-${i - 1}-${j}`),
-                document.getElementById(`v-wall-${i - 1}-${j}`),
-            ];
+            return [main_wall, document.getElementById(`s-wall-${i - 1}-${j}`), document.getElementById(`v-wall-${i - 1}-${j}`)];
         }
     }
 
@@ -207,17 +192,9 @@ function get_walls(event) {
     if (main_wall.classList.contains('h-wall')) {
         // If there is a horizontal wall to the right
         if (j < BOARD_WIDTH - 1) {
-            return [
-                main_wall,
-                document.getElementById(`s-wall-${i}-${j}`),
-                document.getElementById(`h-wall-${i}-${j + 1}`),
-            ];
+            return [main_wall, document.getElementById(`s-wall-${i}-${j}`), document.getElementById(`h-wall-${i}-${j + 1}`)];
         } else {
-            return [
-                main_wall,
-                document.getElementById(`s-wall-${i}-${j - 1}`),
-                document.getElementById(`h-wall-${i}-${j - 1}`),
-            ];
+            return [main_wall, document.getElementById(`s-wall-${i}-${j - 1}`), document.getElementById(`h-wall-${i}-${j - 1}`)];
         }
     }
 }

@@ -1,0 +1,161 @@
+@font-face {
+    font-family: 'OptimusPrinceps';
+    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
+    background-size: cover;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.profile img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-right: 30px;
+    border: 3px solid #ff5722;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info p {
+    margin: 8px 0;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.profile-info strong {
+    color: #ff5722;
+}
+
+.friends-list,
+.pending-requests {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.friends-list h3 {
+    margin-bottom: 15px;
+    font-size: 32px;
+    color: #ff5722;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pending-requests h3 {
+    margin-bottom: 15px;
+    font-size: 23px;
+    color: #ff5722;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.friends-list ul,
+.pending-requests ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.friends-list li,
+.pending-requests li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 18px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.friends-list li:hover,
+.pending-requests li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.pending-requests li button,
+.friends-list li button {
+    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #ff5722;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pending-requests li button:hover,
+.friends-list li button:hover {
+    background-color: #f4511e;
+}
+
+.add-friend-btn {
+    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #ff5722;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-friend-btn:hover {
+    background-color: #f4511e;
+}
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    background-image: url('../resources/ui/back.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}

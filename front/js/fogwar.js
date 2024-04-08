@@ -3,29 +3,6 @@ import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event } from './models.js';
 
 let board_fow;
 
-document.addEventListener('DOMContentLoaded', function () {
-    let clock = 0;
-    let time = 0;
-    let begin = parseInt(Date.now());
-    setInterval(function () {
-        clock = parseInt((Date.now() / 1000) % 12);
-        if ((Date.now() / 500) % 2 > 1) {
-            clock += 12;
-        }
-        time = parseInt((Date.now() - begin + 500) / 1000);
-        document.getElementById('clock').innerHTML =
-            '&#' +
-            (128336 + clock) +
-            ';' +
-            ' ' +
-            parseInt(time / 60) +
-            ':' +
-            parseInt(time % 60)
-                .toString()
-                .padStart(2, '0');
-    }, 1000 / 2);
-});
-
 function setLogStyle() {
     var r = document.querySelector(':root');
     r.style.setProperty('--j1', '#050');
@@ -138,11 +115,7 @@ function moveFogOfWar(player, old_position, new_position) {
         if (new_x + i >= 0 && new_x + i < BOARD_HEIGHT) {
             if (new_y + j >= 0 && new_y + j < BOARD_WIDTH) {
                 board_fow[new_x + i][new_y + j] += player * -2 + 3;
-                setVisibility(
-                    new_x + i,
-                    new_y + j,
-                    board_fow[new_x + i][new_y + j]
-                );
+                setVisibility(new_x + i, new_y + j, board_fow[new_x + i][new_y + j]);
             }
         }
     }

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Test Page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://unpkg.com/chota@latest" />
+        <!-- THIS IS TEMPORARY, DO NOT INCLUDE IN FINAL BUILD TODO -->
+        <script type="module">
+            import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
+
+            const socket = io();
+            let active_friend = null;
+
+            socket.on('connect', () => {
+                console.log('connected');
+
+                const email = localStorage.getItem('email');
+                if (!email) {
+                    window.location.href = '/login/login.html';
+                }
+
+                socket.emit('friend:login', email);
+                socket.emit('friend:list');
+            });
+
+            socket.on('friend:update', (_) => {
+                socket.emit('friend:list');
+            });
+
+            socket.on('friend:friends', (friends) => {
+                console.log('friends:', friends);
+                const messages = document.getElementById('messages');
+                messages.innerHTML = '';
+
+                let table = document.getElementById('friends');
+                table.innerHTML = '';
+
+                for (const friend of friends) {
+                    const template = document.getElementById('friend-template');
+                    const tr = template.content.cloneNode(true);
+                    tr.querySelector('#player_email').textContent = friend.email;
+                    tr.querySelector('#talk_to_button').addEventListener('click', () => {
+                        console.log('talking to:', friend.email);
+                        document.getElementById('friend_email').textContent = friend.email;
+                        socket.emit('friend:history', friend.email);
+                        active_friend = friend.email;
+                    });
+
+                    table.appendChild(tr);
+                }
+            });
+
+            socket.on('friend:message_history', (mess) => {
+                console.log('messages:', mess);
+                const messages = document.getElementById('messages');
+                messages.innerHTML = '';
+
+                for (const message of mess) {
+                    addMessage(message.message, message.sender === localStorage.getItem('email'));
+                }
+            });
+
+            socket.on('friend:receive', (message) => {
+                console.log('received message:', message);
+                if (message.sender !== active_friend) {
+                    return;
+                }
+
+                addMessage(message.message, false);
+            });
+
+            function sendMessage() {
+                const message = document.getElementById('message').value;
+                console.log('sending message:', message);
+                addMessage(message, true);
+                socket.emit('friend:send', { receiver: active_friend, message: message });
+            }
+
+            function addMessage(message, me) {
+                const messages = document.getElementById('messages');
+                const li = document.createElement('li');
+                li.textContent = message;
+                messages.appendChild(li);
+            }
+
+            window.sendMessage = sendMessage;
+            window.addMessage = addMessage;
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row" style="margin-top: 20px">
+                <div class="col-6 card">
+                    <h2>List of the rooms</h2>
+                    <table class="striped">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Talk To</th>
+                            </tr>
+                        </thead>
+                        <tbody id="friends"></tbody>
+                    </table>
+                </div>
+                <div class="col-6 card">
+                    <h2>Chat</h2>
+                    <h6 id="friend_email">Active Friend</h6>
+                    <div id="chat">
+                        <ul id="messages"></ul>
+                    </div>
+                    <div class="row">
+                        <input class="col-9" type="text" id="message" />
+                        <button class="col-3" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+            <template id="friend-template">
+                <tr>
+                    <td id="player_email"></td>
+                    <td>
+                        <button id="talk_to_button" class="button primary">Talk to</button>
+                    </td>
+                </tr>
+            </template>
+        </div>
+    </body>
+</html>

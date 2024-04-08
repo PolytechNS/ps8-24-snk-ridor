@@ -1,0 +1,21 @@
+meta {
+  name: accept
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8000/api/friend/accept
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QzQGV4YW1wbGUuY29tIiwiaWF0IjoxNzExMzg4NTY3fQ.wMCUlGLRPm_9pJn5LRkZ21ugh7ftprjhjn2139J2G_E
+}
+
+body:json {
+  {
+    "friend_email": "test@example.com"
+  }
+}

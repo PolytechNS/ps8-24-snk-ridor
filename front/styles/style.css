@@ -113,10 +113,7 @@
 
 .board {
     display: grid;
-    grid-template-columns: repeat(
-        calc(var(--number-of-columns) * 2 - 1),
-        min-content
-    );
+    grid-template-columns: repeat(calc(var(--number-of-row) * 2 - 1), min-content);
 }
 
 .cell {
@@ -246,8 +243,8 @@
 
 .profile_adversaire .avatar {
     margin-bottom: 0;
-    width: 5vw;
-    height: 5vw;
+    width: 10vw;
+    height: 10vw;
 }
 
 /* board pawn */
@@ -352,6 +349,26 @@
     display: none;
 }
 
+/* important messages that have to be displayed (typically for tuto or initial placement) */
+.action_message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    transform: translate(-50%, -50%);
+    background-color: brown;
+    color: white;
+    border: 5px solid #301505;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 /* homepage buttons */
 
 .play_button {
@@ -367,4 +384,15 @@
     text-align: center;
     text-decoration: none;
     cursor: pointer;
+}
+
+.transition-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200vw;
+    height: 200vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    display: none;
 }
