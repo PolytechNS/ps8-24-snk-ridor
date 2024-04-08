@@ -143,7 +143,6 @@ export function getCorridorPossiblePositionForPath(column, line) {
         }
     }
     if (column < COLUMNS) {
-        console.log(`column : ${column}, line : ${line}`);
         // if the player is not on the last line, check the right cell
         wall = document.getElementById(`v-wall-${column}-${line}`);
         if (!wall.classList.contains('placed') && !wall.classList.contains('wall-hover')) {
@@ -205,7 +204,6 @@ function checkVictory(player) {
 export function place_player(player, line, column) {
     if (LOG) console.log(`place_player(${player}, ${line}, ${column}) called`);
 
-    console.log(player);
     let event = new Event('place', player.player, [null, null], [line, column]);
     placePlayer(event);
 
@@ -300,6 +298,7 @@ export function display() {
 
 function isPlayerTurn(player) {
     if (LOG) console.log(`isPlayerTurn(${player}) called`);
+    turn = getGame().turn_count;
     let retour = turn % 2 == player - 1;
     if (LOG) console.log(`isPlayerTurn(${player}) returns ${retour}`);
     return retour;
@@ -307,6 +306,7 @@ function isPlayerTurn(player) {
 
 function getPlayerTurn() {
     if (LOG) console.log(`getPlayerTurn() called`);
+    turn = getGame().turn_count - 1;
     let retour = [player_a, player_b][turn % 2];
     if (LOG) console.log(`getPlayerTurn() returns ${retour}`);
     return retour;
@@ -347,11 +347,8 @@ export function onCellClick(event) {
     // if cell contains a player
     let board = getGame();
     let cells;
-    console.log(`Player ${board.getCurrentPlayer().position}, ${column}, ${line} clicked`);
     if (board.getCurrentPlayer().position[0] == column && board.getCurrentPlayer().position[1] == line) {
-        console.log(`Player ${board.getCurrentPlayer().id} clicked`);
         cells = getCorridorPossiblePosition(column, line);
-        console.log(`cells : ${cells}`);
         for (let cell of cells) {
             let cellElement = document.getElementById('cell-' + cell[0] + '-' + cell[1]);
             let overview = document.createElement('div');
@@ -382,7 +379,6 @@ function onOverviewClick(event) {
 
 export function onPlayerClick(event) {
     if (LOG) console.log(`onPlayerClick(${event}) called`);
-    console.log(`OnPlayerClick called`);
     let cell;
     if (event.target instanceof HTMLImageElement) {
         cell = event.target.parentElement.parentElement;
@@ -397,17 +393,13 @@ export function onPlayerClick(event) {
         player = event.target.player;
     }
 
-    console.log(`cell : ${cell.id}`);
-    console.log(`Player ${player} clicked`);
     // reset the board
     deleteOverview();
     // display the possible moves
     let cells = getCorridorPossiblePosition(parseInt(id[1]), parseInt(id[2]));
     let overview;
     for (let cell of cells) {
-        console.log(`cell : ${cell}`);
         let cellElement = document.getElementById('cell-' + cell[0] + '-' + cell[1]);
-        console.log(`cellElement : ${cellElement}, ${cellElement.id}`);
         overview = document.createElement('div');
         overview.addEventListener('click', onOverviewClick);
         overview.className = 'position_overview';
@@ -415,7 +407,6 @@ export function onPlayerClick(event) {
         overview.column = cell[1];
         overview.id = 'overview-' + cell[0] + '-' + cell[1];
         cellElement.appendChild(overview);
-        console.log(cellElement.contains(overview));
         if (isPlayerTurn(player)) cellElement.overviewed = true;
     }
 

@@ -67,7 +67,6 @@ export class Game {
         if (player === undefined || player === null) {
             player = this.current_player;
         }
-        console.log('remaining walls', player, this.players, this.players[player - 1]);
         return this.players[player - 1].remainingWalls();
     }
 

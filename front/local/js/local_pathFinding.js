@@ -32,7 +32,6 @@ function recursivePF(position, goal, list) {
         return list;
     }
     for (var a of sortByNearest(getCorridorPossiblePositionForPath(position[0], position[1]), goal)) {
-        console.log(a);
         if (list[a[0] - 1][a[1] - 1] == 0) {
             if (LOG) document.getElementById(`cell-${a[0]}-${a[1]}`).style.setProperty('border', '#44BB44 4px solid');
             list[a[0] - 1][a[1] - 1] = 1;
@@ -54,6 +53,12 @@ export function findPath(player) {
             list[i].push(0);
         }
     }
+
+    if (player.position[1] == -1 || player.position[0] == -1) {
+        if (LOG) display_message('Player not initialized', 'dev_message');
+        return null;
+    }
+
     var path = recursivePF(player.position, player.goal, list);
     if (path == null) {
         if (LOG) display_message('No path found', 'dev_message');

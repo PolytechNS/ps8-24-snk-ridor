@@ -97,20 +97,11 @@ export function display_board(board) {
             img.classList.add('pawn-avatar');
             player.appendChild(img);
 
-            console.log('cell-' + position[0] + '-' + position[1]);
-
             let cell = document.getElementById('cell-' + position[0] + '-' + position[1]);
             cell.appendChild(player);
         }
 
         // change the number of walls for the player
-        console.log('player-' + i + '-profile');
-        if (i == board.getPlayer) {
-            console.log('self_profile');
-        } else {
-            console.log('other_profile');
-        }
-
         let player_profile;
         if (i == board.getPlayer) {
             player_profile = document.getElementById('self_profile');
@@ -133,7 +124,6 @@ export function display_board(board) {
 // do not use this function, use local_board/init_board instead
 export function display_initial_board(playerId, board) {
     global_board = board;
-    console.log('display_initial_board');
     let BOARD_W = board.width();
     let BOARD_H = board.height();
 
@@ -191,13 +181,6 @@ export function display_initial_board(playerId, board) {
     // add the players profile
     for (let i = 1; i <= 2; i++) {
         // change the number of walls for the player
-        console.log('player-' + (1 + i) + '-profile');
-        if (i + 1 == board.getPlayer) {
-            console.log('self_profile');
-        } else {
-            console.log('other_profile');
-        }
-
         let player_profile;
         if (i + 1 == board.getPlayer) {
             player_profile = document.getElementById('self_profile');
@@ -217,7 +200,6 @@ export function display_initial_board(playerId, board) {
 }
 
 export function placePlayer(event) {
-    console.log('placePlayer called ' + event.target);
     let board = global_board;
     let cell = event.target;
     let coords = cell.id
@@ -229,7 +211,6 @@ export function placePlayer(event) {
         display_board(board);
     } catch (e) {
         display_message('Une erreur est survenue, regarder les logs pour savoir pourquoi', { category: 'forbidden_message' });
-        console.log(e);
         return;
     }
 }
