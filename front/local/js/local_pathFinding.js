@@ -4,9 +4,9 @@ import { LOG } from './local_main.js';
 
 function getNearestPosition(positions, goal) {
     var nearest = positions[0];
-    var min = Math.abs(nearest[0] - goal);
+    var min = Math.abs(nearest[1] - goal);
     for (var i = 1; i < positions.length; i++) {
-        var distance = Math.abs(positions[i][0] - goal);
+        var distance = Math.abs(positions[i][1] - goal);
         if (distance < min) {
             min = distance;
             nearest = positions[i];
@@ -26,14 +26,16 @@ function sortByNearest(positions, goal) {
 }
 
 function recursivePF(position, goal, list) {
-    if (LOG) console.log(`recursivePF(${position}, ${goal})`);
-    if (position[0] == goal) {
+    if (LOG) console.log(`recursivePF(position = ${position}, goal line = ${goal})`);
+    if (position[1] == goal) {
+        if (LOG) console.log('Path found !');
         return list;
     }
     for (var a of sortByNearest(getCorridorPossiblePositionForPath(position[0], position[1]), goal)) {
-        if (list[a[0]][a[1]] == 0) {
-            if (LOG) document.getElementById('cell-' + a[0] + '-' + a[1]).style.setProperty('border', '#44BB44 4px solid');
-            list[a[0]][a[1]] = 1;
+        console.log(a);
+        if (list[a[0] - 1][a[1] - 1] == 0) {
+            if (LOG) document.getElementById(`cell-${a[0]}-${a[1]}`).style.setProperty('border', '#44BB44 4px solid');
+            list[a[0] - 1][a[1] - 1] = 1;
             var path = recursivePF(a, goal, list);
             if (path != null) {
                 return path;
@@ -44,6 +46,7 @@ function recursivePF(position, goal, list) {
 }
 
 export function findPath(player) {
+    if (LOG) console.log(`Finding path for player ${player.id}`);
     var list = [];
     for (var i = 0; i < 9; i++) {
         list.push([]);
@@ -70,7 +73,7 @@ export function updatePath(player) {
     for (var i = 0; i < path.length; i++) {
         for (var j = 0; j < path[i].length; j++) {
             if (path[i][j] == 1) {
-                document.getElementById('cell-' + i + '-' + j).style.setProperty('border', '#44BB44 4px solid');
+                document.getElementById(`cell-${i + 1}-${j + 1}`).style.setProperty('border', '#44BB44 4px solid');
             }
         }
     }

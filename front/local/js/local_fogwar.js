@@ -1,5 +1,5 @@
 import { LOG } from './local_main.js';
-import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event } from './local_models.js';
+import { BOARD_HEIGHT, BOARD_WIDTH, getGame } from './local_models.js';
 
 let board_fow;
 
@@ -88,6 +88,7 @@ function initFogOfWar() {
         }
     }
 
+    updatePlayerVisibility();
     if (LOG) console.log('Fog of war initialized');
     updateFogOfWar('end of initialisation');
 }
@@ -122,6 +123,7 @@ function moveFogOfWar(player, old_position, new_position) {
             }
         }
     }
+    updatePlayerVisibility();
 }
 
 /* function to remove the fog of war */
@@ -132,6 +134,7 @@ function removeFogOfWar() {
             setVisibility(i, j, 0);
         }
     }
+    updatePlayerVisibility();
 }
 
 /* function to update the fog of war for the whole board */
@@ -248,6 +251,7 @@ function allBoardFogOfWar() {
             setVisibility(i, j, board_fow[i][j]);
         }
     }
+    updatePlayerVisibility();
 }
 
 function setVisibility(x, y, value) {
@@ -274,43 +278,31 @@ function setVisibility(x, y, value) {
     }
 }
 
-// Classe pour gérer le brouillard de guerre
-/* Brouillard de guerre avec Canvas, out of date */
-/*
-    class FogOfWar {
-        constructor(element) {
-            let rect = element.getBoundingClientRect();
-            // Créer un canvas pour le brouillard de guerre
-            this.canvas = document.getElementById('fogCanvas');
-            this.ctx = this.canvas.getContext('2d');
+function updatePlayerVisibility() {
+    let game = getGame();
+    let currentPlayer = game.getCurrentPlayer(); // Obtenir le joueur actuel
+    let player1Element = document.getElementById('player-a');
+    let player2Element = document.getElementById('player-b');
 
-            this.width = rect.width;
-            this.height = rect.height;
-            this.x_pos = rect.top;
-            this.y_pos = rect.left;
-            this.color = "grey";
-            this.radius = 10;
-
-            // Créer une image de fond pour le brouillard
-            this.imageData = new ImageData(this.width, this.height);
-            this.imageData.data.fill(0); // Remplir l'image de fond avec des pixels noirs
-        }
-
-
-        draw() {
-            let ctx = this.ctx;
-            ctx.clearRect(0, 0, this.width, this.height); // Effacer le canvas
-
-            // Dessiner un rectangle noir en arrière-plan
-            ctx.fillStyle = this.color;
-            ctx.fillRect(0, 0, this.width, this.height);
-
-            // Dessiner un cercle clair au centre du canvas pour simuler le champ de vision
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.beginPath();
-            ctx.arc(150, 20, this.radius, 0, 2 * Math.PI);
-            ctx.fill();
-            ctx.globalCompositeOperation = 'source-over';
-        }
+    // Assurez-vous que les éléments existent avant de tenter de mettre à jour leur visibilité
+    if (!player1Element || !player2Element) {
+        if (LOG) console.log("Les éléments des joueurs n'ont pas été trouvés dans le DOM.");
+        return;
     }
-*/
+
+    // Obtenir les positions et le brouillard de guerre
+    let boardFow = game.board_fow;
+    let player1Pos = game.p1_pos;
+    let player2Pos = game.p2_pos;
+
+    // Vérifier et mettre à jour la visibilité en fonction du brouillard de guerre et du joueur actuel
+    if (currentPlayer.id === game.players[0].id) {
+        player1Element.style.visibility = 'visible'; // Le joueur actuel est toujours visible pour lui-même
+        player2Element.style.visibility = boardFow[player2Pos[0]][player2Pos[1]] >= 0 ? 'visible' : 'hidden';
+    } else {
+        player2Element.style.visibility = 'visible'; // Le joueur actuel est toujours visible pour lui-même
+        player1Element.style.visibility = boardFow[player1Pos[0]][player1Pos[1]] <= 0 ? 'visible' : 'hidden';
+    }
+
+    if (LOG) console.log('PlayerVisibility updated');
+}

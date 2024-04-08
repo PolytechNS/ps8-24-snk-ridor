@@ -87,7 +87,7 @@ export function display_board(board) {
 
             let img = document.createElement('img');
             //img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
-            img.src = 'resources/persons/humain_annie.png';
+            img.src = '../../resources/persons/humain_annie.png';
             img.alt = 'paw ' + i;
             img.classList.add('pawn-avatar');
             player.appendChild(img);
@@ -116,7 +116,7 @@ export function display_board(board) {
 
         // change the profile picture
         let img = player_profile.getElementsByClassName('avatar')[0];
-        img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
+        img.src = '../../resources/persons/' + board.getPlayer(i).avatar + '.png';
     }
 
     // change the turn number
