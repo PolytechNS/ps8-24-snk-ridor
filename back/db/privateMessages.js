@@ -19,7 +19,14 @@ class PrivateMessage {
         const db = await getMongoDatabase();
         const privateMessages = db.collection('privateMessages');
 
-        return await privateMessages.insertOne(privateMessage);
+        let mp = new PrivateMessage(privateMessage.sender, privateMessage.receiver, privateMessage.message);
+
+        return await privateMessages.insertOne({
+            sender: mp.sender,
+            receiver: mp.receiver,
+            message: mp.message,
+            timestamp: mp.timestamp,
+        });
     }
 
     static async get(sender, receiver, limit = 100) {
