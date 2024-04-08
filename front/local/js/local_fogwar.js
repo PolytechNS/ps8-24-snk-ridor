@@ -156,10 +156,10 @@ function allBoardFogOfWar() {
     for (let y = BOARD_HEIGHT; y > 0; y--) {
         for (let x = 1; x <= BOARD_WIDTH; x++) {
             if (y < limit) {
-                board_fow[x - 1][y - 1] = -1;
+                board_fow[x - 1][y - 1] = 1;
             }
             if (y > limit) {
-                board_fow[x - 1][y - 1] = 1;
+                board_fow[x - 1][y - 1] = -1;
             }
             if (y == limit) {
                 board_fow[x - 1][y - 1] = 0;
@@ -196,7 +196,7 @@ function allBoardFogOfWar() {
 
     // for the walls placed, change the visibility of cells around them
     // for all the vertical walls
-    for (let y = BOARD_HEIGHT; y > 0; y--) {
+    for (let y = BOARD_HEIGHT - 1; y > 0; y--) {
         for (let x = 1; x < BOARD_WIDTH; x++) {
             let wall = document.getElementById(`v-wall-${x}-${y}`);
             if (wall.player != null) {
@@ -206,13 +206,13 @@ function allBoardFogOfWar() {
                     [0, 1],
                     [1, 0],
                     [1, 1],
-                    [-1, 0],
-                    [-1, 1],
                     [0, -1],
-                    [0, 2],
+                    [1, -1],
+                    [-1, 0],
+                    [2, 0],
                 ]) {
-                    let i = a[0];
-                    let j = a[1];
+                    let i = a[0] - 1;
+                    let j = a[1] - 1;
                     if (x + i >= 0 && x + i < BOARD_WIDTH) {
                         if (y + j >= 0 && y + j < BOARD_HEIGHT) {
                             if (wall.player == 1) {
@@ -227,57 +227,26 @@ function allBoardFogOfWar() {
         }
     }
 
-    for (let x = 1; x <= BOARD_WIDTH; x++) {
-        for (let y = BOARD_HEIGHT; y > 1; y--) {
-            let wall = document.getElementById(`h-wall-${x}-${y}`);
-            if (wall.player != null) {
-                // immediate neighbors
-                for (let a of [
-                    [0, 0],
-                    [0, 1],
-                    [1, 0],
-                    [1, 1],
-                    [0, -1],
-                    [1, -1],
-                    [-1, 0],
-                    [2, 0],
-                ]) {
-                    let i = a[0];
-                    let j = a[1];
-                    if (x + i >= 0 && x + i < BOARD_HEIGHT) {
-                        if (y + j >= 0 && y + j < BOARD_WIDTH) {
-                            if (wall.player == 1) {
-                                board_fow[x + i][y + j] += 1;
-                            } else {
-                                board_fow[x + i][y + j] -= 1;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     // for all the horizontal walls
-    for (let y = BOARD_HEIGHT; y > 1; y--) {
-        for (let x = 1; x <= BOARD_WIDTH; x++) {
+    for (let y = BOARD_HEIGHT - 1; y > 1; y--) {
+        for (let x = 1; x < BOARD_WIDTH; x++) {
             let wall = document.getElementById(`h-wall-${x}-${y}`);
             if (wall.player != null) {
                 // immediate neighbors
                 for (let a of [
+                    [-1, -1],
+                    [-1, 0],
+                    [0, -2],
+                    [0, -1],
                     [0, 0],
                     [0, 1],
-                    [1, 0],
-                    [1, 1],
-                    [0, -1],
                     [1, -1],
-                    [-1, 0],
-                    [2, 0],
+                    [1, 0],
                 ]) {
-                    let i = a[0];
-                    let j = a[1];
-                    if (x + i >= 0 && x + i < BOARD_HEIGHT) {
-                        if (y + j >= 0 && y + j < BOARD_WIDTH) {
+                    let i = a[0] - 1;
+                    let j = a[1] - 1;
+                    if (x + i >= 0 && x + i < BOARD_WIDTH) {
+                        if (y + j >= 0 && y + j < BOARD_HEIGHT) {
                             if (wall.player == 1) {
                                 board_fow[x + i][y + j] += 1;
                             } else {
