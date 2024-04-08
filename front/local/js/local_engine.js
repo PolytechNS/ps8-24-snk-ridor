@@ -7,8 +7,6 @@ import { display_board, placePlayer } from './local_display.js';
 
 const LINES = BOARD_HEIGHT;
 const COLUMNS = BOARD_WIDTH;
-const WALLS = 10;
-const WALL_LENGTH = 2;
 
 const PLAYER_A = 1;
 const PLAYER_B = 2;
@@ -29,7 +27,6 @@ let turn = 0;
 
 function main() {
     initialise_game();
-    //init_board();
 }
 
 function initialise_game() {
@@ -74,7 +71,7 @@ export function next_player(event = null) {
     game.nextPlayer();
     document.getElementById('turn').textContent = game.turn_count;
     updatePath(game.getCurrentPlayer());
-    document.getElementById('player').textContent = ['', 'A', 'B'][getPlayerTurn().player];
+    document.getElementById('player').textContent = ['', 'A', 'B'][game.getCurrentPlayer().id];
 
     updateFogOfWar(event);
 }
@@ -317,8 +314,8 @@ function getPlayerTurn() {
 
 function deleteOverview() {
     if (LOG) console.log(`deleteOverview() called`);
-    let overviewes = document.querySelectorAll('.position_overview');
-    overviewes.forEach((element) => {
+    let overview = document.querySelectorAll('.position_overview');
+    overview.forEach((element) => {
         element.parentElement.overviewed = false;
         element.remove();
     });
