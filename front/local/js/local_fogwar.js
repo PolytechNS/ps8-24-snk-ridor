@@ -319,9 +319,17 @@ function updatePlayerVisibility() {
     if (currentPlayer.id === game.players[0].id) {
         player1Element.style.visibility = 'visible'; // Le joueur actuel est toujours visible pour lui-même
         player2Element.style.visibility = boardFow[player2Pos[0] - 1][player2Pos[1] - 1] >= 0 ? 'visible' : 'hidden';
+        // si le joueur adverse est adjacent au joueur actuel, il est visible
+        if ((player1Pos[0] === player2Pos[0] && Math.abs(player1Pos[1] - player2Pos[1]) === 1) || (player1Pos[1] === player2Pos[1] && Math.abs(player1Pos[0] - player2Pos[0]) === 1)) {
+            player2Element.style.visibility = 'visible';
+        }
     } else {
         player2Element.style.visibility = 'visible'; // Le joueur actuel est toujours visible pour lui-même
         player1Element.style.visibility = boardFow[player1Pos[0] - 1][player1Pos[1] - 1] <= 0 ? 'visible' : 'hidden';
+        // si le joueur adverse est adjacent au joueur actuel, il est visible
+        if ((player1Pos[0] === player2Pos[0] && Math.abs(player1Pos[1] - player2Pos[1]) === 1) || (player1Pos[1] === player2Pos[1] && Math.abs(player1Pos[0] - player2Pos[0]) === 1)) {
+            player1Element.style.visibility = 'visible';
+        }
     }
 
     if (LOG) console.log('PlayerVisibility updated');
