@@ -4,7 +4,7 @@ import { addPlayers } from './local_engine.js';
 import { updatePath } from './local_pathFinding.js';
 import { updateFogOfWar } from './local_fogwar.js';
 
-export const LOG = true;
+export const LOG = false;
 
 function onload() {
     if (LOG) console.log('Loaded');
@@ -16,13 +16,11 @@ function onload() {
 
     addPlayers(board_div, board);
 
-    /*
     if (LOG) console.log('Players initialized');
     updateFogOfWar(new Event('beginning'));
 
     board = getGame();
     updatePath(board.getCurrentPlayer());
-*/
 }
 
 document.addEventListener('DOMContentLoaded', onload);

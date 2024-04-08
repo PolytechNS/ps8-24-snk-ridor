@@ -133,58 +133,6 @@ export function getCorridorPossiblePosition(column, line) {
     return cells;
 }
 
-// export function getCorridorPossiblePosition(line, column) {
-//     if (LOG) console.log(`getCorridorPossiblePosition(${line}, ${column}) called`);
-//     let cells = [];
-//     if (line > 0) {
-//         if (!document.getElementById('h-wall-' + (line - 1) + '-' + column).classList.contains('placed')) {
-//             if (document.getElementById('cell-' + (line - 1) + '-' + column).childElementCount == 0) {
-//                 cells.push([line - 1, column]);
-//             } else {
-//                 if (line > 1 && !document.getElementById('h-wall-' + (line - 2) + '-' + column).classList.contains('placed')) {
-//                     cells.push([line - 2, column]);
-//                 }
-//             }
-//         }
-//     }
-//     if (line < LINES - 1) {
-//         if (!document.getElementById('h-wall-' + line + '-' + column).classList.contains('placed')) {
-//             if (document.getElementById('cell-' + (line + 1) + '-' + column).childElementCount == 0) {
-//                 cells.push([line + 1, column]);
-//             } else {
-//                 if (line < LINES - 2 && !document.getElementById('h-wall-' + (line + 1) + '-' + column).classList.contains('placed')) {
-//                     cells.push([line + 2, column]);
-//                 }
-//             }
-//         }
-//     }
-//     if (column > 0) {
-//         if (!document.getElementById('v-wall-' + line + '-' + (column - 1)).classList.contains('placed')) {
-//             if (document.getElementById('cell-' + line + '-' + (column - 1)).childElementCount == 0) {
-//                 cells.push([line, column - 1]);
-//             } else {
-//                 if (column > 1 && !document.getElementById('v-wall-' + line + '-' + (column - 2)).classList.contains('placed')) {
-//                     cells.push([line, column - 2]);
-//                 }
-//             }
-//         }
-//     }
-//     if (column < COLUMNS - 1) {
-//         if (!document.getElementById('v-wall-' + line + '-' + column).classList.contains('placed')) {
-//             if (document.getElementById('cell-' + line + '-' + (column + 1)).childElementCount == 0) {
-//                 cells.push([line, column + 1]);
-//             } else {
-//                 if (column < COLUMNS - 2 && !document.getElementById('v-wall-' + line + '-' + (column + 1)).classList.contains('placed')) {
-//                     cells.push([line, column + 2]);
-//                 }
-//             }
-//         }
-//     }
-
-//     if (LOG) console.log(`getCorridorPossiblePosition(${line}, ${column}) returns ${cells}`);
-//     return cells;
-// }
-
 export function getCorridorPossiblePositionForPath(column, line) {
     if (LOG) console.log(`getCorridorPossiblePositionForPath(${column}, ${line}) called`);
     let cells = [];
@@ -560,8 +508,8 @@ export function addPlayers(board_div, board) {
     if (LOG) player_a.textContent = 'A';
     if (!LOG) {
         let img = document.createElement('img');
-        img.src = 'resources/persons/titan_eren.png';
-        img.alt = 'Annie';
+        img.src = '../../resources/persons/titan_eren.png';
+        img.alt = 'Eren';
         img.classList.add('pawn-avatar');
         player_a.appendChild(img);
     }
@@ -582,7 +530,7 @@ export function addPlayers(board_div, board) {
     if (LOG) player_b.textContent = 'B';
     if (!LOG) {
         let img = document.createElement('img');
-        img.src = 'resources/persons/humain_annie.png';
+        img.src = '../../resources/persons/humain_annie.png';
         img.alt = 'Annie';
         img.classList.add('pawn-avatar');
         player_b.appendChild(img);

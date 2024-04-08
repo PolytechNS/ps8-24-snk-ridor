@@ -184,7 +184,7 @@ function allBoardFogOfWar() {
     // for all the vertical walls
     for (let i = 0; i < BOARD_HEIGHT - 1; i++) {
         for (let j = 0; j < BOARD_WIDTH - 1; j++) {
-            let wall = document.getElementById(`v-wall-${i}-${j}`);
+            let wall = document.getElementById(`v-wall-${i + 1}-${j + 1}`);
             if (wall.player != null) {
                 // immediate neighbors
                 for (let a of [
@@ -255,7 +255,7 @@ function allBoardFogOfWar() {
 }
 
 function setVisibility(x, y, value) {
-    let cell = document.getElementById(`cell-${x}-${y}`);
+    let cell = document.getElementById(`cell-${x + 1}-${y + 1}`);
     if (LOG) console.log(`Setting visibility of cell`);
     if (value > 0) {
         if (!cell.classList.contains('visible')) {
