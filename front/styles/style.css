@@ -113,10 +113,7 @@
 
 .board {
     display: grid;
-    grid-template-columns: repeat(
-        calc(var(--number-of-row) * 2 - 1),
-        min-content
-    );
+    grid-template-columns: repeat(calc(var(--number-of-row) * 2 - 1), min-content);
 }
 
 .cell {
@@ -351,7 +348,6 @@
     z-index: 99;
     display: none;
 }
-
 
 /* important messages that have to be displayed (typically for tuto or initial placement) */
 .action_message {

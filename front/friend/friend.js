@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('back-button').addEventListener('click', function () {
+        window.location.href = '../profile/profile.html';
+    });
+
     const searchBtn = document.getElementById('search-btn');
     const searchEmail = document.getElementById('search-email');
     const token = localStorage.getItem('token');
@@ -19,14 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Users found
                 console.log('Users found:', data);
                 allUsers = data;
-                allUsers.forEach((user) => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `
-                        <span>${user.name} (${user.email})</span>
-                        <button class="add-friend" data-email="${user.email}">Add</button>
-                    `;
-                    userList.appendChild(listItem);
-                });
             })
             .catch((error) => {
                 console.error('Error during user list retrieval:', error);

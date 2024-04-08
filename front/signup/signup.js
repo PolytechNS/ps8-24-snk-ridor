@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('back-button').addEventListener('click', () => {
+        window.location.href = '../login/login.html';
+    });
     const signupForm = document.querySelector('.form-container .login-form');
 
     signupForm.addEventListener('submit', function (event) {

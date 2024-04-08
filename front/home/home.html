@@ -6,6 +6,8 @@
         <link rel="stylesheet" href="../styles/style.css" />
         <link rel="stylesheet" href="home.css" />
         <script src="home.js"></script>
+        <link rel="stylesheet" href="../chat/chat.css" />
+        <script src="../chat/chat.js" defer></script>
     </head>
     <body>
         <header>
@@ -16,7 +18,7 @@
         </header>
         <main>
             <a href="home.html" class="logo-link">
-                <img src="../resources/logo.png" alt="SNK'ridor Logo" class="logo" />
+                <img src="../resources/ui/logo.png" alt="SNK'ridor Logo" class="logo" />
             </a>
             <div class="play-buttons">
                 <a class="play_button" id="online-play_button" href="../index.html">Jouer</a>
@@ -24,5 +26,6 @@
                 <a class="play_button" id="local-play_button" onclick="alert('la fonctionnalité arrive bientôt')">Multijoueur local</a>
             </div>
         </main>
+        <chat-global></chat-global>
     </body>
 </html>
