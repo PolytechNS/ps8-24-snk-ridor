@@ -217,6 +217,7 @@ export function on_wall_click(event) {
 
 function get_walls(event) {
     // When hovering over a wall, it can be difficult to determine which walls are affected. Here lays the truth
+    if (LOG) console.log('Getting walls on event ' + event.target.id);
 
     // If the event target is not a wall, return []
     if (!event.target.classList.contains('wall')) {
@@ -230,26 +231,29 @@ function get_walls(event) {
         return [];
     }
 
-    let i = parseInt(main_wall.id.split('-')[2]);
-    let j = parseInt(main_wall.id.split('-')[3]);
+    let x = parseInt(main_wall.id.split('-')[2]);
+    let y = parseInt(main_wall.id.split('-')[3]);
 
     // If we are hovering a vertical wall
     if (main_wall.classList.contains('v-wall')) {
         // If there is a vertical wall below
-        if (i < BOARD_HEIGHT - 1) {
-            return [main_wall, document.getElementById(`s-wall-${i}-${j}`), document.getElementById(`v-wall-${i + 1}-${j}`)];
-        } else {
-            return [main_wall, document.getElementById(`s-wall-${i - 1}-${j}`), document.getElementById(`v-wall-${i - 1}-${j}`)];
+        if (y > 1 && y <= BOARD_HEIGHT) {
+            return [main_wall, document.getElementById(`s-wall-${x}-${y}`), document.getElementById(`v-wall-${x}-${y - 1}`)];
+        } else if (y == 1) {
+            return [main_wall, document.getElementById(`s-wall-${x}-${y + 1}`), document.getElementById(`v-wall-${x}-${y + 1}`)];
         }
     }
 
     // If we are hovering a horizontal wall
     if (main_wall.classList.contains('h-wall')) {
         // If there is a horizontal wall to the right
-        if (j < BOARD_WIDTH - 1) {
-            return [main_wall, document.getElementById(`s-wall-${i}-${j}`), document.getElementById(`h-wall-${i}-${j + 1}`)];
-        } else {
-            return [main_wall, document.getElementById(`s-wall-${i}-${j - 1}`), document.getElementById(`h-wall-${i}-${j - 1}`)];
+        if (x < BOARD_WIDTH) {
+            return [main_wall, document.getElementById(`s-wall-${x}-${y}`), document.getElementById(`h-wall-${x + 1}-${y}`)];
+        } else if (x == BOARD_WIDTH) {
+            return [main_wall, document.getElementById(`s-wall-${x - 1}-${y}`), document.getElementById(`h-wall-${x - 1}-${y}`)];
         }
     }
+
+    if (LOG) console.log('No walls found');
+    return [];
 }
