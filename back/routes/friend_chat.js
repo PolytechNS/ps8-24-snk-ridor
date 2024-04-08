@@ -61,7 +61,7 @@ function registerHandlers(io, socket) {
 
             let receiver = friends[message.receiver];
             if (receiver) {
-                logger.info('Socket response: friend:history');
+                logger.info('Socket response: friend:receive');
                 io.to(receiver).emit('friend:receive', message);
             }
         });

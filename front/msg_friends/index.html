@@ -42,10 +42,21 @@
                     tr.querySelector('#talk_to_button').addEventListener('click', () => {
                         console.log('talking to:', friend.email);
                         document.getElementById('friend_email').textContent = friend.email;
+                        socket.emit('friend:history', friend.email);
                         active_friend = friend.email;
                     });
 
                     table.appendChild(tr);
+                }
+            });
+
+            socket.on('friend:message_history', (mess) => {
+                console.log('messages:', mess);
+                const messages = document.getElementById('messages');
+                messages.innerHTML = '';
+
+                for (const message of mess) {
+                    addMessage(message.message, message.sender === localStorage.getItem('email'));
                 }
             });
 
