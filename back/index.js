@@ -6,8 +6,8 @@ const { logger } = require('./libs/logging');
 // routes
 const api = require('./routes/api.js');
 const front = require('./routes/front/front.js');
-const { handleSocket } = require('./routes/chat');
-const chat = require('./routes/chat');
+const roomChat = require('./routes/room_chat');
+const games = require('./routes/games');
 
 const PORT = process.env.PORT || 8000;
 
@@ -44,7 +44,8 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
     logger.info('Socket connected');
-    chat.registerHandlers(io, socket);
+    roomChat.registerHandlers(io, socket);
+    games.registerHandlers(io, socket);
 });
 
 io.on('disconnect', () => {
