@@ -32,10 +32,10 @@ export class Game {
         this.v_size = BOARD_WIDTH;
         this.current_player = 1;
         this.players = [];
-        this.p1_pos = [0, 0];
-        this.p2_pos = [this.h_size - 1, this.v_size - 1];
+        this.p1_pos = [1, 1];
+        this.p2_pos = [this.h_size, this.v_size];
         this.board_fow = BOARD_FOW;
-        this.begin = parseInt(Date.now());
+        this.turn_count = 1;
     }
 
     addPlayer(player) {
@@ -51,7 +51,32 @@ export class Game {
 
     nextPlayer() {
         this.current_player = (this.current_player % 2) + 1;
+        this.turn_count++;
         if (LOG) console.log(`next player, Player ${this.current_player}'s turn`);
+    }
+
+    getPlayerPosition(player) {
+        if (player == 1) {
+            return this.p1_pos;
+        } else if (player == 2) {
+            return this.p2_pos;
+        }
+    }
+
+    remainingWalls(player) {
+        if (player === undefined || player === null) {
+            player = this.current_player;
+        }
+        console.log('remaining walls', player, this.players, this.players[player - 1]);
+        return this.players[player - 1].remainingWalls();
+    }
+
+    getPlayer(player) {
+        return this.players[player - 1];
+    }
+
+    getTurnCount() {
+        return this.turn_count;
     }
 }
 

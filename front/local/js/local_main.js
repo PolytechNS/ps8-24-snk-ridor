@@ -15,11 +15,14 @@ function onload() {
     if (LOG) console.log('Board initialized');
 
     addPlayers(board_div, board);
+
+    /*
     if (LOG) console.log('Players initialized');
     updateFogOfWar(new Event('beginning'));
 
     board = getGame();
     updatePath(board.getCurrentPlayer());
+    */
 }
 
 document.addEventListener('DOMContentLoaded', onload);

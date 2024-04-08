@@ -4,60 +4,105 @@ import { LOG } from './local_main.js';
 import { findPath } from './local_pathFinding.js';
 
 export function init_board(board_div, board) {
-    board_div.style.gridTemplateColumns = `repeat(${board.h_size * 2 - 1}, min-content)`;
-    board_div.style.gridTemplateRows = `repeat(${board.v_size * 2 - 1}, min-content)`;
+    if (LOG) console.log('Initializing board');
+    let BOARD_W = BOARD_WIDTH;
+    let BOARD_H = BOARD_HEIGHT;
 
-    for (let i = 0; i < board.h_size; i++) {
-        for (let j = 0; j < board.v_size; j++) {
-            // Create Cell
+    // reset the board
+    board_div.innerHTML = '';
+
+    for (let y = BOARD_H; y > 0; y--) {
+        for (let x = 1; x <= BOARD_W; x++) {
+            // create cell
             let cell = document.createElement('div');
-            cell.classList.add('cell');
-            cell.id = `cell-${i}-${j}`;
-            if ((i == 0 || i == board.h_size - 1) && !LOG) {
+            cell.className = 'cell';
+            cell.id = `cell-${x}-${y}`;
+            if (LOG) cell.textContent = `[${x}, ${y}]`;
+            if ((y == 1 || y == BOARD_H) && !LOG) {
                 cell.classList.add('finish');
             }
-            if (i == board.h_size - 1) {
+            if (y == 1) {
                 cell.addEventListener('click', firstOnCellClick);
-            } else {
-                cell.addEventListener('click', onCellClick);
             }
 
-            // TODO: Add event listeners to cells
-            if (LOG) cell.textContent = `[${i}, ${j}]`;
             board_div.appendChild(cell);
 
-            // Create Vertical Wall
-            if (j < board.h_size - 1) {
+            // create vertical wall
+            if (x < BOARD_W) {
                 let wall = document.createElement('div');
-                wall.classList.add('v-wall', 'wall');
-                wall.id = `v-wall-${i}-${j}`;
-                wall.addEventListener('mouseover', on_wall_over);
-                wall.addEventListener('mouseout', on_wall_out);
-                wall.addEventListener('click', on_wall_click);
-                // TODO: Add event listeners to walls
+                wall.className = 'v-wall wall';
+                wall.id = `v-wall-${x}-${y}`;
                 board_div.appendChild(wall);
             }
         }
 
-        // Create Horizontal and Small Walls
-        for (let j = 0; j < board.v_size; j++) {
-            if (i < board.v_size - 1) {
-                // Create Horizontal Walls
+        for (let x = 1; x <= BOARD_W; x++) {
+            if (y > 1) {
+                // create horizontal wall
                 let wall = document.createElement('div');
-                wall.classList.add('h-wall', 'wall');
-                wall.id = `h-wall-${i}-${j}`;
-                wall.addEventListener('mouseover', on_wall_over);
-                wall.addEventListener('mouseout', on_wall_out);
-                wall.addEventListener('click', on_wall_click);
-                // TODO: Add event listeners to walls
+                wall.className = 'h-wall wall';
+                wall.id = `h-wall-${x}-${y}`;
                 board_div.appendChild(wall);
 
-                if (j < board.h_size - 1) {
-                    // Create Small Walls
+                if (x < BOARD_W) {
+                    // create small wall
                     let wall = document.createElement('div');
-                    wall.classList.add('s-wall', 'wall');
-                    wall.id = `s-wall-${i}-${j}`;
-                    // TODO: Add event listeners to walls
+                    wall.className = 's-wall wall';
+                    wall.id = `s-wall-${x}-${y}`;
+                    board_div.appendChild(wall);
+                }
+            }
+        }
+    }
+}
+
+export function display_board_one_player(board_div, board) {
+    if (LOG) console.log('Displaying board for one player');
+    let BOARD_W = BOARD_WIDTH;
+    let BOARD_H = BOARD_HEIGHT;
+
+    // reset the board
+    board_div.innerHTML = '';
+
+    for (let y = BOARD_H; y > 0; y--) {
+        for (let x = 1; x <= BOARD_W; x++) {
+            // create cell
+            let cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.id = `cell-${x}-${y}`;
+            if (LOG) cell.textContent = `[${x}, ${y}]`;
+            if ((y == 1 || y == BOARD_H) && !LOG) {
+                cell.classList.add('finish');
+            }
+            if (y == BOARD_H) {
+                cell.addEventListener('click', firstOnCellClick);
+            }
+
+            board_div.appendChild(cell);
+
+            // create vertical wall
+            if (x < BOARD_W) {
+                let wall = document.createElement('div');
+                wall.className = 'v-wall wall';
+                wall.id = `v-wall-${x}-${y}`;
+                board_div.appendChild(wall);
+            }
+        }
+
+        // create horizontal wall
+        for (let x = 1; x <= BOARD_W; x++) {
+            if (y > 1) {
+                // create horizontal wall
+                let wall = document.createElement('div');
+                wall.className = 'h-wall wall';
+                wall.id = `h-wall-${x}-${y}`;
+                board_div.appendChild(wall);
+
+                if (x < BOARD_W) {
+                    // create small wall
+                    let wall = document.createElement('div');
+                    wall.className = 's-wall wall';
+                    wall.id = `s-wall-${x}-${y}`;
                     board_div.appendChild(wall);
                 }
             }
@@ -66,7 +111,7 @@ export function init_board(board_div, board) {
 }
 
 // display message and dismiss it after 3 seconds
-export function display_message(message, category = 'dev_message') {
+export function display_message(message, category = 'dev_message', timeout = 4000) {
     if (LOG) {
         console.log(message);
     } else if (category == 'dev_message') {
@@ -81,14 +126,24 @@ export function display_message(message, category = 'dev_message') {
         document.getElementById('final_div').style.display = 'block';
         return;
     }
+    // if action_message, remove previous action_message
+    if (category == 'action_message') {
+        let action_message = document.querySelector('.action_message');
+        if (action_message) {
+            action_message.remove();
+        }
+    }
     let message_div = document.createElement('div');
     message_div.classList.add('alert');
     message_div.classList.add(category); // category can be "dev_message", "forbidden_message", "info_message" or "final_message"
     message_div.textContent = message;
     document.getElementById('game-infos').appendChild(message_div);
-    setTimeout(() => {
-        message_div.remove();
-    }, 4000); // display message for 4 seconds
+
+    if (timeout === parseInt(timeout)) {
+        setTimeout(() => {
+            message_div.remove();
+        }, timeout);
+    } // display message for number of miliseconds
 }
 
 // Callback functions for visuals only

@@ -1,4 +1,7 @@
-import { newGame } from './local_engine.js';
+import { newGame, onCellClick } from './local_engine.js';
+import { BOARD_HEIGHT, BOARD_WIDTH } from './local_models.js';
+import { on_wall_click, on_wall_over, on_wall_out } from './local_board.js';
+import { LOG } from './local_main.js';
 
 let global_board;
 /*
@@ -9,9 +12,9 @@ let global_board;
  * @side-effect: add event listeners to the cells and walls
  */
 export function display_board(board) {
-    console.log('display_board');
-    let BOARD_W = board.width();
-    let BOARD_H = board.height();
+    if (LOG) console.log('display_board');
+    let BOARD_W = BOARD_WIDTH;
+    let BOARD_H = BOARD_HEIGHT;
 
     // reset the board
     let board_div = document.getElementById('board');
@@ -25,6 +28,7 @@ export function display_board(board) {
             let cell = document.createElement('div');
             cell.className = 'cell';
             cell.id = 'cell-' + x + '-' + y;
+            if (LOG) cell.textContent = `[${x}, ${y}]`;
             cell.addEventListener('click', onCellClick);
             board_div.appendChild(cell);
 
@@ -34,9 +38,9 @@ export function display_board(board) {
                 let wall = document.createElement('div');
                 wall.classList.add('v-wall', 'wall');
                 wall.id = 'v-wall-' + x + '-' + y;
-                wall.addEventListener('mouseover', onWallOver);
-                wall.addEventListener('mouseout', onWallOut);
-                wall.addEventListener('click', onWallClick);
+                wall.addEventListener('mouseover', on_wall_over);
+                wall.addEventListener('mouseout', on_wall_out);
+                wall.addEventListener('click', on_wall_click);
                 board_div.appendChild(wall);
             }
         }
@@ -49,9 +53,9 @@ export function display_board(board) {
                 let wall = document.createElement('div');
                 wall.classList.add('h-wall', 'wall');
                 wall.id = 'h-wall-' + x + '-' + y;
-                wall.addEventListener('mouseover', onWallOver);
-                wall.addEventListener('mouseout', onWallOut);
-                wall.addEventListener('click', onWallClick);
+                wall.addEventListener('mouseover', on_wall_over);
+                wall.addEventListener('mouseout', on_wall_out);
+                wall.addEventListener('click', on_wall_click);
                 board_div.appendChild(wall);
             }
 
@@ -61,9 +65,9 @@ export function display_board(board) {
                 let wall = document.createElement('div');
                 wall.classList.add('s-wall', 'wall');
                 wall.id = 's-wall-' + x + '-' + y;
-                wall.addEventListener('mouseover', onWallOver);
-                wall.addEventListener('mouseout', onWallOut);
-                wall.addEventListener('click', onWallClick);
+                wall.addEventListener('mouseover', on_wall_over);
+                wall.addEventListener('mouseout', on_wall_out);
+                wall.addEventListener('click', on_wall_click);
                 board_div.appendChild(wall);
             }
         }
@@ -95,15 +99,15 @@ export function display_board(board) {
         }
 
         // change the number of walls for the player
-        console.log('player-' + (1 + i) + '-profile');
-        if (i + 1 == board.getPlayer) {
+        console.log('player-' + i + '-profile');
+        if (i == board.getPlayer) {
             console.log('self_profile');
         } else {
             console.log('other_profile');
         }
 
         let player_profile;
-        if (i + 1 == board.getPlayer) {
+        if (i == board.getPlayer) {
             player_profile = document.getElementById('self_profile');
         } else {
             player_profile = document.getElementById('other_profile');
@@ -120,6 +124,7 @@ export function display_board(board) {
     turn_number.textContent = board.getTurnCount();
 }
 
+// do not use this function, use local_board/init_board instead
 export function display_initial_board(playerId, board) {
     global_board = board;
     console.log('display_initial_board');
