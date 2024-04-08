@@ -1,0 +1,126 @@
+@font-face {
+    font-family: 'OptimusPrinceps';
+    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
+    background-size: cover;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+}
+
+.logo-link {
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 180px;
+    border-radius: 10px;
+}
+
+h1 {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 0.5em;
+}
+
+p {
+    font-size: 1.2em;
+    text-align: center;
+    margin-bottom: 2em;
+    max-width: 80%;
+}
+
+.play-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 0px;
+}
+
+.play_button {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 1.5em;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ff5722;
+    box-shadow: 0 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 2px;
+    border-radius: 0px;
+}
+
+.play_button:hover {
+    background-color: #f4511e;
+}
+
+.play_button:active {
+    box-shadow: 0 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(4px);
+}
+
+header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 20px;
+}
+
+.top-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.top-button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    color: #ffffff;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ff5722;
+    box-shadow: 0 3px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.top-button:hover {
+    background-color: #f4511e;
+}
+
+.top-button:active {
+    box-shadow: 0 1px rgba(0, 0, 0, 0.3);
+    transform: translateY(2px);
+}
