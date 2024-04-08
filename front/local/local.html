@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>SNK'ridor</title>
+        <link rel="stylesheet" href="../styles/style.css" />
+        <link rel="stylesheet" href="../styles/layout.css" />
+        <link rel="stylesheet" href="../styles/fogwar.css" />
+        <script type="module" src="./js/local_display.js"></script>
+    </head>
+    <body>
+        <nav>
+            <a href="../home/home.html"><img src="../resources/icon_home.jpg" alt="home" /></a>
+            <p>Shingeki No Korridor • Local 1V1</p>
+        </nav>
+        <aside id="aside-left">
+            <div id="other_profile" class="profile profile_adversaire">
+                <div class="identity">
+                    <image src="../resources/persons/humain_annie.png" alt="avatar" class="avatar"></image>
+                    <a id="other_pseudo">Pseudo</a>
+                </div>
+                <div>Score : <a id="other_score">54 827</a></div>
+                <div class="profile-game-infos">walls : <a class="walls" id="other_walls">0</a><br /></div>
+            </div>
+            <div id="self_profile" class="profile profile_self">
+                <div class="identity">
+                    <image src="../resources/persons/titan_eren.png" alt="avatar" class="avatar"></image>
+                    <a id="self_pseudo">Pseudo</a>
+                </div>
+                <div>Score : <a id="self_score">72 845</a></div>
+                <div class="profile-game-infos">walls : <a class="walls" id="self_walls">0</a><br /></div>
+            </div>
+        </aside>
+        <main class="game">
+            <div id="board" class="board"></div>
+            <div id="game-infos" class="game-infos">
+                <a class="container">Au tour du joueur&nbsp;<a id="player">A</a><br /></a>
+                <a class="container">tour&nbsp;<a id="turn">1</a><br /></a>
+                <div class="final_blocker" id="final_div">
+                    <div class="final_message">
+                        <p id="final_message">Victoire du joueur A</p>
+                        <button id="reload">Rejouer</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

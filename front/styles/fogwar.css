@@ -1,5 +1,5 @@
 :root {
-    /* do not remove, can be change on LOG value by JS in engine.js */
+    /* do not remove, can be change on LOG value by JS in engine.js or local_engine.js*/
     --j1: #000;
     --j2: #000;
     --casej1: #a52a2a;

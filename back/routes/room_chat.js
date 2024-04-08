@@ -11,7 +11,7 @@ function purgeEmptyRooms() {
 }
 
 function registerHandlers(io, socket) {
-    logger.debug('Registering chat socket handlers');
+    logger.debug('Registering room chat socket handlers');
 
     socket.on('message:list', (_) => {
         logger.info('Socket request: message:list');

@@ -1,50 +1,9 @@
-/* engine for the game Corridor */
-
-/*
-the game is determined by the following rules :
-
-Fog of war :
-- The game can only be played with 2 players, 1 versus 1.
-- The game is played on a 9x9 board.
-- At the beginning of the game, each cell on the 4 first lines have a visibility of +1, the ones on the fifth line have a visibility of 0, and the 4 last lines have a visibility of -1.
-
-Players :
-- Player A starts on any column of line 1 ; Player B starts on any column of line 9.
-- During the game, the cell the player A is on, and the 4 adjacent cells, have a +1 visibility ; the cell the player B is on, and the 4 adjacent cells, have a -1 visibility.
-
-Walls :
-- Walls are 2 cells long and can be placed between cells ; each players starts with 10 Walls.
-- Each cell in contact with a Wall placed by player A gets +2 visibility; Each cell that is 1 cell away from a Wall placed by player A gets +1 visibility.
-- Each cell in contact with a Wall placed by player B gets -2 visibility; Each cell that is 1 cell away from a Wall placed by player B gets —1 visibility.
-- The visibility modifiers are cumulative.
-
-Visibility :
-- Player A can only see cell it's on, and the cells that have a visibility score of at least 0 ; Player B can only see cell it's on, and the cells that have a visibility score of at most 0.
-- A player can see the other player if it is 1 cell away or if it is on a visibility cell.
-- PLayers don't know the visibility value of a cell ; they just know if they can see it.
-- Players can't see the walls.
-
-Goal :
-- The goal for Player A is to reach the line 9 ; Player B have to reach line 1.
-- Player A plays first.
-- If Player A reaches line 9 first, Player B has one move to try and reach line 1. If player B succeeds, the game ends in a draw ; otherwise, Player A wins.
-- If Player B reaches line 1 first, the game ends with Player B victory.
-- When it's a player turn, the options are :
-    - Placing a wall somewhere it doesn't make it impossible for any player to reach the end,
-    - Moving 1 cell in a cardinal direction. Notes :
-        - Players can't jump over walls
-        - Players can jump over other players
-    - Players cannot skip their turn unless they have no action available.
-- After 100 turns from both players (200 in total), the game ends in a draw.
-
-*/
-
-import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from './models.js';
-import { LOG } from './main.js';
-import { updateFogOfWar } from './fogwar.js';
-import { updatePath } from './pathFinding.js';
-import { display_message } from './board.js';
-import { placePlayer } from './display.js';
+import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from './local_models.js';
+import { LOG } from './local_main.js';
+import { updateFogOfWar } from './local_fogwar.js';
+import { updatePath } from './local_pathFinding.js';
+import { display_message, on_wall_over, on_wall_out, on_wall_click, display_board_one_player, init_board } from './local_board.js';
+import { display_board, placePlayer } from './local_display.js';
 
 const LINES = BOARD_HEIGHT;
 const COLUMNS = BOARD_WIDTH;
@@ -57,8 +16,8 @@ const PLAYER_B = 2;
 const PLAYER_A_COLOR = 'red';
 const PLAYER_B_COLOR = 'blue';
 
-const PLAYER_A_START_LINE = LINES - 1;
-const PLAYER_B_START_LINE = 0;
+const PLAYER_A_START_LINE = 1;
+const PLAYER_B_START_LINE = LINES;
 
 let board_data = [];
 let board_visibility = [];
@@ -70,8 +29,7 @@ let turn = 0;
 
 function main() {
     initialise_game();
-    display();
-    addPlayers();
+    //init_board();
 }
 
 function initialise_game() {
@@ -89,7 +47,6 @@ function initialise_game() {
             }
         }
     }
-    updateFogOfWar('beginning', null);
 }
 
 export function newGame() {
@@ -298,9 +255,9 @@ export function display() {
                 let wall = document.createElement('div');
                 wall.classList.add('v-wall', 'wall');
                 wall.id = 'v-wall-' + i + '-' + j;
-                wall.addEventListener('mouseover', onWallOver);
-                wall.addEventListener('mouseout', onWallOut);
-                wall.addEventListener('click', onWallClick);
+                wall.addEventListener('mouseover', on_wall_over);
+                wall.addEventListener('mouseout', on_wall_out);
+                wall.addEventListener('click', on_wall_click);
                 board.appendChild(wall);
             }
         }
@@ -312,9 +269,9 @@ export function display() {
                 let wall = document.createElement('div');
                 wall.classList.add('wall', 'h-wall');
                 wall.id = 'h-wall-' + i + '-' + j;
-                wall.addEventListener('mouseover', onWallOver);
-                wall.addEventListener('mouseout', onWallOut);
-                wall.addEventListener('click', onWallClick);
+                wall.addEventListener('mouseover', on_wall_over);
+                wall.addEventListener('mouseout', on_wall_out);
+                wall.addEventListener('click', on_wall_click);
                 board.appendChild(wall);
 
                 // Create horizontal wall-s
@@ -327,6 +284,12 @@ export function display() {
             }
         }
     }
+
+    // Display the players
+    addPlayers(board, getGame());
+
+    // display fog of war
+    updateFogOfWar('beginning');
 }
 
 function isPlayerTurn(player) {
@@ -356,26 +319,18 @@ export function firstOnCellClick(event) {
     if (LOG) console.log(`firstOnCellClick(${event}) called`);
     let cell = event.target;
     let id = cell.id.split('-');
-    let line = parseInt(id[1]);
-    let column = parseInt(id[2]);
+    let column = parseInt(id[1]); // x
+    let line = parseInt(id[2]); // y
 
-    if (event.target.className == 'position_overview') {
-        cell = event.target.parentElement;
-    } else {
-        cell = event.target;
-    }
-
-    player_a = getPlayerTurn();
-    console.log(`Player ${player_a} clicked`);
-    place_player(player_a, line, column);
+    addPlayer(cell.parentElement, getGame(), column);
 }
 
 export function onCellClick(event) {
     if (LOG) console.log(`onCellClick(${event}) called`);
     let cell = event.target;
     let id = cell.id.split('-');
-    let line = parseInt(id[1]);
-    let column = parseInt(id[2]);
+    let column = parseInt(id[1]); // x
+    let line = parseInt(id[2]); // y
 
     if (event.target.className == 'position_overview') {
         cell = event.target.parentElement;
@@ -445,8 +400,76 @@ export function onPlayerClick(event) {
     cell.selected = true; // This line seems to set a property 'selected' on the cell. Ensure this is managed as intended based on border toggle.
 }
 
+function addPlayer(board_div, board, column) {
+    if (LOG) console.log(`addPlayer(${board_div}, ${board}, ${column}) called`);
+
+    // if there is no player, add the first one
+    if (board.players.length == 0) {
+        player_a = document.createElement('div');
+        player_a.className = 'player';
+        player_a.id = 'player-a';
+        player_a.backgroundColor = PLAYER_A_COLOR;
+        player_a.line = PLAYER_A_START_LINE;
+        player_a.column = column;
+        player_a.player = PLAYER_A;
+        if (LOG) player_a.textContent = 'A';
+        if (!LOG) {
+            let img = document.createElement('img');
+            img.src = 'resources/persons/titan_eren.png';
+            img.alt = 'Annie';
+            img.classList.add('pawn-avatar');
+            player_a.appendChild(img);
+        }
+        player_a.addEventListener('click', onPlayerClick);
+        let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
+        new Player();
+        // do not add the player to the board, this is done in the Player class
+        getGame()['p1_pos'] = [player_a.column, player_a.line]; // x, y
+        cell.appendChild(player_a);
+
+        display_board_one_player(board_div, board);
+        display_message('Joueur 2 : Cliquez sur une case pour placer votre pion', 'action_message', false);
+    }
+    // if there is already a player, add the second one
+    else if (board.players.length == 1) {
+        player_b = document.createElement('div');
+        player_b.className = 'player';
+        player_b.id = 'player-b';
+        player_b.backgroundColor = PLAYER_B_COLOR;
+        player_b.line = PLAYER_B_START_LINE;
+        player_b.column = column;
+        player_b.player = PLAYER_B;
+        if (LOG) player_b.textContent = 'B';
+        if (!LOG) {
+            let img = document.createElement('img');
+            img.src = 'resources/persons/humain_annie.png';
+            img.alt = 'Annie';
+            img.classList.add('pawn-avatar');
+            player_b.appendChild(img);
+        }
+        player_b.addEventListener('click', onPlayerClick);
+        let cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
+        new Player();
+        // do not add the player to the board, this is done in the Player class
+        getGame()['p2_pos'] = [player_b.column, player_b.line]; // x, y
+        cell.appendChild(player_b);
+
+        display_board(board);
+        display_message('Début de la partie !', 'action_message', 1500);
+    }
+    // if there are already two players, do nothing
+    else {
+        if (LOG) console.log('There are already two players on the board');
+        return;
+    }
+}
+
 export function addPlayers(board_div, board) {
     if (LOG) console.log(`addPlayers(${board_div}, ${board}) called`);
+
+    display_message('Cliquez sur une case pour placer votre pion', 'action_message', false);
+
+    return;
     // Display players
     player_a = document.createElement('div');
     player_a.className = 'player';
