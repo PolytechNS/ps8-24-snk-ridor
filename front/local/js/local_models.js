@@ -97,7 +97,11 @@ export class Player {
         this.id = game.players.length + 1;
         this.position = [(game.h_size - 1) * (this.id % 2), 2];
         this.walls = 10;
-        this.goal = game.h_size - 1 - this.position[0];
+        if (this.id == 1) {
+            this.goal = 9;
+        } else if (this.id == 2) {
+            this.goal = 1;
+        }
         game.addPlayer(this);
         this.updateProfile();
         if (LOG) console.log(`Player ${this.id} created at ${this.position} with ${this.walls} walls`);

@@ -217,7 +217,6 @@ export function on_wall_click(event) {
 
 function get_walls(event) {
     // When hovering over a wall, it can be difficult to determine which walls are affected. Here lays the truth
-    if (LOG) console.log('Getting walls on event ' + event.target.id);
 
     // If the event target is not a wall, return []
     if (!event.target.classList.contains('wall')) {

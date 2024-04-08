@@ -127,43 +127,44 @@ export function getCorridorPossiblePosition(line, column) {
     return cells;
 }
 
-export function getCorridorPossiblePositionForPath(line, column) {
-    if (LOG) console.log(`getCorridorPossiblePositionForPath(${line}, ${column}) called`);
+export function getCorridorPossiblePositionForPath(column, line) {
+    if (LOG) console.log(`getCorridorPossiblePositionForPath(${column}, ${line}) called`);
     let cells = [];
     let wall;
-    if (line > 0) {
-        // if the player is not on the first line, check the left cell
-        wall = document.getElementById('h-wall-' + (line - 1) + '-' + column);
+    if (column > 1) {
+        // if the player is not on the first column, check the left cell
+        wall = document.getElementById(`v-wall-${column - 1}-${line}`);
         if (!wall.classList.contains('placed') && !wall.classList.contains('wall-hover')) {
             // if there is a wall on the way
-            cells.push([line - 1, column]);
+            cells.push([column - 1, line]);
         }
     }
-    if (line < LINES - 1) {
+    if (column < COLUMNS) {
+        console.log(`column : ${column}, line : ${line}`);
         // if the player is not on the last line, check the right cell
-        wall = document.getElementById('h-wall-' + line + '-' + column);
+        wall = document.getElementById(`v-wall-${column}-${line}`);
         if (!wall.classList.contains('placed') && !wall.classList.contains('wall-hover')) {
             // if there is a wall on the way
-            cells.push([line + 1, column]);
+            cells.push([column + 1, line]);
         }
     }
-    if (column > 0) {
-        // if the player is not on the first column, check the upper cell
-        wall = document.getElementById('v-wall-' + line + '-' + (column - 1));
+    if (line > 1) {
+        // if the player is not on the first line, check the top cell
+        wall = document.getElementById(`h-wall-${column}-${line}`);
         if (!wall.classList.contains('placed') && !wall.classList.contains('wall-hover')) {
             // if there is a wall on the way
-            cells.push([line, column - 1]);
+            cells.push([column, line - 1]);
         }
     }
-    if (column < COLUMNS - 1) {
-        // if the player is not on the last column, check the lower cell
-        wall = document.getElementById('v-wall-' + line + '-' + column);
+    if (line < LINES) {
+        // if the player is not on the last line, check the bottom cell
+        wall = document.getElementById(`h-wall-${column}-${line + 1}`);
         if (!wall.classList.contains('placed') && !wall.classList.contains('wall-hover')) {
             // if there is a wall on the way
-            cells.push([line, column + 1]);
+            cells.push([column, line + 1]);
         }
     }
-    if (LOG) console.log(`getCorridorPossiblePositionForPath(${line}, ${column}) returns ${cells}`);
+    if (LOG) console.log(`getCorridorPossiblePositionForPath(${column}, ${line}) returns ${cells}`);
     return cells;
 }
 
@@ -422,7 +423,8 @@ function addPlayer(board_div, board, column) {
         }
         player_a.addEventListener('click', onPlayerClick);
         let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
-        new Player();
+        let player_object = new Player();
+        player_object.move([player_a.column, player_a.line]);
         // do not add the player to the board, this is done in the Player class
         getGame()['p1_pos'] = [player_a.column, player_a.line]; // x, y
         cell.appendChild(player_a);
@@ -449,7 +451,8 @@ function addPlayer(board_div, board, column) {
         }
         player_b.addEventListener('click', onPlayerClick);
         let cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
-        new Player();
+        let player_object = new Player();
+        player_object.move([player_b.column, player_b.line]);
         // do not add the player to the board, this is done in the Player class
         getGame()['p2_pos'] = [player_b.column, player_b.line]; // x, y
         cell.appendChild(player_b);
