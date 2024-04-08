@@ -177,7 +177,7 @@ function checkVictory(player) {
     // on the other case, the first player wins
     let wins = [];
     for (let p of getGame().players) {
-        if (p.position[0] == p.goal) {
+        if (p.position[1] == p.goal) {
             // if the player has reach the opposite line
             wins.push(p);
         }
@@ -233,6 +233,7 @@ export function move_player(player, column, line) {
         return;
     }
     let event = new Event('move', player.player, [old_column, old_line], [column, line]);
+    checkVictory(player);
     next_player(event);
 }
 
