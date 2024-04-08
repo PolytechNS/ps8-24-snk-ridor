@@ -87,6 +87,9 @@ function initFogOfWar() {
             setVisibility(i, j, board_fow[i][j]);
         }
     }
+
+    if (LOG) console.log('Fog of war initialized');
+    updateFogOfWar('end of initialisation');
 }
 
 /* function to update the fog of war on a specific player move */

@@ -30,7 +30,6 @@ let turn = 0;
 function main() {
     initialise_game();
     display();
-    addPlayers();
 }
 
 function initialise_game() {
@@ -48,7 +47,7 @@ function initialise_game() {
             }
         }
     }
-    updateFogOfWar('beginning', null);
+    updateFogOfWar('beginning');
 }
 
 export function newGame() {
@@ -286,6 +285,12 @@ export function display() {
             }
         }
     }
+
+    // Display the players
+    addPlayers(board, getGame());
+
+    // display fog of war
+    updateFogOfWar('beginning');
 }
 
 function isPlayerTurn(player) {
