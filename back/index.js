@@ -7,6 +7,7 @@ const { logger } = require('./libs/logging');
 const api = require('./routes/api.js');
 const front = require('./routes/front/front.js');
 const roomChat = require('./routes/room_chat');
+const friendChat = require('./routes/friend_chat');
 const games = require('./routes/games');
 
 const PORT = process.env.PORT || 8000;
@@ -45,6 +46,7 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     logger.info('Socket connected');
     roomChat.registerHandlers(io, socket);
+    friendChat.registerHandlers(io, socket);
     games.registerHandlers(io, socket);
 });
 

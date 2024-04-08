@@ -1,5 +1,6 @@
 const { logger } = require('../libs/logging');
 const { PrivateMessage } = require('../db/privateMessages');
+const { Friend } = require('../db/friend');
 
 friends = {};
 
@@ -10,13 +11,34 @@ function registerHandlers(io, socket) {
         logger.info('Socket request: friend:login');
         logger.info('Socket response: friend:list');
         friends[username] = socket.id;
-        io.to(socket.id).emit('friend:friends', friends);
+        io.emit('friend:update');
     });
 
     socket.on('disconnect', () => {
         logger.info('Socket request: friend:logout');
         delete friends[Object.keys(friends).find((key) => friends[key] === socket.id)];
-        io.emit('friend:friends', friends);
+        io.emit('friend:update');
+    });
+
+    socket.on('friend:list', (_) => {
+        logger.info('Socket request: friend:list');
+
+        let email = Object.keys(friends).find((key) => friends[key] === socket.id);
+
+        Friend.getAll(email).then((my_friends) => {
+            let emails = [];
+
+            for (let friend of my_friends) {
+                if (friend.user_email === email) {
+                    emails.push({ email: friend.friend_email, online: !!friends[friend.friend_email] });
+                } else {
+                    emails.push({ email: friend.user_email, online: !!friends[friend.user_email] });
+                }
+            }
+
+            logger.info('Socket response: friend:friends');
+            io.to(socket.id).emit('friend:friends', emails);
+        });
     });
 
     socket.on('friend:send', (message) => {
