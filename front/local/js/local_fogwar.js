@@ -1,5 +1,5 @@
 import { LOG } from './local_main.js';
-import { BOARD_HEIGHT, BOARD_WIDTH, getGame } from './local_models.js';
+import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from './local_models.js';
 
 let board_fow;
 
@@ -45,17 +45,20 @@ function initFogOfWar() {
     if (LOG) console.log('BF : ', board_fow);
 
     // init the board with default values
-    for (let i = 0; i < BOARD_HEIGHT; i++) {
-        for (let j = 0; j < BOARD_WIDTH; j++) {
-            if (i < parseInt(BOARD_HEIGHT / 2)) {
-                board_fow[i][j] = -1;
-            } else if (i > parseInt(BOARD_HEIGHT / 2)) {
-                board_fow[i][j] = 1;
-            } else {
-                board_fow[i][j] = 0;
+    for (let y = BOARD_HEIGHT; y > 0; y--) {
+        for (let x = 1; x <= BOARD_WIDTH; x++) {
+            if (y < parseInt(BOARD_HEIGHT / 2)) {
+                board_fow[y - 1][x - 1] = -1;
+            }
+            if (y > parseInt(BOARD_HEIGHT / 2)) {
+                board_fow[y - 1][x - 1] = 1;
+            }
+            if (y == parseInt(BOARD_HEIGHT / 2)) {
+                board_fow[y - 1][x - 1] = 0;
             }
         }
     }
+
     // for the two players, change the visibility of the 4 cells around them
     for (let p = 1; p <= 2; p++) {
         let player_pos = getGame()['p' + p + '_pos'];
@@ -142,17 +145,45 @@ function allBoardFogOfWar() {
     if (LOG) console.log('Updating fog of war for all the board');
 
     // init the board with default values
-    for (let i = 0; i < BOARD_HEIGHT; i++) {
-        for (let j = 0; j < BOARD_WIDTH; j++) {
-            if (i < parseInt(BOARD_HEIGHT / 2)) {
-                board_fow[i][j] = -1;
-            } else if (i > parseInt(BOARD_HEIGHT / 2)) {
-                board_fow[i][j] = 1;
-            } else {
-                board_fow[i][j] = 0;
+    for (let y = BOARD_HEIGHT; y > 0; y--) {
+        for (let x = 1; x <= BOARD_WIDTH; x++) {
+            if (y < parseInt(BOARD_HEIGHT / 2)) {
+                board_fow[y - 1][x - 1] = -1;
+            }
+            if (y > parseInt(BOARD_HEIGHT / 2)) {
+                board_fow[y - 1][x - 1] = 1;
+            }
+            if (y == parseInt(BOARD_HEIGHT / 2)) {
+                board_fow[y - 1][x - 1] = 0;
             }
         }
     }
+
+    // keep for trace
+    // for (let i = 0; i < BOARD_HEIGHT; i++) {
+    //     for (let j = 0; j < BOARD_WIDTH; j++) {
+    //         if (i < parseInt(BOARD_HEIGHT / 2)) {
+    //             board_fow[i][j] = -1;
+    //         } else if (i > parseInt(BOARD_HEIGHT / 2)) {
+    //             board_fow[i][j] = 1;
+    //         } else {
+    //             board_fow[i][j] = 0;
+    //         }
+    //     }
+    // }
+
+    // keep for trace
+    // for (let i = 0; i < BOARD_HEIGHT; i++) {
+    //     for (let j = 0; j < BOARD_WIDTH; j++) {
+    //         if (i < parseInt(BOARD_HEIGHT / 2)) {
+    //             board_fow[i][j] = -1;
+    //         } else if (i > parseInt(BOARD_HEIGHT / 2)) {
+    //             board_fow[i][j] = 1;
+    //         } else {
+    //             board_fow[i][j] = 0;
+    //         }
+    //     }
+    // }
 
     // for the two players, change the visibility of the 4 cells around them
     for (let p = 1; p <= 2; p++) {
@@ -182,9 +213,9 @@ function allBoardFogOfWar() {
 
     // for the walls placed, change the visibility of cells around them
     // for all the vertical walls
-    for (let i = 0; i < BOARD_HEIGHT - 1; i++) {
-        for (let j = 0; j < BOARD_WIDTH - 1; j++) {
-            let wall = document.getElementById(`v-wall-${i + 1}-${j + 1}`);
+    for (let y = BOARD_HEIGHT; y > 0; y--) {
+        for (let x = 1; x < BOARD_WIDTH; x++) {
+            let wall = document.getElementById(`v-wall-${x}-${y}`);
             if (wall.player != null) {
                 // immediate neighbors
                 for (let a of [
@@ -197,14 +228,14 @@ function allBoardFogOfWar() {
                     [0, -1],
                     [0, 2],
                 ]) {
-                    let x = a[0];
-                    let y = a[1];
-                    if (i + x >= 0 && i + x < BOARD_HEIGHT) {
-                        if (j + y >= 0 && j + y < BOARD_WIDTH) {
+                    let i = a[0];
+                    let j = a[1];
+                    if (x + i >= 0 && x + i < BOARD_HEIGHT) {
+                        if (y + j >= 0 && y + j < BOARD_WIDTH) {
                             if (wall.player == 1) {
-                                board_fow[i + x][j + y] += 1;
+                                board_fow[x + i][y + j] += 1;
                             } else {
-                                board_fow[i + x][j + y] -= 1;
+                                board_fow[x + i][y + j] -= 1;
                             }
                         }
                     }
@@ -212,11 +243,9 @@ function allBoardFogOfWar() {
             }
         }
     }
-
-    // for all the horizontal walls
-    for (let i = 0; i < BOARD_HEIGHT - 1; i++) {
-        for (let j = 0; j < BOARD_WIDTH - 1; j++) {
-            let wall = document.getElementById(`h-wall-${i}-${j}`);
+    for (let x = 1; x <= BOARD_WIDTH; x++) {
+        for (let y = BOARD_HEIGHT; y > 1; y--) {
+            let wall = document.getElementById(`h-wall-${x}-${y}`);
             if (wall.player != null) {
                 // immediate neighbors
                 for (let a of [
@@ -229,14 +258,14 @@ function allBoardFogOfWar() {
                     [-1, 0],
                     [2, 0],
                 ]) {
-                    let x = a[0];
-                    let y = a[1];
-                    if (i + x >= 0 && i + x < BOARD_HEIGHT) {
-                        if (j + y >= 0 && j + y < BOARD_WIDTH) {
+                    let i = a[0];
+                    let j = a[1];
+                    if (x + i >= 0 && x + i < BOARD_HEIGHT) {
+                        if (y + j >= 0 && y + j < BOARD_WIDTH) {
                             if (wall.player == 1) {
-                                board_fow[i + x][j + y] += 1;
+                                board_fow[x + i][y + j] += 1;
                             } else {
-                                board_fow[i + x][j + y] -= 1;
+                                board_fow[x + i][y + j] -= 1;
                             }
                         }
                     }
@@ -244,6 +273,159 @@ function allBoardFogOfWar() {
             }
         }
     }
+
+    // keep for trace
+    // for (let i = 0; i < BOARD_HEIGHT - 1; i++) {
+    //     for (let j = 0; j < BOARD_WIDTH - 1; j++) {
+    //         let wall = document.getElementById(`v-wall-${i + 1}-${j + 1}`);
+    //         if (wall.player != null) {
+    //             // immediate neighbors
+    //             for (let a of [
+    //                 [0, 0],
+    //                 [0, 1],
+    //                 [1, 0],
+    //                 [1, 1],
+    //                 [-1, 0],
+    //                 [-1, 1],
+    //                 [0, -1],
+    //                 [0, 2],
+    //             ]) {
+    //                 let x = a[0];
+    //                 let y = a[1];
+    //    for (let j = 0; j < BOARD_WIDTH - 1; j++) {
+    //        let wall = document.getElementById(`v-wall-${i + 1}-${j + 1}`);
+    //        if (wall.player != null) {
+    //            // immediate neighbors
+    //            for (let a of [
+    //                [0, 0],
+    //                [0, 1],
+    //                [1, 0],
+    //                [1, 1],
+    //                [-1, 0],
+    //                [-1, 1],
+    //                [0, -1],
+    //                [0, 2],
+    //            ]) {
+    //                let x = a[0];
+    //                let y = a[1];
+    //                if (i + x >= 0 && i + x < BOARD_HEIGHT) {
+    //                    if (j + y >= 0 && j + y < BOARD_WIDTH) {
+    //                        if (wall.player == 1) {
+    //                            board_fow[i + x][j + y] += 1;
+    //                        } else {
+    //                            board_fow[i + x][j + y] -= 1;
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //                 if (i + x >= 0 && i + x < BOARD_HEIGHT) {
+    //                     if (j + y >= 0 && j + y < BOARD_WIDTH) {
+    //                         if (wall.player == 1) {
+    //                             board_fow[i + x][j + y] += 1;
+    //                         } else {
+    //                             board_fow[i + x][j + y] -= 1;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    //    for (let j = 0; j < BOARD_WIDTH - 1; j++) {
+    //        let wall = document.getElementById(`v-wall-${i + 1}-${j + 1}`);
+    //        if (wall.player != null) {
+    //            // immediate neighbors
+    //            for (let a of [
+    //                [0, 0],
+    //                [0, 1],
+    //                [1, 0],
+    //                [1, 1],
+    //                [-1, 0],
+    //                [-1, 1],
+    //                [0, -1],
+    //                [0, 2],
+    //            ]) {
+    //                let x = a[0];
+    //                let y = a[1];
+    //                if (i + x >= 0 && i + x < BOARD_HEIGHT) {
+    //                    if (j + y >= 0 && j + y < BOARD_WIDTH) {
+    //                        if (wall.player == 1) {
+    //                            board_fow[i + x][j + y] += 1;
+    //                        } else {
+    //                            board_fow[i + x][j + y] -= 1;
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
+
+    // for all the horizontal walls
+    for (let y = BOARD_HEIGHT; y > 1; y--) {
+        for (let x = 1; x <= BOARD_WIDTH; x++) {
+            let wall = document.getElementById(`h-wall-${x}-${y}`);
+            if (wall.player != null) {
+                // immediate neighbors
+                for (let a of [
+                    [0, 0],
+                    [0, 1],
+                    [1, 0],
+                    [1, 1],
+                    [0, -1],
+                    [1, -1],
+                    [-1, 0],
+                    [2, 0],
+                ]) {
+                    let i = a[0];
+                    let j = a[1];
+                    if (x + i >= 0 && x + i < BOARD_HEIGHT) {
+                        if (y + j >= 0 && y + j < BOARD_WIDTH) {
+                            if (wall.player == 1) {
+                                board_fow[x + i][y + j] += 1;
+                            } else {
+                                board_fow[x + i][y + j] -= 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // keep for trace
+    // for (let i = 0; i < BOARD_HEIGHT - 1; i++) {
+    //     for (let j = 0; j < BOARD_WIDTH - 1; j++) {
+    //         let wall = document.getElementById(`h-wall-${i}-${j}`);
+    //         if (wall.player != null) {
+    //             // immediate neighbors
+    //             for (let a of [
+    //                 [0, 0],
+    //                 [0, 1],
+    //                 [1, 0],
+    //                 [1, 1],
+    //                 [0, -1],
+    //                 [1, -1],
+    //                 [-1, 0],
+    //                 [2, 0],
+    //             ]) {
+    //                 let x = a[0];
+    //                 let y = a[1];
+    //                 if (i + x >= 0 && i + x < BOARD_HEIGHT) {
+    //                     if (j + y >= 0 && j + y < BOARD_WIDTH) {
+    //                         if (wall.player == 1) {
+    //                             board_fow[i + x][j + y] += 1;
+    //                         } else {
+    //                             board_fow[i + x][j + y] -= 1;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     // updade the visibility
     for (let i = 0; i < BOARD_HEIGHT; i++) {
