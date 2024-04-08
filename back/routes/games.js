@@ -93,8 +93,11 @@ function setup(playerId, room_hash, meta) {
 
 function nextMove(playerId, room_hash, meta, gamestate) {
     rooms[room_hash].game_object = meta;
-    rooms[room_hash].io.to(rooms[room_hash].player1).emit('game:nextMove', gamestate);
-    rooms[room_hash].io.to(rooms[room_hash].player2).emit('game:nextMove', gamestate);
+    if (playerId === 1) {
+        rooms[room_hash].io.to(rooms[room_hash].player1).emit('game:nextMove', gamestate);
+    } else {
+        rooms[room_hash].io.to(rooms[room_hash].player2).emit('game:nextMove', gamestate);
+    }
 }
 
 function endGame(losingPlayer, room_hash, meta) {
