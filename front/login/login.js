@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
+    if (localStorage.getItem('token')) {
+        window.location.href = '../home/home.html';
+    }
     const loginForm = document.querySelector('.form-container .login-form');
 
     loginForm.addEventListener('submit', function (event) {

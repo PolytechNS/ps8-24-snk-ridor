@@ -64,12 +64,10 @@ class Chat extends HTMLElement {
         });
 
         this.socket.on('friend:friends', (friends) => {
-            console.log('Received friend list:', friends);
             this.displayFriendList(friends);
         });
 
         this.socket.on('friend:message_history', (messages) => {
-            console.log('Received message history:', messages);
             this.displayMessageHistory(messages);
         });
     }
@@ -81,23 +79,19 @@ class Chat extends HTMLElement {
     }
 
     toggleFriendList() {
-        console.log('Toggling friend list...');
         let friendList = this.shadowRoot.getElementById('friendList');
         let chatWindow = this.shadowRoot.getElementById('chatWindow');
 
         if (this.chatWindowVisible) {
-            console.log('Chat window is visible, hiding now...');
             chatWindow.style.display = 'none';
             this.chatWindowVisible = false;
             this.logElementStyles('chatWindow');
         }
 
         if (this.friendListVisible) {
-            console.log('Friend list is visible, hiding now...');
             friendList.style.display = 'none';
             this.friendListVisible = false;
         } else {
-            console.log('Friend list is hidden, showing now...');
             friendList.style.display = 'block';
             this.friendListVisible = true;
         }
@@ -106,7 +100,6 @@ class Chat extends HTMLElement {
 
     openChatWindow(friendName) {
         this.activeFriendEmail = friendName;
-        console.log(`Attempting to open chat window for: ${friendName}`);
         let chatWindow = this.shadowRoot.getElementById('chatWindow');
         let chatHeader = this.shadowRoot.getElementById('chatHeader');
         let friendList = this.shadowRoot.getElementById('friendList');
@@ -118,7 +111,6 @@ class Chat extends HTMLElement {
         friendList.style.display = 'none';
         this.friendListVisible = false;
 
-        console.log(`Chat window should now be visible for: ${friendName}`);
         this.logElementStyles('chatWindow');
 
         // Request message history when opening the chat window
@@ -126,7 +118,6 @@ class Chat extends HTMLElement {
     }
 
     closeChatWindow() {
-        console.log('Closing chat window...');
         let chatWindow = this.shadowRoot.getElementById('chatWindow');
         chatWindow.style.display = 'none';
         this.chatWindowVisible = false;
@@ -135,7 +126,6 @@ class Chat extends HTMLElement {
 
     handleKeyPress(event) {
         if (event.keyCode === 13) {
-            console.log('Enter key pressed, sending message...');
             this.sendMessage();
         }
     }
@@ -160,22 +150,17 @@ class Chat extends HTMLElement {
         messageElement.className = isSender ? 'sent' : 'received';
         chatMessages.appendChild(messageElement);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        console.log(`Message ${isSender ? 'sent' : 'received'}: ${message}`);
     }
 
     displayFriendList(friends) {
-        console.log('Displaying friend list...', friends);
         const friendListElement = this.shadowRoot.getElementById('friendList').querySelector('ul');
         friendListElement.innerHTML = '';
 
         friends.forEach((friend) => {
-            console.log('Adding friend to list:', friend);
             const listItem = document.createElement('li');
             const displayEmail = friend.email;
             listItem.textContent = displayEmail;
             listItem.addEventListener('click', () => {
-                console.log(`Friend list item clicked: ${displayEmail}`);
                 this.openChatWindow(displayEmail);
             });
             friendListElement.appendChild(listItem);
@@ -192,12 +177,10 @@ class Chat extends HTMLElement {
     }
 
     fetchFriendList() {
-        console.log('Fetching friend list...');
         this.socket.emit('friend:list');
     }
 
     connectedCallback() {
-        console.log('Chat component added to the DOM, initializing...');
         this.fetchFriendList();
         this.shadowRoot.querySelector('.chat-icon').addEventListener('click', () => this.toggleFriendList());
         this.shadowRoot.querySelector('.close-button').addEventListener('click', () => this.closeChatWindow());
