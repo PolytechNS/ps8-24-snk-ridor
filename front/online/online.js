@@ -110,11 +110,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Handle the 'room:joined' event to redirect to the game page
-    socket.on('room:joined', ({ roomId, joiner }) => {
-        console.log('Received room:joined event with room ID:', roomId, 'and joiner:', joiner);
-        if (joiner === userEmail) {
-            // Redirect to the game page with the room ID as a query parameter
-            window.location.href = `../game/game.html?roomId=${roomId}`;
+    socket.on('room:joined', ({ room }) => {
+        console.log('Received room:joined event with room:', room);
+        if (room.joiner === userEmail || room.creator === userEmail) {
+            // Store the room information in localStorage
+            localStorage.setItem('currentRoom', JSON.stringify(room));
+            window.location.href = `../online-game/online-game.html`;
         }
     });
 

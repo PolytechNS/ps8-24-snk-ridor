@@ -1,3 +1,20 @@
+@font-face {
+    font-family: 'OptimusPrinceps';
+    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
+    background-size: cover;
+    color: #ffffff;
+}
+
 .game-infos {
     text-align: center;
 }
@@ -196,21 +213,43 @@
 
 /* profiles */
 
+css Copy code @font-face {
+    font-family: 'OptimusPrinceps';
+    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
+    background-size: cover;
+    color: #ffffff;
+}
+
+/* Rest of the CSS code remains the same */
+
+/* profiles */
+
 .profile {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: brown;
-    color: white;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000;
     box-sizing: border-box;
     padding: 10px;
     border-radius: 15px;
-    width: 15vw;
+    width: 200px;
+    margin-bottom: 20px;
 }
 
 .avatar {
-    width: 10vw;
-    height: 10vw;
+    width: 100px;
+    height: 100px;
     background-color: black;
     border-radius: 50%;
     margin-bottom: 1vh;
@@ -232,7 +271,6 @@
     text-align: left;
     width: 90%;
 }
-
 .profile_adversaire .identity {
     display: flex;
     flex-direction: row;
@@ -243,8 +281,8 @@
 
 .profile_adversaire .avatar {
     margin-bottom: 0;
-    width: 10vw;
-    height: 10vw;
+    width: 100px;
+    height: 100px;
 }
 
 /* board pawn */
@@ -310,25 +348,35 @@
 }
 
 .final_message button {
-    background-color: #3a1f0f;
+    background-color: #ff5722;
     color: white;
     border: none;
     outline: none;
     font-size: 1.2em;
     font-weight: bold;
-    padding: 5px;
+    padding: 12px 24px;
     box-sizing: border-box;
     border-radius: 5px;
-    width: 100%;
+    width: auto;
     max-width: 400px;
-    margin: 5px auto 0 auto;
-    height: 10%;
+    margin: 20px auto 0 auto;
+    height: auto;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .final_message button:hover {
-    background-color: #301505;
+    background-color: #f4511e;
 }
 
+.final_message button:active {
+    background-color: #d84315;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
+}
 .final_message p {
     margin: 0;
     padding: 0;
