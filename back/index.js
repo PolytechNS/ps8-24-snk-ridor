@@ -9,7 +9,7 @@ const front = require('./routes/front/front.js');
 const roomChat = require('./routes/room_chat');
 const friendChat = require('./routes/friend_chat');
 const games = require('./routes/games');
-
+const room = require('./routes/room');
 const PORT = process.env.PORT || 8000;
 
 const server = http.createServer(function (request, response) {
@@ -48,6 +48,7 @@ io.on('connection', (socket) => {
     roomChat.registerHandlers(io, socket);
     friendChat.registerHandlers(io, socket);
     games.registerHandlers(io, socket);
+    room.registerRoomHandlers(io, socket);
 });
 
 io.on('disconnect', () => {

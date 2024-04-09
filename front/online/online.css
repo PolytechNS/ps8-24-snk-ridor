@@ -1,0 +1,178 @@
+@font-face {
+    font-family: 'OptimusPrinceps';
+    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
+    background-size: cover;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.rooms-list {
+    width: 60%;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 20px;
+}
+
+.rooms-list h2 {
+    font-size: 2em;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.rooms-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.rooms-list li {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+.rooms-list li:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.create-room {
+    width: 35%;
+    position: sticky;
+    top: 20px;
+}
+
+.create-room h2 {
+    font-size: 2em;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+#create-room-button {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ff5722;
+    box-shadow: 0 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 2px;
+    border-radius: 4px;
+}
+
+#create-room-button:hover {
+    background-color: #f4511e;
+}
+
+#create-room-button:active {
+    box-shadow: 0 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(4px);
+}
+
+header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 20px;
+}
+
+.top-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.top-button {
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    color: #ffffff;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ff5722;
+    box-shadow: 0 3px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+}
+
+.top-button:hover {
+    background-color: #f4511e;
+}
+
+.top-button:active {
+    box-shadow: 0 1px rgba(0, 0, 0, 0.3);
+    transform: translateY(2px);
+}
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    background-image: url('../resources/ui/back.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.join-button,
+.delete-button {
+    padding: 5px 10px;
+    margin-left: 10px;
+    border: none;
+    color: #ffffff;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+}
+
+.join-button {
+    background-color: #4caf50;
+}
+
+.join-button:hover {
+    background-color: #45a049;
+}
+
+.delete-button {
+    background-color: #f44336;
+}
+
+.delete-button:hover {
+    background-color: #d32f2f;
+}

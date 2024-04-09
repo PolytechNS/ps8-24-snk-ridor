@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Title</title>
+        <link rel="stylesheet" href="online.css" />
+        <script src="online.js" type="module"></script>
+        <link rel="stylesheet" href="../chat/chat.css" />
+        <script src="../chat/chat.js" type="module" defer></script>
+    </head>
+    <body>
+        <header>
+            <div class="top-buttons">
+                <a class="top-button" id="profile-button" href="../profile/profile.html">Profile</a>
+                <a class="top-button" id="logout-button">Logout</a>
+            </div>
+        </header>
+        <div class="back-button" id="back-button"></div>
+        <div class="container">
+            <div class="rooms-list">
+                <h2>Rooms</h2>
+                <ul id="room-list"></ul>
+            </div>
+            <div class="create-room">
+                <h2>Create Room</h2>
+                <button id="create-room-button">Create Room</button>
+            </div>
+        </div>
+        <chat-global></chat-global>
+    </body>
+</html>
