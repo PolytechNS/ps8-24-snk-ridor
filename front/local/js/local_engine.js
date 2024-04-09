@@ -103,7 +103,10 @@ export function getCorridorPossiblePosition(column, line) {
                 cells.push([column, line - 1]);
             } else {
                 if (line > 2 && !document.getElementById('h-wall-' + column + '-' + (line - 2)).classList.contains('placed')) {
-                    cells.push([column, line - 2]);
+                    if (document.getElementById('cell-' + column + '-' + (line - 1)).children[0].className != 'position_overview') {
+                        // if the cell is not overviewed
+                        cells.push([column, line - 2]);
+                    }
                 }
             }
         }
@@ -114,7 +117,10 @@ export function getCorridorPossiblePosition(column, line) {
                 cells.push([column, line + 1]);
             } else {
                 if (line < LINES - 1 && !document.getElementById('h-wall-' + column + '-' + (line + 1)).classList.contains('placed')) {
-                    cells.push([column, line + 2]);
+                    if (document.getElementById('cell-' + column + '-' + (line + 1)).children[0].className != 'position_overview') {
+                        // if the cell is not overviewed
+                        cells.push([column, line + 2]);
+                    }
                 }
             }
         }
@@ -125,7 +131,10 @@ export function getCorridorPossiblePosition(column, line) {
                 cells.push([column - 1, line]);
             } else {
                 if (column > 2 && !document.getElementById('v-wall-' + (column - 2) + '-' + line).classList.contains('placed')) {
-                    cells.push([column - 2, line]);
+                    if (document.getElementById('cell-' + (column - 1) + '-' + line).children[0].className != 'position_overview') {
+                        // if the cell is not overviewed
+                        cells.push([column - 2, line]);
+                    }
                 }
             }
         }
@@ -136,7 +145,10 @@ export function getCorridorPossiblePosition(column, line) {
                 cells.push([column + 1, line]);
             } else {
                 if (column < COLUMNS - 1 && !document.getElementById('v-wall-' + column + '-' + line).classList.contains('placed')) {
-                    cells.push([column + 2, line]);
+                    if (document.getElementById('cell-' + (column + 1) + '-' + line).children[0].className != 'position_overview') {
+                        // if the cell is not overviewed
+                        cells.push([column + 2, line]);
+                    }
                 }
             }
         }
