@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     if (localStorage.getItem('token')) {
-        window.location.href = '../home/home.html';
+        window.location.href = 'home';
     }
     const loginForm = document.querySelector('.form-container .login-form');
 
@@ -44,6 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const signupButton = document.getElementById('signup-login');
     signupButton.addEventListener('click', function () {
-        window.location.href = '/signup/signup.html';
+        window.location.href = 'signup';
     });
 });

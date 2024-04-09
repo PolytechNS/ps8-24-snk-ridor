@@ -1,13 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', () => {
-        window.location.href = '../home/home.html';
+        window.location.href = 'home';
     });
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
     const email = localStorage.getItem('email');
 
     if (!token || !username || !email) {
-        window.location.href = '/login/login.html';
+        window.location.href = 'login';
         return;
     }
 
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function addEventListeners() {
         const addFriendBtn = document.getElementById('add-friend-btn');
         addFriendBtn.addEventListener('click', function () {
-            window.location.href = '/friend/friend.html';
+            window.location.href = 'friend';
         });
     }
 

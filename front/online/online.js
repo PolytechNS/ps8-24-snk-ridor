@@ -2,7 +2,7 @@ import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', () => {
-        window.location.href = '../home/home.html';
+        window.location.href = 'home';
     });
     const socket = io();
 
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
     logoutButton.addEventListener('click', () => {
         // Clear the stored email and redirect to the login page
         localStorage.removeItem('email');
-        window.location.href = '../login/login.html';
+        window.location.href = 'login';
     });
 
     // Function to join a room
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (room.joiner === userEmail || room.creator === userEmail) {
             // Store the room information in localStorage
             localStorage.setItem('currentRoom', JSON.stringify(room));
-            window.location.href = `../online-game/online-game.html`;
+            window.location.href = `online-game.html`;
         }
     });
 
