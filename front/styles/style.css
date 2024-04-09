@@ -444,3 +444,7 @@ body {
     z-index: 99;
     display: none;
 }
+
+.txt-white {
+    color: white;
+}
