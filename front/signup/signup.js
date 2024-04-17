@@ -1,6 +1,8 @@
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, AUTH_API, LOGIN_URL, REGISTER_API } from '../util/path.js';
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', () => {
-        window.location.href = '../login/login.html';
+        window.location.replace(BASE_URL_PAGE + LOGIN_URL);
     });
     const signupForm = document.querySelector('.form-container .login-form');
 
@@ -20,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const userData = { email, username, password };
 
-        fetch('http://localhost:8000/api/auth/register', {
+        fetch(BASE_URL_API + API_URL + AUTH_API + REGISTER_API, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -36,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then((data) => {
                 console.log('Signup successful with data:', data);
-                window.location.href = '/login/login.html';
+                window.location.replace(BASE_URL_PAGE + LOGIN_URL);
             })
             .catch((error) => {
                 console.error('Error during signup:', error);

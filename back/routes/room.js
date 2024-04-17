@@ -40,7 +40,8 @@ function registerRoomHandlers(io, socket) {
 
         if (result.modifiedCount === 1) {
             logger.info(`${joiner} joined room ${roomId}`);
-            io.emit('room:joined', { roomId, joiner });
+            const room = await Room.get(roomId);
+            io.emit('room:joined', { room });
             io.emit('room:list', await Room.getAvailableRooms());
         } else {
             socket.emit('error', 'Failed to join room');

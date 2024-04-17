@@ -1,23 +1,6 @@
 <!doctype html>
-<html lang="fr">
+<html>
     <head>
-        <meta charset="UTF-8" />
-        <title>SNK'ridor</title>
-        <link rel="stylesheet" href="styles/style.css" />
-        <link rel="stylesheet" href="styles/layout.css" />
-        <link rel="stylesheet" href="styles/fogwar.css" />
-        <script type="module" src="js/display.js"></script>
-        <script type="module" src="js/chat/broadcast.js"></script>
-        <script>
-            // Check localStorage for token and redirect accordingly
-            document.addEventListener('DOMContentLoaded', function () {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    window.location.href = '/home';
-                } else {
-                    window.location.href = '/login';
-                }
-            });
-        </script>
+        <meta content="0; url=/login/index.html" http-equiv="refresh" />
     </head>
 </html>

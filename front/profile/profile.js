@@ -1,15 +1,12 @@
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, FRIEND_API, FRIEND_URL } from '../util/path.js';
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', () => {
-        window.location.href = 'home';
+        window.location.replace(BASE_URL_PAGE + HOME_URL);
     });
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
     const email = localStorage.getItem('email');
-
-    if (!token || !username || !email) {
-        window.location.href = 'login';
-        return;
-    }
 
     updateProfileInfo(username, email);
     fetchFriendList(token, email);
@@ -21,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fetchFriendList(token, email) {
-        fetch('http://localhost:8000/api/friend/list', {
+        fetch(BASE_URL_API + API_URL + FRIEND_API + 'list', {
             headers: {
                 Authorization: `${token}`,
             },
@@ -88,12 +85,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function addEventListeners() {
         const addFriendBtn = document.getElementById('add-friend-btn');
         addFriendBtn.addEventListener('click', function () {
-            window.location.href = 'friend';
+            window.location.replace(BASE_URL_PAGE + FRIEND_URL);
         });
     }
 
     function acceptFriendRequest(friend_email) {
-        fetch('http://localhost:8000/api/friend/accept', {
+        fetch(BASE_URL_API + API_URL + FRIEND_API + 'accept', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -115,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function removeFriend(friend_email) {
-        fetch('http://localhost:8000/api/friend/remove', {
+        fetch(BASE_URL_API + API_URL + FRIEND_API + 'remove', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

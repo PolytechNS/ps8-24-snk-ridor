@@ -1,8 +1,9 @@
 import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
+import { BASE_URL_PAGE, HOME_URL, LOGIN_URL, ONLINE_GAME_URL } from '../util/path.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', () => {
-        window.location.href = 'home';
+        window.location.replace(BASE_URL_PAGE + HOME_URL);
     });
     const socket = io();
 
@@ -94,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
     logoutButton.addEventListener('click', () => {
         // Clear the stored email and redirect to the login page
         localStorage.removeItem('email');
-        window.location.href = 'login';
+        window.location.replace(BASE_URL_PAGE + LOGIN_URL);
     });
 
     // Function to join a room
@@ -115,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (room.joiner === userEmail || room.creator === userEmail) {
             // Store the room information in localStorage
             localStorage.setItem('currentRoom', JSON.stringify(room));
-            window.location.href = `online-game.html`;
+            window.location.replace(BASE_URL_PAGE + ONLINE_GAME_URL);
         }
     });
 
