@@ -1,6 +1,8 @@
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, FRIEND_API, PROFILE_URL } from '../util/path.js';
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', function () {
-        window.location.href = '../profile/profile.html';
+        window.location.replace(BASE_URL_PAGE + PROFILE_URL);
     });
 
     const searchBtn = document.getElementById('search-btn');
@@ -13,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let allUsers = [];
 
     function fetchUserList() {
-        fetch('http://localhost:8000/api/friend/find', {
+        fetch(BASE_URL_API + API_URL + FRIEND_API + 'find', {
             headers: {
                 Authorization: `${token}`,
             },
@@ -58,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
     userList.addEventListener('click', function (event) {
         if (event.target.classList.contains('add-friend')) {
             const email = event.target.dataset.email;
-            fetch('http://localhost:8000/api/friend/add', {
+            fetch(BASE_URL_API + API_URL + FRIEND_API + 'add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

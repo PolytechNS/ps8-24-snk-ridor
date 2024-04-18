@@ -1,7 +1,6 @@
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, AUTH_API, LOGIN_API, SIGNUP_URL } from 'util/path.js';
+
 document.addEventListener('DOMContentLoaded', function () {
-    if (localStorage.getItem('token')) {
-        window.location.href = '../home/home.html';
-    }
     const loginForm = document.querySelector('.form-container .login-form');
 
     loginForm.addEventListener('submit', function (event) {
@@ -12,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const loginData = { email, password };
 
-        fetch('http://localhost:8000/api/auth/login', {
+        fetch(BASE_URL_API + API_URL + AUTH_API + LOGIN_API, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -28,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     localStorage.setItem('token', body.token);
                     localStorage.setItem('username', body.username);
                     localStorage.setItem('email', body.email);
-                    window.location.href = '/home/home.html';
+                    window.location.replace(BASE_URL_PAGE + HOME_URL);
                 } else {
                     // Login failed
                     console.log(`Login failed with status: ${status}`, body);
@@ -44,6 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const signupButton = document.getElementById('signup-login');
     signupButton.addEventListener('click', function () {
-        window.location.href = '/signup/signup.html';
+        window.location.replace(BASE_URL_PAGE + SIGNUP_URL);
     });
 });

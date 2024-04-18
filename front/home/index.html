@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>SNK'ridor</title>
+        <link rel="stylesheet" href="/styles/style.css" />
+        <link rel="stylesheet" href="/home/home.css" />
+        <script src="/home/home.js" type="module"></script>
+        <link rel="stylesheet" href="/chat/chat.css" />
+        <script src="/chat/chat.js" type="module" defer></script>
+        <script src="/util/guard.js" type="module"></script>
+        <link rel="stylesheet" href="/chat/chat.css" />
+        <script src="/chat/chat.js" type="module" defer></script>
+    </head>
+    <body>
+        <header>
+            <div class="top-buttons">
+                <a class="top-button" id="profile-button" href="/profile">Profile</a>
+                <a class="top-button" id="logout-button">Logout</a>
+            </div>
+        </header>
+        <main>
+            <a href="./" class="logo-link">
+                <img src="/resources/ui/logo.png" alt="SNK'ridor Logo" class="logo" />
+            </a>
+            <div class="play-buttons">
+                <a class="play_button" id="online-play_button" href="/online">Jouer</a>
+                <a class="play_button" id="vs-bot-play_button" onclick="alert('la fonctionnalité arrive bientôt')">Jouer contre l'IA</a>
+                <a class="play_button" id="local-play_button" href="/local">Multijoueur local</a>
+            </div>
+        </main>
+        <chat-global></chat-global>
+    </body>
+</html>
