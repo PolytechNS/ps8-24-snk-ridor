@@ -53,7 +53,7 @@ function registerHandlers(io, socket) {
     });
 
     socket.on('game:list', () => {
-        logger.info('Socket request: game:rooms');
+        logger.info('Socket request: game:list');
         logger.info('Socket response: game:rooms');
         io.emit('game:rooms', getRoomsInfo());
     });
