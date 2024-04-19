@@ -110,6 +110,10 @@ document.addEventListener('DOMContentLoaded', function () {
         socket.emit('game:join', roomId);
         // remember socket id
         localStorage.setItem('socket_id', socket.id);
-        document.location.href = BASE_URL_PAGE + ONLINE_GAME_URL;
     }
+
+    socket.on('game:start', () => {
+        console.log('Received game:start event');
+        document.location.href = BASE_URL_PAGE + ONLINE_GAME_URL;
+    });
 });
