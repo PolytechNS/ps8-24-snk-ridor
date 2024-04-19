@@ -89,18 +89,12 @@ function registerHandlers(io, socket) {
 }
 
 function getRoomsInfo() {
-    for (let room in games) {
-        logger.trace(`Room ${room} has players ${games[room].player1} and ${games[room].player2}`);
-    }
     const roomsInfo = {};
     for (let room in games) {
         roomsInfo[room] = {
             player1: games[room].player1,
             player2: games[room].player2,
         };
-    }
-    for (let room in roomsInfo) {
-        logger.trace(`Room ${room} has players ${roomsInfo[room].player1} and ${roomsInfo[room].player2}`);
     }
     return roomsInfo;
 }
@@ -111,8 +105,10 @@ function setup(playerId, room_hash, meta) {
     games[room_hash].game_object = meta;
     logger.trace(`Setting up game in room ${room_hash}, player ${playerId}`);
     if (playerId === 1) {
+        logger.info(`Socket response: game:setup`);
         games[room_hash].io.to(games[room_hash].player1).emit('game:setup', 1);
     } else {
+        logger.info(`Socket response: game:setup`);
         games[room_hash].io.to(games[room_hash].player2).emit('game:setup', 2);
     }
 }
@@ -120,15 +116,19 @@ function setup(playerId, room_hash, meta) {
 function nextMove(playerId, room_hash, meta, gamestate) {
     games[room_hash].game_object = meta;
     if (playerId === 1) {
+        logger.info(`Socket response: game:nextMove`);
         games[room_hash].io.to(games[room_hash].player1).emit('game:nextMove', gamestate);
     } else {
+        logger.info(`Socket response: game:nextMove`);
         games[room_hash].io.to(games[room_hash].player2).emit('game:nextMove', gamestate);
     }
 }
 
 function endGame(losingPlayer, room_hash, meta) {
     games[room_hash].game_object = meta;
+    logger.info(`Socket response: game:endGame`);
     games[room_hash].io.to(games[room_hash].player1).emit('game:endGame', losingPlayer);
+    logger.info(`Socket response: game:endGame`);
     games[room_hash].io.to(games[room_hash].player2).emit('game:endGame', losingPlayer);
 }
 
