@@ -60,6 +60,11 @@ function registerHandlers(io, socket) {
         logger.info('Socket request: game:ready');
         let room_hash = Object.keys(games).find((room) => games[room].player1 === socket.id || games[room].player2 === socket.id);
 
+        if (!room_hash) {
+            logger.warn(`Could not find room for socket ${socket.id}`);
+            return;
+        }
+
         // If the room is not full, log
         if (!games[room_hash].player1 || !games[room_hash].player2) {
             logger.warn(`Room ${room_hash} is not full`);
