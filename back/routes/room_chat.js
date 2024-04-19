@@ -79,7 +79,7 @@ function registerHandlers(io, socket) {
         // remove the socket from all rooms
         for (let room in rooms) {
             // check that the room exists and is an array
-            if (rooms[room] && Array.isArray(rooms[room])) {
+            if (rooms && rooms[room] && Array.isArray(rooms[room])) {
                 rooms[room] = rooms[room].filter((player) => player !== socket.id);
             } else {
                 delete rooms[room];
