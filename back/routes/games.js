@@ -49,7 +49,7 @@ function registerHandlers(io, socket) {
         io.emit('game:rooms', rooms);
     });
 
-    socket.on('game:rooms', () => {
+    socket.on('game:list', () => {
         logger.info('Socket request: game:rooms');
         logger.info('Socket response: game:rooms');
         io.emit('game:rooms', rooms);
