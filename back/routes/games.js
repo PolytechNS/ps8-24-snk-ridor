@@ -46,7 +46,7 @@ function registerHandlers(io, socket) {
 
         // if the room is full, start the game
         if (games[room_hash].player1 && games[room_hash].player2) {
-            logger.debug(`Starting game in room ${room}`);
+            logger.debug(`Starting game in room ${room_hash}`);
             startGame(room_hash, games[room_hash].game_object);
         }
 
