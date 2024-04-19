@@ -25,8 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Log when the connection is established
     socket.on('connect', () => {
         console.log('Socket.IO connection established');
-        // Emit the 'room:login' event with the user's email
-        socket.emit('game:login', userEmail);
 
         // Fetch the rooms of available games when the page loads
         console.log('Emitting game:list event');
