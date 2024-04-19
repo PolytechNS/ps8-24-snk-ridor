@@ -12,7 +12,7 @@ function playerLost(player, room_hash, meta) {
 }
 
 function displayState(meta) {
-    meta.gameStates = meta.gameStates || [];
+    meta['gameStates'] = meta['gameStates'] || [];
     let gameState = [];
     for (let i = 0; i < 17; i++) {
         gameState[i] = [];
@@ -26,16 +26,16 @@ function displayState(meta) {
     }
 
     try {
-        let p1x = 2 * (9 - meta.p1Pos[1]);
-        let p1y = 2 * (meta.p1Pos[0] - 1);
+        let p1x = 2 * (9 - meta['p1Pos'][1]);
+        let p1y = 2 * (meta['p1Pos'][0] - 1);
 
-        let p2x = 2 * (9 - meta.p2Pos[1]);
-        let p2y = 2 * (meta.p2Pos[0] - 1);
+        let p2x = 2 * (9 - meta['p2Pos'][1]);
+        let p2y = 2 * (meta['p2Pos'][0] - 1);
 
         gameState[p1x][p1y] = 'A';
         gameState[p2x][p2y] = 'B';
 
-        for (let wall of meta.walls[0].concat(meta.walls[1])) {
+        for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
             let [wc, wr] = wall[0].split('').map((e) => e * 1);
             let nwc = 2 * (wc - 1);
             let nwr = 2 * (9 - wr);
@@ -48,10 +48,10 @@ function displayState(meta) {
             }
         }
     } catch (error) {
-        meta.gameStates.push(gameState);
+        meta['gameStates'].push(gameState);
         return;
     }
-    meta.gameStates.push(gameState);
+    meta['gameStates'].push(gameState);
 }
 
 function getGameState(player, meta) {
@@ -70,31 +70,31 @@ function getGameState(player, meta) {
     // Increase visibility p1
 
     // current square
-    board[meta.p1Pos[0] - 1][meta.p1Pos[1] - 1]++;
+    board[meta['p1Pos'][0] - 1][meta['p1Pos'][1] - 1]++;
     // top square
-    if (meta.p1Pos[1] < 9) board[meta.p1Pos[0] - 1][meta.p1Pos[1]]++;
+    if (meta['p1Pos'][1] < 9) board[meta['p1Pos'][0] - 1][meta['p1Pos'][1]]++;
     // bottom square
-    if (meta.p1Pos[1] > 1) board[meta.p1Pos[0] - 1][meta.p1Pos[1] - 2]++;
+    if (meta['p1Pos'][1] > 1) board[meta['p1Pos'][0] - 1][meta['p1Pos'][1] - 2]++;
     // left square
-    if (meta.p1Pos[0] > 1) board[meta.p1Pos[0] - 2][meta.p1Pos[1] - 1]++;
+    if (meta['p1Pos'][0] > 1) board[meta['p1Pos'][0] - 2][meta['p1Pos'][1] - 1]++;
     // right square
-    if (meta.p1Pos[0] < 9) board[meta.p1Pos[0]][meta.p1Pos[1] - 1]++;
+    if (meta['p1Pos'][0] < 9) board[meta['p1Pos'][0]][meta['p1Pos'][1] - 1]++;
 
     // Increase visibility p2
 
     // current square
-    board[meta.p2Pos[0] - 1][meta.p2Pos[1] - 1]--;
+    board[meta['p2Pos'][0] - 1][meta['p2Pos'][1] - 1]--;
     // top square
-    if (meta.p2Pos[1] < 9) board[meta.p2Pos[0] - 1][meta.p2Pos[1]]--;
+    if (meta['p2Pos'][1] < 9) board[meta['p2Pos'][0] - 1][meta['p2Pos'][1]]--;
     // bottom square
-    if (meta.p2Pos[1] > 1) board[meta.p2Pos[0] - 1][meta.p2Pos[1] - 2]--;
+    if (meta['p2Pos'][1] > 1) board[meta['p2Pos'][0] - 1][meta['p2Pos'][1] - 2]--;
     // left square
-    if (meta.p2Pos[0] > 1) board[meta.p2Pos[0] - 2][meta.p2Pos[1] - 1]--;
+    if (meta['p2Pos'][0] > 1) board[meta['p2Pos'][0] - 2][meta['p2Pos'][1] - 1]--;
     // right square
-    if (meta.p2Pos[0] < 9) board[meta.p2Pos[0]][meta.p2Pos[1] - 1]--;
+    if (meta['p2Pos'][0] < 9) board[meta['p2Pos'][0]][meta['p2Pos'][1] - 1]--;
 
     // Increase visibility p1 walls
-    for (let wall of meta.walls[0]) {
+    for (let wall of meta['walls'][0]) {
         let [wc, wr] = wall[0].split('').map((e) => e * 1);
 
         // 2 visibility
@@ -137,7 +137,7 @@ function getGameState(player, meta) {
     }
 
     // Increase visibility p2 walls
-    for (let wall of meta.walls[1]) {
+    for (let wall of meta['walls'][1]) {
         let [wc, wr] = wall[0].split('').map((e) => e * 1);
 
         // 2 visibility
@@ -183,27 +183,27 @@ function getGameState(player, meta) {
         for (let j = 0; j < 9; j++) {
             let cellVisibility = board[i][j];
             // If the player is on the cell
-            if ((i === meta.p1Pos[0] - 1 && j === meta.p1Pos[1] - 1 && player === 1) || (i === meta.p2Pos[0] - 1 && j === meta.p2Pos[1] - 1 && player === 2)) board[i][j] = 1;
+            if ((i === meta['p1Pos'][0] - 1 && j === meta['p1Pos'][1] - 1 && player === 1) || (i === meta['p2Pos'][0] - 1 && j === meta['p2Pos'][1] - 1 && player === 2)) board[i][j] = 1;
             // If the opponent is on the cell and the player can see it.
             // If p1 is the opponent
             else if (
-                (i === meta.p1Pos[0] - 1 &&
-                    j === meta.p1Pos[1] - 1 &&
+                (i === meta['p1Pos'][0] - 1 &&
+                    j === meta['p1Pos'][1] - 1 &&
                     player === 2 &&
                     // Player will see its opponent if it's on a cell he can see
                     (cellVisibility <= 0 ||
                         // Or if it is 1 cell away.
-                        (meta.p1Pos[0] === meta.p2Pos[0] && Math.abs(meta.p2Pos[1] - meta.p1Pos[1]) === 1) ||
-                        (meta.p1Pos[1] === meta.p2Pos[1] && Math.abs(meta.p2Pos[0] - meta.p1Pos[0]) === 1))) ||
+                        (meta['p1Pos'][0] === meta['p2Pos'][0] && Math.abs(meta['p2Pos'][1] - meta['p1Pos'][1]) === 1) ||
+                        (meta['p1Pos'][1] === meta['p2Pos'][1] && Math.abs(meta['p2Pos'][0] - meta['p1Pos'][0]) === 1))) ||
                 // Same if p2 is the opponent
-                (i === meta.p2Pos[0] - 1 &&
-                    j === meta.p2Pos[1] - 1 &&
+                (i === meta['p2Pos'][0] - 1 &&
+                    j === meta['p2Pos'][1] - 1 &&
                     player === 1 &&
                     // Player will see its opponent if it's on a cell he can see
                     (cellVisibility >= 0 ||
                         // Or if it is 1 cell away
-                        (meta.p1Pos[0] === meta.p2Pos[0] && Math.abs(meta.p2Pos[1] - meta.p1Pos[1]) === 1) ||
-                        (meta.p1Pos[1] === meta.p2Pos[1] && Math.abs(meta.p2Pos[0] - meta.p1Pos[0]) === 1)))
+                        (meta['p1Pos'][0] === meta['p2Pos'][0] && Math.abs(meta['p2Pos'][1] - meta['p1Pos'][1]) === 1) ||
+                        (meta['p1Pos'][1] === meta['p2Pos'][1] && Math.abs(meta['p2Pos'][0] - meta['p1Pos'][0]) === 1)))
             )
                 board[i][j] = 2;
             // If the player can't see the cell
@@ -216,15 +216,15 @@ function getGameState(player, meta) {
     //console.log(displayBoard(board));
 
     return {
-        opponentWalls: meta.walls[Math.abs(player - 2)],
-        ownWalls: meta.walls[player - 1],
+        opponentWalls: meta['walls'][Math.abs(player - 2)],
+        ownWalls: meta['walls'][player - 1],
         board: board,
     };
 }
 
 function getRandomMove(player, meta) {
-    let [pc, pr] = player === 1 ? meta.p1Pos : meta.p2Pos;
-    let [oc, or] = player === 2 ? meta.p1Pos : meta.p2Pos;
+    let [pc, pr] = player === 1 ? meta['p1Pos'] : meta['p2Pos'];
+    let [oc, or] = player === 2 ? meta['p1Pos'] : meta['p2Pos'];
 
     let possibleMoves = {
         top1: [pc, pr + 1],
@@ -282,7 +282,7 @@ function getRandomMove(player, meta) {
     //console.log(Object.keys(possibleMoves));
 
     // Finally, check the walls
-    for (let wall of meta.walls[0].concat(meta.walls[1])) {
+    for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
         let [wc, wr] = wall[0].split('').map((e) => e * 1);
 
         // Top / bottom
@@ -352,8 +352,8 @@ function getRandomMove(player, meta) {
 function isMoveOK(player, newPos, meta) {
     //console.log("checking move : ", player, newPos);
 
-    let playerPos = player === 1 ? meta.p1Pos : meta.p2Pos;
-    let opponentPos = player === 2 ? meta.p1Pos : meta.p2Pos;
+    let playerPos = player === 1 ? meta['p1Pos'] : meta['p2Pos'];
+    let opponentPos = player === 2 ? meta['p1Pos'] : meta['p2Pos'];
 
     if (newPos[0] < 1 || newPos[0] > 9 || newPos[1] < 1 || newPos[1] > 9) return false;
     if (newPos[0] !== playerPos[0] && newPos[1] !== playerPos[1]) return false;
@@ -372,7 +372,7 @@ function isMoveOK(player, newPos, meta) {
 
     // Moving top one cell.
     if (newPos[0] === playerPos[0] && newPos[1] === playerPos[1] + 1) {
-        for (let wall of meta.walls[0].concat(meta.walls[1])) {
+        for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
             if (wall[1] === 1) continue;
 
             let [wc, wr] = wall[0].split('').map((e) => e * 1);
@@ -386,7 +386,7 @@ function isMoveOK(player, newPos, meta) {
         // Possible only if opponent is one cell above.
         if (newPos[0] !== opponentPos[0] || newPos[1] !== opponentPos[1] + 1) return false;
 
-        for (let wall of meta.walls[0].concat(meta.walls[1])) {
+        for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
             if (wall[1] === 1) continue;
 
             let [wc, wr] = wall[0].split('').map((e) => e * 1);
@@ -399,7 +399,7 @@ function isMoveOK(player, newPos, meta) {
 
     // Moving bottom one cell.
     else if (newPos[0] === playerPos[0] && newPos[1] === playerPos[1] - 1) {
-        for (let wall of meta.walls[0].concat(meta.walls[1])) {
+        for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
             if (wall[1] === 1) continue;
 
             let [wc, wr] = wall[0].split('').map((e) => e * 1);
@@ -413,7 +413,7 @@ function isMoveOK(player, newPos, meta) {
         // Possible only if opponent is one cell below.
         if (newPos[0] !== opponentPos[0] || newPos[1] !== opponentPos[1] - 1) return false;
 
-        for (let wall of meta.walls[0].concat(meta.walls[1])) {
+        for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
             if (wall[1] === 1) continue;
 
             let [wc, wr] = wall[0].split('').map((e) => e * 1);
@@ -426,7 +426,7 @@ function isMoveOK(player, newPos, meta) {
 
     // Moving left one cell.
     else if (newPos[0] === playerPos[0] - 1 && newPos[1] === playerPos[1]) {
-        for (let wall of meta.walls[0].concat(meta.walls[1])) {
+        for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
             if (wall[1] === 0) continue;
 
             let [wc, wr] = wall[0].split('').map((e) => e * 1);
@@ -440,7 +440,7 @@ function isMoveOK(player, newPos, meta) {
         // Possible only if opponent is one cell on the left.
         if (newPos[0] !== opponentPos[0] - 1 || newPos[1] !== opponentPos[1]) return false;
 
-        for (let wall of meta.walls[0].concat(meta.walls[1])) {
+        for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
             if (wall[1] === 0) continue;
 
             let [wc, wr] = wall[0].split('').map((e) => e * 1);
@@ -453,7 +453,7 @@ function isMoveOK(player, newPos, meta) {
 
     // Moving right one cell.
     else if (newPos[0] === playerPos[0] + 1 && newPos[1] === playerPos[1]) {
-        for (let wall of meta.walls[0].concat(meta.walls[1])) {
+        for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
             if (wall[1] === 0) continue;
 
             let [wc, wr] = wall[0].split('').map((e) => e * 1);
@@ -467,7 +467,7 @@ function isMoveOK(player, newPos, meta) {
         // Possible only if opponent is one cell on the right.
         if (newPos[0] !== opponentPos[0] + 1 || newPos[1] !== opponentPos[1]) return false;
 
-        for (let wall of meta.walls[0].concat(meta.walls[1])) {
+        for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
             if (wall[1] === 0) continue;
 
             let [wc, wr] = wall[0].split('').map((e) => e * 1);
@@ -514,7 +514,7 @@ function isWallOK(newWall, meta) {
     if (nwc > 8 || nwc < 1 || nwr > 9 || nwr < 2) return false;
 
     // Check if there is a wall in the way
-    for (let wall of meta.walls[0].concat(meta.walls[1])) {
+    for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
         let [wc, wr] = wall[0].split('').map((e) => e * 1);
         // Cross
         //console.log(`1.1: ${wall} / ${newWall}`);
@@ -540,7 +540,7 @@ function isWallOK(newWall, meta) {
         }
     }
     //console.log(3);
-    for (let wall of meta.walls[0].concat(meta.walls[1]).concat([newWall])) {
+    for (let wall of meta['walls'][0].concat(meta['walls'][1]).concat([newWall])) {
         let [wc, wr] = wall[0].split('').map((e) => e * 1);
         if (wall[1]) {
             //console.log([wc, wr], [2 * (wc - 1) + 1, 2 * (wr - 1)]);
@@ -554,13 +554,13 @@ function isWallOK(newWall, meta) {
     //console.log(4);
     //console.log(displayBoard(board));
 
-    return isAWayOut(board, [2 * (meta.p1Pos[0] - 1), 2 * (meta.p1Pos[1] - 1)], 16, 1) && isAWayOut(board, [2 * (meta.p2Pos[0] - 1), 2 * (meta.p2Pos[1] - 1)], 0, 2);
+    return isAWayOut(board, [2 * (meta['p1Pos'][0] - 1), 2 * (meta['p1Pos'][1] - 1)], 16, 1) && isAWayOut(board, [2 * (meta['p2Pos'][0] - 1), 2 * (meta['p2Pos'][1] - 1)], 0, 2);
 }
 
 function gameOverStatus(meta) {
-    if (meta.p1Pos[1] === 9 && meta.p2Pos[1] === 1) return -1;
-    if (meta.p2Pos[1] === 1) return 1;
-    if (meta.p1Pos[1] === 9) return 2;
+    if (meta['p1Pos'][1] === 9 && meta['p2Pos'][1] === 1) return -1;
+    if (meta['p2Pos'][1] === 1) return 1;
+    if (meta['p1Pos'][1] === 9) return 2;
     return 0;
 }
 
@@ -586,15 +586,15 @@ function updateState(action, player, meta) {
             }
 
             if (!isMoveOK(player, newPos)) return false;
-            if (player === 1) meta.p1Pos = newPos;
-            else meta.p2Pos = newPos;
+            if (player === 1) meta['p1Pos'] = newPos;
+            else meta['p2Pos'] = newPos;
             break;
         case 'wall':
             let wall = action.value;
             logger.trace('... ... Checking wall position');
             if (!isWallOK(wall)) return false;
             logger.trace('... ... Wall OK');
-            meta.walls[player - 1].push(wall);
+            meta['walls'][player - 1].push(wall);
             break;
         case 'idle':
             let move = getRandomMove();
@@ -609,9 +609,9 @@ function updateState(action, player, meta) {
 function startGame(room_hash, meta) {
     logger.trace('Players loaded.');
     logger.trace(`Starting the game...`);
-    meta.keepPlaying = true;
-    meta.failMessage = '';
-    meta.gameStatus = 0;
+    meta['keepPlaying'] = true;
+    meta['failMessage'] = '';
+    meta['gameStatus'] = 0;
 
     // p1 setup;
     logger.trace('Calling Player 1 setup...');
@@ -622,16 +622,16 @@ function startGame(room_hash, meta) {
 function setup1(room_hash, data, meta) {
     logger.trace('... Analysing setup response...');
     try {
-        meta.p1Pos = data.data.split('').map((e) => e * 1);
+        meta['p1Pos'] = data.data.split('').map((e) => e * 1);
     } catch (e) {
         logger.trace(`... ... Bad content: ${data.data}`);
         playerLost(1, room_hash, meta);
 
-        meta.keepPlaying = false;
+        meta['keepPlaying'] = false;
     }
     logger.trace(`... ... Content received: ${data.data}`);
 
-    if (meta.keepPlaying) {
+    if (meta['keepPlaying']) {
         logger.trace('Calling Player 2 setup...');
         const { setup } = require('../routes/games');
         setup(2, room_hash, meta);
@@ -642,20 +642,20 @@ function setup2(room_hash, data, meta) {
     logger.trace('... Analysing setup response...');
     logger.trace(`... ... Response time OK`);
     try {
-        meta.p2Pos = data.data.split('').map((e) => e * 1);
+        meta['p2Pos'] = data.data.split('').map((e) => e * 1);
     } catch (e) {
         logger.trace(`... ... Bad content: ${data.data}`);
         playerLost(2, room_hash, meta);
-        meta.keepPlaying = false;
+        meta['keepPlaying'] = false;
     }
     logger.trace(`... ... Content received: ${data.data}`);
 
-    meta.nbIter = 1;
+    meta['nbIter'] = 1;
     const { nextMove } = require('../routes/games');
     nextMove(1, room_hash, meta);
     logger.trace('');
     logger.trace('####################');
-    logger.trace(`Player 1 turn ${meta.nbIter}.`);
+    logger.trace(`Player 1 turn ${meta['nbIter']}.`);
     logger.trace('####################\n');
     logger.trace(`Calling nextMove...`);
 }
@@ -673,13 +673,13 @@ function nextMove1(room_hash, data, meta) {
         logger.trace(`... ... Content received: ${JSON.stringify(data.data)}`);
     }
 
-    if (meta.keepPlaying) {
+    if (meta['keepPlaying']) {
         displayState();
 
         //p2 move
         logger.trace('');
         logger.trace('####################');
-        logger.trace(`Player 2 turn ${meta.nbIter}.`);
+        logger.trace(`Player 2 turn ${meta['nbIter']}.`);
         logger.trace('####################\n');
         logger.trace(`Calling nextMove...`);
         const { nextMove } = require('../routes/games');
@@ -700,26 +700,26 @@ function nextMove2(room_hash, data, meta) {
         logger.trace(`... ... Content received: ${JSON.stringify(data.data)}`);
     }
 
-    meta.gameStatus = gameOverStatus();
-    if (meta.gameStatus) {
-        playerLost(meta.gameStatus, room_hash, meta);
-        meta.keepPlaying = false;
+    meta['gameStatus'] = gameOverStatus();
+    if (meta['gameStatus']) {
+        playerLost(meta['gameStatus'], room_hash, meta);
+        meta['keepPlaying'] = false;
         return;
     }
 
-    if (meta.keepPlaying) {
+    if (meta['keepPlaying']) {
         displayState();
 
         logger.trace('');
         logger.trace('####################');
-        logger.trace(`Player 1 turn ${meta.nbIter}.`);
+        logger.trace(`Player 1 turn ${meta['nbIter']}.`);
         logger.trace('####################\n');
         logger.trace(`Calling nextMove...`);
         const { nextMove } = require('../routes/games');
         nextMove(1, room_hash, meta, getGameState(1, meta));
     }
 
-    if (meta.nbIter === 100) playerLost(-1, room_hash, meta);
+    if (meta['nbIter'] === 100) playerLost(-1, room_hash, meta);
 }
 
 module.exports = { startGame, setup1, setup2, nextMove1, nextMove2 };
