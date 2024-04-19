@@ -47,6 +47,11 @@ function registerHandlers(io, socket) {
             return;
         }
 
+        if (!rooms[room]) {
+            logger.warn(`Could not find room ${room}`);
+            return;
+        }
+
         // remove the socket from the room
         rooms[room] = rooms[room].filter((player) => player !== socket.id);
         purgeEmptyRooms();
