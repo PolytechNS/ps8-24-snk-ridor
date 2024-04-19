@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function createRoom() {
         // generate a random room name and join it
         const room = Math.random().toString(36).substring(7);
+        console.log('Emitting game:join event with user email:', room);
         socket.emit('game:join', room);
     }
 
@@ -96,11 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Handle the create room button click event
-    createRoomButton.addEventListener('click', () => {
-        let room_hash = createRoom();
-        console.log('Emitting game:join event with user email:', room_hash);
-        socket.emit('game:join', room_hash);
-    });
+    createRoomButton.addEventListener('click', createRoom);
 
     // Handle the logout button click event
     logoutButton.addEventListener('click', () => {
