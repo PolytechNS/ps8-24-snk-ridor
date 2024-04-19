@@ -19,7 +19,7 @@ function registerHandlers(io, socket) {
         }
 
         games[room_hash] = games[room_hash] || {
-            game_object: null,
+            game_object: {},
             player1: null,
             player2: null,
             io: io,
