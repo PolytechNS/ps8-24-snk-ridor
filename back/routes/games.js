@@ -21,7 +21,9 @@ function registerHandlers(io, socket) {
         games[room_hash] = games[room_hash] || {
             game_object: {},
             player1: null,
+            player1ready: false,
             player2: null,
+            player2ready: false,
             io: io,
         };
 
@@ -44,16 +46,7 @@ function registerHandlers(io, socket) {
             games[room_hash].player2 = socket.id;
         }
 
-        // if the room is full, start the game
-        if (games[room_hash].player1 && games[room_hash].player2) {
-            logger.debug(`Starting game in room ${room_hash}`);
-            startGame(room_hash, games[room_hash].game_object);
-        }
-
         logger.info('Socket response: game:rooms');
-        for (let room in games) {
-            logger.info(`Room ${room} has players ${games[room].player1} and ${games[room].player2}`);
-        }
         io.emit('game:rooms', getRoomsInfo());
     });
 
@@ -61,6 +54,39 @@ function registerHandlers(io, socket) {
         logger.info('Socket request: game:list');
         logger.info('Socket response: game:rooms');
         io.emit('game:rooms', getRoomsInfo());
+    });
+
+    socket.on('game:ready', () => {
+        logger.info('Socket request: game:ready');
+        let room_hash = Object.keys(games).find((room) => games[room].player1 === socket.id || games[room].player2 === socket.id);
+
+        // If the room is not full, log
+        if (!games[room_hash].player1 || !games[room_hash].player2) {
+            logger.warn(`Room ${room_hash} is not full`);
+            return;
+        }
+
+        if (games[room_hash].player1 === socket.id) {
+            if (games[room_hash].player1ready) {
+                logger.warn(`Player 1 is already ready in room ${room_hash}`);
+                return;
+            }
+            games[room_hash].player1ready = true;
+        }
+
+        if (games[room_hash].player2 === socket.id) {
+            if (games[room_hash].player2ready) {
+                logger.warn(`Player 2 is already ready in room ${room_hash}`);
+                return;
+            }
+            games[room_hash].player2ready = true;
+        }
+
+        // if both players are ready, start the game
+        if (games[room_hash].player1ready && games[room_hash].player2ready) {
+            logger.debug(`Starting game in room ${room_hash}`);
+            startGame(room_hash, games[room_hash].game_object);
+        }
     });
 
     socket.on('game:setupAnswer', (msg) => {
