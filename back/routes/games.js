@@ -89,12 +89,18 @@ function registerHandlers(io, socket) {
 }
 
 function getRoomsInfo() {
+    for (let room in rooms) {
+        logger.trace(`Room ${room} has players ${rooms[room].player1} and ${rooms[room].player2}`);
+    }
     const roomsInfo = {};
     for (let room in rooms) {
         roomsInfo[room] = {
             player1: rooms[room].player1,
             player2: rooms[room].player2,
         };
+    }
+    for (let room in roomsInfo) {
+        logger.trace(`Room ${room} has players ${roomsInfo[room].player1} and ${roomsInfo[room].player2}`);
     }
     return roomsInfo;
 }
