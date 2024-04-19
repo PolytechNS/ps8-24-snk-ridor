@@ -46,6 +46,14 @@ function registerHandlers(io, socket) {
             games[room_hash].player2 = socket.id;
         }
 
+        // if both players are present, send game:start to both
+        if (games[room_hash].player1 && games[room_hash].player2) {
+            logger.info(`Socket response: game:start`);
+            io.to(games[room_hash].player1).emit('game:start', 1);
+            logger.info(`Socket response: game:start`);
+            io.to(games[room_hash].player2).emit('game:start', 2);
+        }
+
         logger.info('Socket response: game:rooms');
         io.emit('game:rooms', getRoomsInfo());
     });
