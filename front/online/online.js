@@ -15,11 +15,21 @@ document.addEventListener('DOMContentLoaded', function () {
     const userEmail = localStorage.getItem('email');
     console.log('User email:', userEmail);
 
+    function createRoom() {
+        // generate a random room name and join it
+        const room = Math.random().toString(36).substring(7);
+        socket.emit('game:join', room);
+    }
+
     // Log when the connection is established
     socket.on('connect', () => {
         console.log('Socket.IO connection established');
         // Emit the 'room:login' event with the user's email
         socket.emit('game:login', userEmail);
+
+        // Fetch the rooms of available games when the page loads
+        console.log('Emitting game:list event');
+        socket.emit('game:list');
     });
 
     // Log any error that occurs
@@ -27,16 +37,30 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('Socket.IO connection error:', error);
     });
 
-    // Fetch the rooms of available games when the page loads
-    console.log('Emitting game:rooms event');
-    socket.emit('game:rooms');
-
     // Handle the 'game:rooms' event to display the list of available rooms
     socket.on('game:rooms', (rooms) => {
         console.log('Received game:rooms event with games:', rooms);
-        roomList.innerHTML = '';
+        gameList.innerHTML = '';
 
-        rooms.forEach((room) => {
+        for (const room in rooms) {
+            let room_hash = room;
+            let room_info = rooms[room];
+
+            const listItem = document.createElement('li');
+            listItem.textContent = `Game ${room_hash} - Creator: ${room_info.player1}`;
+
+            // Add join button for rooms not created by the current user
+            const joinButton = document.createElement('button');
+            joinButton.textContent = 'Join';
+            joinButton.classList.add('join-button');
+            joinButton.addEventListener('click', () => {
+                joinRoom(room_hash);
+            });
+            listItem.appendChild(joinButton);
+            gameList.appendChild(listItem);
+        }
+
+        /*rooms.forEach((room) => {
             const listItem = document.createElement('li');
             listItem.textContent = `Game ${room.id} - Creator: ${room.creator}`;
 
@@ -64,31 +88,18 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             gameList.appendChild(listItem);
-        });
+        });*/
 
         // Disable the create room button if the user has already created a room
-        createRoomButton.disabled = rooms.some((room) => room.creator === userEmail);
-    });
-
-    // Handle the 'room:created' event to add the newly created room to the list
-    socket.on('game:created', (game) => {
-        console.log('Received game:created event with game:', game);
-        const listItem = document.createElement('li');
-        listItem.textContent = `Game ${game.id} - Creator: ${game.creator}`;
-        console.log('List item text content:', listItem.textContent);
-        listItem.addEventListener('click', () => {
-            joinRoom(game.id);
-        });
-        gameList.appendChild(listItem);
-
-        // Disable the create room button after creating a room
-        createRoomButton.disabled = true;
+        // TODO: check for each room if player 1 or player 2.
+        //createRoomButton.disabled = rooms.some((room) => room.creator === userEmail);
     });
 
     // Handle the create room button click event
     createRoomButton.addEventListener('click', () => {
-        console.log('Emitting game:join event with user email:', userEmail);
-        socket.emit('game:join', userEmail);
+        let room_hash = createRoom();
+        console.log('Emitting game:join event with user email:', room_hash);
+        socket.emit('game:join', room_hash);
     });
 
     // Handle the logout button click event
@@ -101,39 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to join a room
     function joinRoom(roomId) {
         console.log('Emitting room:join event with room ID:', roomId);
-        socket.emit('game:join', { roomId, joiner: userEmail });
+        socket.emit('game:join', roomId);
     }
-
-    // Function to delete a room
-    function deleteRoom(roomId) {
-        console.log('Emitting room:delete event with room ID:', roomId);
-        socket.emit('game:delete', roomId);
-    }
-
-    // Handle the 'game:joined' event to redirect to the game page
-    socket.on('game:joined', ({ game }) => {
-        console.log('Received game:joined event with game:', game);
-        if (game.joiner === userEmail || game.creator === userEmail) {
-            // Store the game information in localStorage
-            localStorage.setItem('currentRoom', JSON.stringify(game));
-            window.location.replace(BASE_URL_PAGE + ONLINE_GAME_URL);
-        }
-    });
-
-    // Handle the 'room:deleted' event to remove the deleted room from the list
-    socket.on('game:deleted', (roomId) => {
-        console.log('Received game:deleted event with room ID:', roomId);
-        const deletedRoom = document.querySelector(`li[data-room-id="${roomId}"]`);
-        if (deletedRoom) {
-            deletedRoom.remove();
-        }
-        // Enable the create room button after deleting a room
-        createRoomButton.disabled = false;
-    });
-
-    // Handle the 'error' event to display an error message
-    socket.on('error', (message) => {
-        console.error('Received error event with message:', message);
-        alert(message);
-    });
 });
