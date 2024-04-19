@@ -74,6 +74,11 @@ function registerHandlers(io, socket) {
 
         let room_hash = Object.keys(games).find((room) => games[room].player1 === oldSocketId || games[room].player2 === oldSocketId);
 
+        if (!room_hash) {
+            logger.warn(`Could not find room for socket ${socket.id}`);
+            return;
+        }
+
         if (games[room_hash].player1 === oldSocketId) {
             games[room_hash].player1 = socket.id;
         }
