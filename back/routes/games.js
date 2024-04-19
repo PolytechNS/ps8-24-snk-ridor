@@ -13,6 +13,11 @@ function registerHandlers(io, socket) {
     socket.on('game:join', (room_hash) => {
         logger.info('Socket request: game:join');
 
+        if (!room_hash) {
+            logger.error('Room hash is empty');
+            return;
+        }
+
         rooms[room_hash] = rooms[room_hash] || {
             game_object: null,
             player1: null,
