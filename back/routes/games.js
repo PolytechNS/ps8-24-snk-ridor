@@ -56,9 +56,23 @@ function registerHandlers(io, socket) {
         io.emit('game:rooms', getRoomsInfo());
     });
 
-    socket.on('game:ready', () => {
+    socket.on('game:ready', (oldSocketId) => {
         logger.info('Socket request: game:ready');
-        let room_hash = Object.keys(games).find((room) => games[room].player1 === socket.id || games[room].player2 === socket.id);
+
+        if (!oldSocketId) {
+            logger.warn('Old socket ID is empty, please provide the old socket ID');
+            return;
+        }
+
+        let room_hash = Object.keys(games).find((room) => games[room].player1 === oldSocketId || games[room].player2 === oldSocketId);
+
+        if (games[room_hash].player1 === oldSocketId) {
+            games[room_hash].player1 = socket.id;
+        }
+
+        if (games[room_hash].player2 === oldSocketId) {
+            games[room_hash].player2 = socket.id;
+        }
 
         if (!room_hash) {
             logger.warn(`Could not find room for socket ${socket.id}`);
