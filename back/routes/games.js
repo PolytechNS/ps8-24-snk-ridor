@@ -109,6 +109,7 @@ function getRoomsInfo() {
 
 function setup(playerId, room_hash, meta) {
     games[room_hash].game_object = meta;
+    logger.trace(`Setting up game in room ${room_hash}, player ${playerId}`);
     if (playerId === 1) {
         games[room_hash].io.to(games[room_hash].player1).emit('game:setup', 1);
     } else {
