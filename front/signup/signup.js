@@ -1,4 +1,4 @@
-import { BASE_URL_API, BASE_URL_PAGE, API_URL, AUTH_API, LOGIN_URL, REGISTER_API } from '../util/path.js';
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, AUTH_API, LOGIN_URL, REGISTER_API } from '/util/path.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', () => {
