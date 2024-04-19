@@ -7,19 +7,19 @@ const FRIEND_STATUS = {
 };
 
 class Friend {
-    user_email;
-    friend_email;
+    user_name;
+    friend_name;
     status;
 
-    constructor(user_email, friend_email, status = FRIEND_STATUS.PENDING) {
-        this.user_email = user_email;
-        this.friend_email = friend_email;
+    constructor(user_name, friend_name, status = FRIEND_STATUS.PENDING) {
+        this.user_name = user_name;
+        this.friend_name = friend_name;
         this.status = status;
     }
 
     // DB CRUD operations
     static async create(friend) {
-        return Friend.get(friend.user_email, friend.friend_email).then(async (result) => {
+        return Friend.get(friend.user_name, friend.friend_name).then(async (result) => {
             if (result) {
                 return { error: 'Friend already exists' };
             } else {
@@ -31,7 +31,7 @@ class Friend {
         });
     }
 
-    static async get(user_email, friend_email) {
+    static async get(user_name, friend_name) {
         const db = await getMongoDatabase();
         const friends = db.collection('friends');
 
@@ -40,8 +40,8 @@ class Friend {
         return friends
             .findOne({
                 $or: [
-                    { user_email: user_email, friend_email: friend_email },
-                    { user_email: friend_email, friend_email: user_email },
+                    { user_name: user_name, friend_name: friend_name },
+                    { user_name: friend_name, friend_name: user_name },
                 ],
             })
             .then((result) => {
@@ -49,28 +49,28 @@ class Friend {
                     return null;
                 }
 
-                friend.user_email = result.user_email;
-                friend.friend_email = result.friend_email;
+                friend.user_name = result.user_name;
+                friend.friend_name = result.friend_name;
                 friend.status = result.status;
 
                 return friend;
             });
     }
 
-    static async getAll(user_email) {
+    static async getAll(user_name) {
         const db = await getMongoDatabase();
         const friends = db.collection('friends');
 
         return friends
-            .find({ $or: [{ user_email: user_email }, { friend_email: user_email }] })
+            .find({ $or: [{ user_name: user_name }, { friend_name: user_name }] })
             .toArray()
             .then((result) => {
                 let friends_objs = [];
 
                 result.forEach((friend) => {
                     let friend_obj = new Friend('', '', FRIEND_STATUS.PENDING);
-                    friend_obj.user_email = friend.user_email;
-                    friend_obj.friend_email = friend.friend_email;
+                    friend_obj.user_name = friend.user_name;
+                    friend_obj.friend_name = friend.friend_name;
                     friend_obj.status = friend.status;
 
                     friends_objs.push(friend_obj);
@@ -80,23 +80,31 @@ class Friend {
             });
     }
 
-    static async delete(user_email, friend_email) {
+    static async delete(user_name, friend_name) {
         const db = await getMongoDatabase();
         const friends = db.collection('friends');
 
         return friends.deleteOne({
             $or: [
-                { user_email: user_email, friend_email: friend_email },
-                { user_email: friend_email, friend_email: user_email },
+                { user_name: user_name, friend_name: friend_name },
+                { user_name: friend_name, friend_name: user_name },
             ],
         });
     }
 
-    static async updateStatus(user_email, friend_email, status) {
+    static async updateStatus(user_name, friend_name, status) {
         const db = await getMongoDatabase();
         const friends = db.collection('friends');
 
-        return await friends.updateOne({ user_email: user_email, friend_email: friend_email }, { $set: { status: status } });
+        return await friends.updateOne(
+            {
+                $or: [
+                    { user_name: user_name, friend_name: friend_name },
+                    { user_name: friend_name, friend_name: user_name },
+                ],
+            },
+            { $set: { status: status } }
+        );
     }
 }
 

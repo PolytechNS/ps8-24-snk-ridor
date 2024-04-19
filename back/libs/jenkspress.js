@@ -26,9 +26,9 @@ function getCurrentUser(request) {
         return null;
     }
 
-    logger.debug(`Current user: ${data.email}`);
+    logger.debug(`Current user: ${data.name}`);
 
-    return data.email;
+    return data.name;
 }
 
 module.exports = { getJsonBody, getCurrentUser };

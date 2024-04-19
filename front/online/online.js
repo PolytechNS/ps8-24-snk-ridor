@@ -1,5 +1,5 @@
 import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
-import { BASE_URL_PAGE, HOME_URL, LOGIN_URL, ONLINE_GAME_URL } from '/util/path.js';
+import { BASE_URL_PAGE, HOME_URL, LOGIN_URL, ONLINE_GAME_URL } from '../util/path.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', () => {

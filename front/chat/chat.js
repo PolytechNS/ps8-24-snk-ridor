@@ -39,9 +39,9 @@ class Chat extends HTMLElement {
         this.shadowRoot.appendChild(chatTemplate.content.cloneNode(true));
         this.friendListVisible = false;
         this.chatWindowVisible = false;
-        this.userEmail = localStorage.getItem('email');
+        this.userName = localStorage.getItem('username');
         this.authToken = localStorage.getItem('token');
-        this.activeFriendEmail = null;
+        this.activeFriendName = null;
         this.socket = io();
         this.initializeSocketListeners();
     }
@@ -49,13 +49,13 @@ class Chat extends HTMLElement {
     initializeSocketListeners() {
         this.socket.on('connect', () => {
             console.log('Socket.IO Connected');
-            this.socket.emit('friend:login', this.userEmail);
+            this.socket.emit('friend:login', this.userName);
             this.fetchFriendList();
         });
 
         this.socket.on('friend:receive', (message) => {
             console.log('Received message:', message);
-            if (message.sender === this.activeFriendEmail) {
+            if (message.sender === this.activeFriendName) {
                 this.addMessage(message.message, false);
             } else {
                 // Show a notification or update the friend list to indicate a new message
@@ -99,7 +99,7 @@ class Chat extends HTMLElement {
     }
 
     openChatWindow(friendName) {
-        this.activeFriendEmail = friendName;
+        this.activeFriendName = friendName;
         let chatWindow = this.shadowRoot.getElementById('chatWindow');
         let chatHeader = this.shadowRoot.getElementById('chatHeader');
         let friendList = this.shadowRoot.getElementById('friendList');
@@ -135,7 +135,7 @@ class Chat extends HTMLElement {
         let message = messageInput.value.trim();
         if (message) {
             this.socket.emit('friend:send', {
-                receiver: this.activeFriendEmail,
+                receiver: this.activeFriendName,
                 message: message,
             });
             this.addMessage(message, true);
@@ -158,10 +158,10 @@ class Chat extends HTMLElement {
 
         friends.forEach((friend) => {
             const listItem = document.createElement('li');
-            const displayEmail = friend.email;
-            listItem.textContent = displayEmail;
+            const displayName = friend.name;
+            listItem.textContent = displayName;
             listItem.addEventListener('click', () => {
-                this.openChatWindow(displayEmail);
+                this.openChatWindow(displayName);
             });
             friendListElement.appendChild(listItem);
         });
@@ -171,7 +171,7 @@ class Chat extends HTMLElement {
         chatMessages.innerHTML = '';
 
         messages.forEach((message) => {
-            const isSender = message.sender === this.userEmail;
+            const isSender = message.sender === this.userName;
             this.addMessage(message.message, isSender);
         });
     }

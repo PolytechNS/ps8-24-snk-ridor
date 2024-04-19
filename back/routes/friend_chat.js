@@ -23,21 +23,23 @@ function registerHandlers(io, socket) {
     socket.on('friend:list', (_) => {
         logger.info('Socket request: friend:list');
 
-        let email = Object.keys(friends).find((key) => friends[key] === socket.id);
+        let name = Object.keys(friends).find((key) => friends[key] === socket.id);
 
-        Friend.getAll(email).then((my_friends) => {
-            let emails = [];
+        Friend.getAll(name).then((my_friends) => {
+            let names = [];
 
             for (let friend of my_friends) {
-                if (friend.user_email === email) {
-                    emails.push({ email: friend.friend_email, online: !!friends[friend.friend_email] });
-                } else {
-                    emails.push({ email: friend.user_email, online: !!friends[friend.user_email] });
+                if (friend.status === 1) {
+                    if (friend.user_name === name) {
+                        names.push({ name: friend.friend_name, online: !!friends[friend.friend_name] });
+                    } else {
+                        names.push({ name: friend.user_name, online: !!friends[friend.user_name] });
+                    }
                 }
             }
 
             logger.info('Socket response: friend:friends');
-            io.to(socket.id).emit('friend:friends', emails);
+            io.to(socket.id).emit('friend:friends', names);
         });
     });
 
