@@ -108,6 +108,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function joinRoom(roomId) {
         console.log('Emitting room:join event with room ID:', roomId);
         socket.emit('game:join', roomId);
+        // remember socket id
+        localStorage.setItem('socket_id', socket.id);
         document.location.href = BASE_URL_PAGE + ONLINE_GAME_URL;
     }
 });
