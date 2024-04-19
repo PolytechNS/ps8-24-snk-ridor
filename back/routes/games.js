@@ -46,13 +46,16 @@ function registerHandlers(io, socket) {
         }
 
         logger.info('Socket response: game:rooms');
-        io.emit('game:rooms', rooms);
+        for (let room in rooms) {
+            logger.info(`Room ${room} has players ${rooms[room].player1} and ${rooms[room].player2}`);
+        }
+        io.emit('game:rooms', getRoomsInfo());
     });
 
     socket.on('game:list', () => {
         logger.info('Socket request: game:rooms');
         logger.info('Socket response: game:rooms');
-        io.emit('game:rooms', rooms);
+        io.emit('game:rooms', getRoomsInfo());
     });
 
     socket.on('game:setupAnswer', (msg) => {
@@ -78,6 +81,17 @@ function registerHandlers(io, socket) {
             nextMove2(room_hash, msg, rooms[room_hash].game_object);
         }
     });
+}
+
+function getRoomsInfo() {
+    const roomsInfo = {};
+    for (let room in rooms) {
+        roomsInfo[room] = {
+            player1: rooms[room].player1,
+            player2: rooms[room].player2,
+        };
+    }
+    return roomsInfo;
 }
 
 // Called Functions During Game That Triggers Function Calls in `engine.js`
