@@ -126,6 +126,8 @@ function registerHandlers(io, socket) {
         let room_hash = Object.keys(games).find((room) => games[room].player1 === socket.id || games[room].player2 === socket.id);
         let playerId = games[room_hash].player1 === socket.id ? 1 : 2;
 
+        logger.trace(`Player ${playerId} setup answer in room ${room_hash}`);
+        logger.trace(msg);
         if (playerId === 1) {
             setup1(room_hash, msg, games[room_hash].game_object);
         } else {

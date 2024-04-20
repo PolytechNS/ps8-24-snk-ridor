@@ -3,7 +3,8 @@ import { LOG } from './online_main.js';
 import { updateFogOfWar } from './online_fogwar.js';
 import { updatePath } from './online_pathFinding.js';
 import { display_message, on_wall_over, on_wall_out, on_wall_click, display_board_one_player, init_board } from './online_board.js';
-import { display_board, placePlayer } from './online_display.js';
+import { display_board } from './online_display.js';
+import { setupAnswer } from '../online-game.js';
 
 const LINES = BOARD_HEIGHT;
 const COLUMNS = BOARD_WIDTH;
@@ -217,15 +218,6 @@ function checkVictory(player) {
     return false;
 }
 
-export function place_player(player, line, column) {
-    if (LOG) console.log(`place_player(${player}, ${line}, ${column}) called`);
-
-    let event = new Event('place', player.player, [null, null], [line, column]);
-    placePlayer(event);
-
-    next_player(event);
-}
-
 export function move_player(player, column, line) {
     if (LOG) console.log(`move_player(${player}, ${column}, ${line}) called`);
     let old_line = player.line;
@@ -345,6 +337,11 @@ export function firstOnCellClick(event) {
     let column = parseInt(id[1]); // x
     let line = parseInt(id[2]); // y
 
+    // prepare and send the initial position to the server
+    let answer = `${column}${line}`;
+    if (LOG) console.log(`First player placed on [${answer}]`);
+    setupAnswer(answer);
+
     addPlayer(cell.parentElement, getGame(), column);
 }
 
@@ -459,7 +456,7 @@ function addPlayer(board_div, board, column) {
         cell.appendChild(player_a);
 
         display_board_one_player(board_div, board);
-        display_message('Joueur 2 : Cliquez sur une case pour placer votre pion', 'action_message', false);
+        display_message('Attente du joueur adverse', 'action_message');
     }
     // if there is already a player, add the second one
     else if (board.players.length == 1) {
@@ -489,6 +486,7 @@ function addPlayer(board_div, board, column) {
         display_board(board);
         display_message('Début de la partie !', 'action_message', 1500);
     }
+
     // if there are already two players, do nothing
     else {
         if (LOG) console.log('There are already two players on the board');
@@ -499,51 +497,7 @@ function addPlayer(board_div, board, column) {
 export function addPlayers(board_div, board) {
     if (LOG) console.log(`addPlayers(${board_div}, ${board}) called`);
 
-    display_message('Cliquez sur une case pour placer votre pion', 'action_message', false);
+    display_message("Dans l'attente de l'adversaire", 'action_message', false);
 
     return;
-    // Display players
-    player_a = document.createElement('div');
-    player_a.className = 'player';
-    player_a.id = 'player-a';
-    player_a.backgroundColor = PLAYER_A_COLOR;
-    player_a.line = PLAYER_A_START_LINE;
-    player_a.column = 2;
-    player_a.player = PLAYER_A;
-    if (LOG) player_a.textContent = 'A';
-    if (!LOG) {
-        let img = document.createElement('img');
-        img.src = '../../resources/persons/titan_eren.png';
-        img.alt = 'Eren';
-        img.classList.add('pawn-avatar');
-        player_a.appendChild(img);
-    }
-    player_a.addEventListener('click', onPlayerClick);
-    let cell = document.getElementById('cell-' + player_a.line + '-' + player_a.column);
-    new Player();
-    // do not add the player to the board, this is done in the Player class
-    getGame()['p1_pos'] = [player_a.line, player_a.column];
-    cell.appendChild(player_a);
-
-    player_b = document.createElement('div');
-    player_b.className = 'player';
-    player_b.id = 'player-b';
-    player_b.backgroundColor = PLAYER_B_COLOR;
-    player_b.line = PLAYER_B_START_LINE;
-    player_b.column = 2;
-    player_b.player = PLAYER_B;
-    if (LOG) player_b.textContent = 'B';
-    if (!LOG) {
-        let img = document.createElement('img');
-        img.src = '../../resources/persons/humain_annie.png';
-        img.alt = 'Annie';
-        img.classList.add('pawn-avatar');
-        player_b.appendChild(img);
-    }
-    player_b.addEventListener('click', onPlayerClick);
-    cell = document.getElementById('cell-' + player_b.line + '-' + player_b.column);
-    getGame()['p2_pos'] = [player_b.line, player_b.column];
-    new Player();
-    // do not add the player to the board, this is done in the Player class
-    cell.appendChild(player_b);
 }

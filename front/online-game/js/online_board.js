@@ -74,9 +74,6 @@ export function display_board_one_player(board_div, board) {
             if ((y == 1 || y == BOARD_H) && !LOG) {
                 cell.classList.add('finish');
             }
-            if (y == BOARD_H) {
-                cell.addEventListener('click', firstOnCellClick);
-            }
 
             board_div.appendChild(cell);
 
