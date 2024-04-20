@@ -1,5 +1,5 @@
-import { display_message } from './local_board.js';
-import { LOG } from './local_main.js';
+import { display_message } from './online_board.js';
+import { LOG } from './online_main.js';
 
 export let BOARD_HEIGHT = 9;
 export let BOARD_WIDTH = 9;
@@ -36,6 +36,7 @@ export class Game {
         this.p2_pos = [-1, -1];
         this.board_fow = BOARD_FOW;
         this.turn_count = 1;
+        this.online_player;
     }
 
     addPlayer(player) {
@@ -76,6 +77,14 @@ export class Game {
 
     getTurnCount() {
         return this.turn_count;
+    }
+
+    setOnlinePlayer(player) {
+        this.online_player = player;
+    }
+
+    getOnlinePlayer() {
+        return this.online_player;
     }
 }
 
