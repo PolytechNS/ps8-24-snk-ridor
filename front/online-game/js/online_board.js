@@ -146,7 +146,8 @@ export function display_message(message, category = 'dev_message', timeout = 400
 // Callback functions for visuals only
 
 export function on_wall_over(event) {
-    if (getGame().getCurrentPlayer().remainingWalls() == 0) return;
+    let game = getGame();
+    if (game.remainingWalls(game.getCurrentPlayer()) == 0) return;
     let walls = get_walls(event);
 
     // If any of the walls is black, we do nothing
@@ -174,7 +175,7 @@ export function on_wall_out(event) {
 
 export function on_wall_click(event) {
     let wall_player = getGame().getCurrentPlayer();
-    if (wall_player.remainingWalls() == 0) {
+    if (game.remainingWalls(wall_player) == 0) {
         display_message("Vous n'avez plus de murs !", 'forbidden_message');
         return;
     }
@@ -200,12 +201,12 @@ export function on_wall_click(event) {
     for (let wall of walls) {
         wall.classList.remove('wall-hover');
         wall.classList.add('placed');
-        wall.classList.add(`wall-p${wall_player.id}`);
-        wall.classList.add(`wall-p${wall_player.id}`);
-        wall.player = wall_player.id;
+        wall.classList.add(`wall-p${wall_player}`);
+        wall.classList.add(`wall-p${wall_player}`);
+        wall.player = wall_player;
     }
     wall_player.placeWall();
-    display_message(`il reste ${wall_player.remaining_walls} murs`, 'dev_message');
+    display_message(`il reste ${game.remainingWalls(wall_player)} murs`, 'dev_message');
     let wall_event = new Event('wall', wall_player, event.walls);
     next_player(wall_event);
 }

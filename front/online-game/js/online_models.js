@@ -35,8 +35,13 @@ export class Game {
         this.p1_pos = [-1, -1];
         this.p2_pos = [-1, -1];
         this.board_fow = BOARD_FOW;
-        this.turn_count = 1;
+        this.turn_count = 0;
         this.online_player;
+
+        // new
+        this.board = [];
+        this.own_walls = [];
+        this.other_walls = [];
     }
 
     addPlayer(player) {
@@ -47,7 +52,7 @@ export class Game {
 
     getCurrentPlayer() {
         if (LOG) console.log(`Player ${this.current_player}'s turn`);
-        return this.players[(this.turn_count + 1) % 2];
+        return this.current_player;
     }
 
     nextPlayer() {
@@ -57,18 +62,22 @@ export class Game {
     }
 
     getPlayerPosition(player) {
-        if (player == 1) {
-            return this.p1_pos;
-        } else if (player == 2) {
-            return this.p2_pos;
+        for (let i = 0; i < this.board.length; i++) {
+            for (let j = 0; j < this.board[i].length; j++) {
+                if (this.board[i][j] === player) {
+                    return [i + 1, j + 1];
+                }
+            }
         }
+        return [-1, -1];
     }
 
     remainingWalls(player) {
-        if (player === undefined || player === null) {
-            player = this.current_player;
+        if (player == this.online_player) {
+            return 10 - this.own_walls.length;
+        } else {
+            return 10 - this.other_walls.length;
         }
-        return this.players[player - 1].remainingWalls();
     }
 
     getPlayer(player) {
@@ -85,6 +94,14 @@ export class Game {
 
     getOnlinePlayer() {
         return this.online_player;
+    }
+
+    updateBoard(new_board) {
+        this.board = new_board;
+    }
+
+    getBoard() {
+        return this.board;
     }
 }
 
