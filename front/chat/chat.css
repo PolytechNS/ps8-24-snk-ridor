@@ -24,6 +24,18 @@ body {
     cursor: pointer;
 }
 
+.chat-icon img {
+    width: 100%;
+    height: 100%;
+}
+
+.chat-icon.notif img {
+    content: url('../resources/ui/chat-notif.png');
+    width: 35px;
+    height: 35px;
+    margin: 2.5px;
+}
+
 .friend-list {
     display: none;
     position: absolute;
@@ -140,4 +152,13 @@ body {
     border-radius: 3px;
     cursor: pointer;
     font-family: 'OptimusPrinceps', Arial, sans-serif;
+}
+
+.friend-list li .unread-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+    margin-left: 5px;
 }

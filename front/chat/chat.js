@@ -40,9 +40,9 @@ class Chat extends HTMLElement {
         this.friendListVisible = false;
         this.chatWindowVisible = false;
         this.userName = localStorage.getItem('username');
-        this.authToken = localStorage.getItem('token');
         this.activeFriendName = null;
         this.socket = io();
+        this.unreadMessages = {};
         this.initializeSocketListeners();
     }
 
@@ -55,12 +55,17 @@ class Chat extends HTMLElement {
 
         this.socket.on('friend:receive', (message) => {
             console.log('Received message:', message);
-            if (message.sender === this.activeFriendName) {
+            if (this.activeFriendName === message.sender && this.chatWindowVisible) {
                 this.addMessage(message.message, false);
             } else {
-                // Show a notification or update the friend list to indicate a new message
-                console.log(`New message from ${message.sender}: ${message.message}`);
+                if (!this.unreadMessages[message.sender]) {
+                    this.unreadMessages[message.sender] = [];
+                }
+                this.unreadMessages[message.sender].push(message.message);
+                this.updateNotificationIcon();
+                this.markFriendAsUnread(message.sender);
             }
+            console.log(`New message from ${message.sender}: ${message.message}`);
         });
 
         this.socket.on('friend:friends', (friends) => {
@@ -111,9 +116,17 @@ class Chat extends HTMLElement {
         friendList.style.display = 'none';
         this.friendListVisible = false;
 
+        if (this.unreadMessages[friendName]) {
+            this.unreadMessages[friendName].forEach((message) => {
+                this.addMessage(message, false);
+            });
+            this.unreadMessages[friendName] = [];
+            this.markFriendAsRead(friendName);
+            this.updateNotificationIcon();
+        }
+
         this.logElementStyles('chatWindow');
 
-        // Request message history when opening the chat window
         this.socket.emit('friend:history', friendName);
     }
 
@@ -121,6 +134,7 @@ class Chat extends HTMLElement {
         let chatWindow = this.shadowRoot.getElementById('chatWindow');
         chatWindow.style.display = 'none';
         this.chatWindowVisible = false;
+        this.activeFriendName = null;
         this.logElementStyles('chatWindow');
     }
 
@@ -158,14 +172,19 @@ class Chat extends HTMLElement {
 
         friends.forEach((friend) => {
             const listItem = document.createElement('li');
+            listItem.setAttribute('data-friend', friend.name);
             const displayName = friend.name;
             listItem.textContent = displayName;
+            if (this.unreadMessages[friend.name] && this.unreadMessages[friend.name].length > 0) {
+                listItem.innerHTML += '<span class="unread-dot"></span>';
+            }
             listItem.addEventListener('click', () => {
                 this.openChatWindow(displayName);
             });
             friendListElement.appendChild(listItem);
         });
     }
+
     displayMessageHistory(messages) {
         let chatMessages = this.shadowRoot.getElementById('chatMessages');
         chatMessages.innerHTML = '';
@@ -178,6 +197,40 @@ class Chat extends HTMLElement {
 
     fetchFriendList() {
         this.socket.emit('friend:list');
+    }
+
+    updateNotificationIcon() {
+        const hasUnreadMessages = Object.values(this.unreadMessages).some((messages) => messages.length > 0);
+        if (hasUnreadMessages) {
+            this.showNotificationIcon();
+        } else {
+            this.hideNotificationIcon();
+        }
+    }
+
+    showNotificationIcon() {
+        this.shadowRoot.querySelector('.chat-icon').classList.add('notif');
+    }
+
+    hideNotificationIcon() {
+        this.shadowRoot.querySelector('.chat-icon').classList.remove('notif');
+    }
+
+    markFriendAsUnread(friendName) {
+        const friendElement = this.shadowRoot.querySelector(`#friendList li[data-friend="${friendName}"]`);
+        if (friendElement && !friendElement.querySelector('.unread-dot')) {
+            friendElement.innerHTML += '<span class="unread-dot"></span>';
+        }
+    }
+
+    markFriendAsRead(friendName) {
+        const friendElement = this.shadowRoot.querySelector(`#friendList li[data-friend="${friendName}"]`);
+        if (friendElement) {
+            const unreadDot = friendElement.querySelector('.unread-dot');
+            if (unreadDot) {
+                unreadDot.remove();
+            }
+        }
     }
 
     connectedCallback() {

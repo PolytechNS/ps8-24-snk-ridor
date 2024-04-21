@@ -7,14 +7,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
     const email = localStorage.getItem('email');
+    const elo = localStorage.getItem('elo');
 
-    updateProfileInfo(username, email);
+    updateProfileInfo(username, email, elo);
     fetchFriendList(token, username);
     addEventListeners();
 
-    function updateProfileInfo(username, email) {
+    function updateProfileInfo(username, email, elo) {
         document.getElementById('profile-name').textContent = username;
         document.getElementById('profile-email').textContent = email;
+        document.getElementById('profile-elo').textContent = elo;
     }
 
     function fetchFriendList(token, username) {
@@ -43,9 +45,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function displayFriendList(data, username) {
         const friendsList = document.getElementById('friends-list');
         const pendingRequestsList = document.getElementById('pending-requests-list');
+        const friendsContainer = document.getElementById('friends-container');
+        const pendingRequestsContainer = document.getElementById('pending-requests-container');
 
         friendsList.innerHTML = '';
         pendingRequestsList.innerHTML = '';
+
+        let hasFriends = false;
+        let hasPendingRequests = false;
 
         data.forEach((friend) => {
             const listItem = document.createElement('li');
@@ -59,17 +66,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 const removeButton = createRemoveButton(listItem.textContent);
                 listItem.appendChild(removeButton);
                 friendsList.appendChild(listItem);
+                hasFriends = true;
             } else {
-                console.log('yo im inside the annoying bitch else statement');
-                console.log(friend.friend_name);
                 if (friend.friend_name === username) {
                     listItem.textContent = friend.user_name;
                     const acceptButton = createAcceptButton(friend.user_name);
                     listItem.appendChild(acceptButton);
                     pendingRequestsList.appendChild(listItem);
+                    hasPendingRequests = true;
                 }
             }
         });
+
+        if (hasFriends) {
+            friendsContainer.style.display = 'block';
+        } else {
+            friendsContainer.style.display = 'none';
+        }
+
+        if (hasPendingRequests) {
+            pendingRequestsContainer.style.display = 'block';
+        } else {
+            pendingRequestsContainer.style.display = 'none';
+        }
     }
 
     function createAcceptButton(friend_name) {

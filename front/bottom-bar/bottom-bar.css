@@ -1,0 +1,101 @@
+@font-face {
+    font-family: 'OptimusPrinceps';
+    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.bottom-bar {
+    display: none;
+}
+
+@media (max-width: 730px), (orientation: landscape) and (max-device-height: 480px) {
+    .bottom-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background-color: rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 1rem;
+        box-sizing: border-box;
+        border-top: 2px solid #ff5722;
+        box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .icon-link {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 80px;
+        height: 70px;
+        text-decoration: none;
+        color: #ffffff;
+        transition:
+            color 0.3s ease,
+            transform 0.3s ease;
+        position: relative;
+    }
+
+    .icon-link:hover {
+        color: #ff5722;
+        transform: translateY(-5px);
+    }
+
+    .icon-link:hover::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        height: 6px;
+        background-color: #ff5722;
+        border-radius: 50%;
+    }
+
+    .icon-link img {
+        width: 28px;
+        height: 28px;
+        margin-bottom: 6px;
+        transition: transform 0.3s ease;
+    }
+
+    .icon-link:hover img {
+        transform: scale(1.1);
+    }
+
+    .icon-label {
+        font-family: 'OptimusPrinceps', Arial, sans-serif;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
+}
+
+@media (orientation: landscape) and (max-device-height: 480px) {
+    .bottom-bar {
+        height: 45px;
+    }
+
+    .icon-link {
+        width: 60px;
+        height: 45px;
+    }
+
+    .icon-link img {
+        width: 22px;
+        height: 22px;
+        margin-bottom: 4px;
+    }
+
+    .icon-label {
+        font-size: 12px;
+    }
+}
