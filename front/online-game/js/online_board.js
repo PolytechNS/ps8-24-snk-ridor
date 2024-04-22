@@ -207,12 +207,12 @@ export function on_wall_click(event) {
         wall.classList.remove('wall-hover');
         wall.classList.add('placed');
         wall.classList.add(`wall-p${wall_player}`);
-        wall.classList.add(`wall-p${wall_player}`);
         wall.player = wall_player;
     }
 
     // trigger the socket event
-    placeWall(walls, 0);
+    let retour = walls[0].id.split('-');
+    placeWall(`${retour[2]}${retour[3]}`, retour[0] === 'v' ? 1 : 0);
 
     // update the remaining walls
     display_message(`il reste ${game.remainingWalls(wall_player)} murs`, 'dev_message');

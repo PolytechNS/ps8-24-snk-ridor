@@ -5,7 +5,7 @@ import { updatePath } from './online_pathFinding.js';
 import { display_message, on_wall_over, on_wall_out, on_wall_click, display_board_one_player, init_board } from './online_board.js';
 import { display_board } from './online_display.js';
 import { setupAnswer } from '../online-game.js';
-import { move, placeWall } from '../online-game.js';
+import { move } from '../online-game.js';
 
 const LINES = BOARD_HEIGHT;
 const COLUMNS = BOARD_WIDTH;
