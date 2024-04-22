@@ -612,7 +612,7 @@ function setup1(room_hash, data, meta) {
     logger.trace('... Analysing setup response...');
     logger.trace(`... ... Received data: ${JSON.stringify(data)}`);
     try {
-        if (data.data.length < 2 && data.data[1] !== '1') {
+        if (data.data.length < 2 || data.data[1] !== '1') {
             logger.trace(`... ... Bad content: ${data.data}`);
             playerLost(1, room_hash, meta);
             meta['keepPlaying'] = false;
@@ -639,7 +639,7 @@ function setup2(room_hash, data, meta) {
     logger.trace(`... ... Response time OK`);
     logger.trace(`... ... Received data: ${JSON.stringify(data)}`);
     try {
-        if (data.data.length < 2 && data.data[1] !== '9') {
+        if (data.data.length < 2 || data.data[1] !== '9') {
             logger.trace(`... ... Bad content: ${data.data}`);
             playerLost(2, room_hash, meta);
             meta['keepPlaying'] = false;
