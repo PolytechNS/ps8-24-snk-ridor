@@ -151,6 +151,10 @@ function registerHandlers(io, socket) {
 function getRoomsInfo() {
     const roomsInfo = {};
     for (let room in games) {
+        if (games[room].player1 && games[room].player2) {
+            continue;
+        }
+
         roomsInfo[room] = {
             player1: games[room].player1,
             player2: games[room].player2,
