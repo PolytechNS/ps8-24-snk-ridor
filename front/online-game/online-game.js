@@ -38,8 +38,8 @@ export function setupAnswer(position) {
     socket.emit('game:setupAnswer', { data: position });
 }
 
-socket.on('game:nextMove', (data) => {
-    console.log('game:nextMove ', data);
+socket.on('game:nextMove', (meta) => {
+    console.log('game:nextMove ', meta);
     next_player();
 });
 

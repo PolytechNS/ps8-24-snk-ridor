@@ -55,6 +55,7 @@ function displayState(meta) {
 }
 
 function getGameState(player, meta) {
+    console.debug('Getting game state for player', player);
     let board = [];
     for (let i = 0; i < 9; i++) {
         board[i] = [];
@@ -214,7 +215,7 @@ function getGameState(player, meta) {
     }
 
     //console.log(displayBoard(board));
-
+    console.debug('Game state for player', player, 'is', board);
     return {
         opponentWalls: meta['walls'][Math.abs(player - 2)],
         ownWalls: meta['walls'][player - 1],
@@ -652,12 +653,12 @@ function setup2(room_hash, data, meta) {
 
     meta['nbIter'] = 1;
     const { nextMove } = require('../routes/games');
-    nextMove(1, room_hash, meta);
     logger.trace('');
     logger.trace('####################');
     logger.trace(`Player 1 turn ${meta['nbIter']}.`);
     logger.trace('####################\n');
     logger.trace(`Calling nextMove...`);
+    nextMove(1, room_hash, meta);
 }
 
 function nextMove1(room_hash, data, meta) {
@@ -683,6 +684,7 @@ function nextMove1(room_hash, data, meta) {
         logger.trace('####################\n');
         logger.trace(`Calling nextMove...`);
         const { nextMove } = require('../routes/games');
+        console.info('meta', meta);
         nextMove(2, room_hash, meta, getGameState(2, meta));
     }
 }
