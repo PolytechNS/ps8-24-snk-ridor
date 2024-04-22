@@ -19,7 +19,7 @@ class User {
 
     // DB CRUD operations
     static async create(user) {
-        return User.get(user.email).then(async (result) => {
+        return User.getByEmail(user.email).then(async (result) => {
             if (result) {
                 return { error: 'User already exists' };
             } else {
@@ -31,13 +31,31 @@ class User {
         });
     }
 
-    static async get(email) {
+    static async getByEmail(email) {
         const db = await getMongoDatabase();
         const users = db.collection('users');
 
         let user = new User('', '', '');
 
         return users.findOne({ email: email }).then((result) => {
+            if (!result) {
+                return null;
+            }
+
+            user.name = result.name;
+            user.email = result.email;
+            user.password_hash = result.password_hash;
+
+            return user;
+        });
+    }
+    static async getByName(name) {
+        const db = await getMongoDatabase();
+        const users = db.collection('users');
+
+        let user = new User('', '', '');
+
+        return users.findOne({ name: name }).then((result) => {
             if (!result) {
                 return null;
             }
@@ -62,6 +80,7 @@ class User {
 
                 result.forEach((user) => {
                     let user_obj = new User('', '', '');
+                    user_obj.name = user.name;
                     user_obj.email = user.email;
                     user_obj.password_hash = user.password_hash;
 

@@ -1,5 +1,4 @@
-import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, AUTH_API, LOGIN_API, SIGNUP_URL } from '/util/path.js';
-
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, AUTH_API, LOGIN_API, SIGNUP_URL } from '../util/path.js';
 document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.querySelector('.form-container .login-form');
 

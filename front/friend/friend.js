@@ -1,4 +1,4 @@
-import { BASE_URL_API, BASE_URL_PAGE, API_URL, FRIEND_API, PROFILE_URL } from '/util/path.js';
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, FRIEND_API, PROFILE_URL } from '../util/path.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', function () {
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     const searchBtn = document.getElementById('search-btn');
-    const searchEmail = document.getElementById('search-email');
+    const searchName = document.getElementById('search-name');
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
     const email = localStorage.getItem('email');
@@ -32,11 +32,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Search for users by email
+    // Search for users by name
     searchBtn.addEventListener('click', function () {
-        const email = searchEmail.value;
-        if (email) {
-            const filteredUsers = allUsers.filter((user) => user.email.includes(email));
+        const name = searchName.value;
+        if (name) {
+            const filteredUsers = allUsers.filter((user) => user.name.includes(name));
 
             // Update the user list with the filtered users
             userList.innerHTML = '';
@@ -46,27 +46,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 filteredUsers.forEach((user) => {
                     const listItem = document.createElement('li');
                     listItem.innerHTML = `
-                        <span>${user.name} ${user.email}</span>
-                        <button class="add-friend" data-email="${user.email}">Add</button>
+                        <span>${user.name}</span>
+                        <button class="add-friend" data-name="${user.name}">Add</button>
                     `;
                     userList.appendChild(listItem);
                 });
             }
         } else {
-            userList.innerHTML = '<li>Please enter an email to search.</li>';
+            userList.innerHTML = '<li>Please enter a name to search.</li>';
         }
     });
 
     userList.addEventListener('click', function (event) {
         if (event.target.classList.contains('add-friend')) {
-            const email = event.target.dataset.email;
+            const friendName = event.target.dataset.name;
             fetch(BASE_URL_API + API_URL + FRIEND_API + 'add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `${token}`,
                 },
-                body: JSON.stringify({ friend_email: email }),
+                body: JSON.stringify({ friend_name: friendName }),
             })
                 .then((data) => {
                     console.log('Friend added:', data);
