@@ -177,13 +177,15 @@ function setup(playerId, room_hash, meta) {
     }
 }
 
-function nextMove(playerId, room_hash, meta, gamestate) {
+function nextMove(playerId, room_hash, meta, gamestate, opponentGamestate) {
     games[room_hash].game_object = meta;
     logger.info(`Socket response: game:nextMove`);
     if (playerId === 1) {
         games[room_hash].io.to(games[room_hash].player1).emit('game:nextMove', gamestate);
+        games[room_hash].io.to(games[room_hash].player2).emit('game:updateBoard', opponentGamestate);
     } else {
         games[room_hash].io.to(games[room_hash].player2).emit('game:nextMove', gamestate);
+        games[room_hash].io.to(games[room_hash].player1).emit('game:updateBoard', opponentGamestate);
     }
 }
 

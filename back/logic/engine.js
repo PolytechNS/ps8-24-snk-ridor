@@ -660,7 +660,7 @@ function setup2(room_hash, data, meta) {
     logger.trace(`Player 1 turn ${meta['nbIter']}.`);
     logger.trace('####################\n');
     logger.trace(`Calling nextMove...`);
-    nextMove(1, room_hash, meta, getGameState(1, meta));
+    nextMove(1, room_hash, meta, getGameState(1, meta), getGameState(2, meta));
 }
 
 function nextMove1(room_hash, data, meta) {
@@ -687,7 +687,7 @@ function nextMove1(room_hash, data, meta) {
         logger.trace(`Calling nextMove...`);
         const { nextMove } = require('../routes/games');
         console.info('meta', meta);
-        nextMove(2, room_hash, meta, getGameState(2, meta));
+        nextMove(2, room_hash, meta, getGameState(2, meta), getGameState(1, meta));
     }
 }
 
@@ -720,7 +720,7 @@ function nextMove2(room_hash, data, meta) {
         logger.trace('####################\n');
         logger.trace(`Calling nextMove...`);
         const { nextMove } = require('../routes/games');
-        nextMove(1, room_hash, meta, getGameState(1, meta));
+        nextMove(1, room_hash, meta, getGameState(1, meta), getGameState(2, meta));
     }
 
     if (meta['nbIter'] === 100) playerLost(-1, room_hash, meta);
