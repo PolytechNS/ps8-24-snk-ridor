@@ -55,7 +55,6 @@ function displayState(meta) {
 }
 
 function getGameState(player, meta) {
-    console.debug('Getting game state for player', player);
     let board = [];
     for (let i = 0; i < 9; i++) {
         board[i] = [];
@@ -93,6 +92,9 @@ function getGameState(player, meta) {
     if (meta['p2Pos'][0] > 1) board[meta['p2Pos'][0] - 2][meta['p2Pos'][1] - 1]--;
     // right square
     if (meta['p2Pos'][0] < 9) board[meta['p2Pos'][0]][meta['p2Pos'][1] - 1]--;
+
+    // If walls is undefined, make it be an empty array
+    meta['walls'] = meta['walls'] || [[], []];
 
     // Increase visibility p1 walls
     for (let wall of meta['walls'][0]) {
@@ -214,8 +216,6 @@ function getGameState(player, meta) {
         }
     }
 
-    //console.log(displayBoard(board));
-    console.debug('Game state for player', player, 'is', board);
     return {
         opponentWalls: meta['walls'][Math.abs(player - 2)],
         ownWalls: meta['walls'][player - 1],
@@ -279,8 +279,6 @@ function getRandomMove(player, meta) {
         delete possibleMoves.bottom2;
         delete possibleMoves.right2;
     }
-
-    //console.log(Object.keys(possibleMoves));
 
     // Finally, check the walls
     for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
@@ -351,8 +349,6 @@ function getRandomMove(player, meta) {
 }
 
 function isMoveOK(player, newPos, meta) {
-    //console.log("checking move : ", player, newPos);
-
     let playerPos = player === 1 ? meta['p1Pos'] : meta['p2Pos'];
     let opponentPos = player === 2 ? meta['p1Pos'] : meta['p2Pos'];
 
@@ -367,7 +363,6 @@ function isMoveOK(player, newPos, meta) {
     // It's impossible to move to the same cell the player is already on.
     if (newPos[0] === playerPos[0] && newPos[1] === playerPos[1]) return false;
 
-    //console.log("still going on");
     // It's impossible to move to a cell where the opponent is.
     if (newPos[0] === opponentPos[0] && newPos[1] === opponentPos[1]) return false;
 
@@ -484,14 +479,12 @@ function isMoveOK(player, newPos, meta) {
 
 function isAWayOut(board, cellToCheck, rowToReach, presenceIndicator) {
     let [cc, cr] = cellToCheck;
-    //console.log(cellToCheck, rowToReach);
+
     // End cases
     if (cr === rowToReach) return true;
     if (board[cc][cr] === presenceIndicator) return false;
 
     board[cc][cr] = presenceIndicator;
-
-    //console.log(cc > 2 && board[cc-1][cr] !== "W", cc < 16 && board[cc+1][cr] !== "W", cr > 2 && board[cc][cr-1] !== "W", cc < 16 && board[cc][cr+1] !== "W");
 
     return (
         (cc > 1 && board[cc - 1][cr] !== 'W' && isAWayOut(board, [cc - 2, cr], rowToReach, presenceIndicator)) ||
@@ -502,8 +495,6 @@ function isAWayOut(board, cellToCheck, rowToReach, presenceIndicator) {
 }
 
 function isWallOK(newWall, meta) {
-    //console.log(`1: ${newWall}`);
-    //console.log(newWall[0]);
     let nwc, nwr;
     try {
         if (newWall.length !== 2 || (newWall[1] !== 0 && newWall[1] !== 1) || newWall[0].length !== 2 || isNaN(newWall[0][0] * 1) || isNaN(newWall[0][1] * 1)) return false;
@@ -518,16 +509,16 @@ function isWallOK(newWall, meta) {
     for (let wall of meta['walls'][0].concat(meta['walls'][1])) {
         let [wc, wr] = wall[0].split('').map((e) => e * 1);
         // Cross
-        //console.log(`1.1: ${wall} / ${newWall}`);
+
         if (wall[0] === newWall[0]) return false;
         // Vertical
-        //console.log(1.2);
+
         if (newWall[1] === 1 && wall[1] === 1 && wc === nwc && (nwr - 1 === wr || nwr + 1 === wr)) return false;
         // Horizontal
-        //console.log(1.3);
+
         if (newWall[1] === 0 && wall[1] === 0 && wr === nwr && (nwc - 1 === wc || nwc + 1 === wc)) return false;
     }
-    //console.log(2);
+
     let board = [];
     for (let i = 0; i < 9; i++) {
         board[2 * i] = [];
@@ -540,11 +531,10 @@ function isWallOK(newWall, meta) {
             board[2 * i + 1][j * 2 + 1] = 'E';
         }
     }
-    //console.log(3);
+
     for (let wall of meta['walls'][0].concat(meta['walls'][1]).concat([newWall])) {
         let [wc, wr] = wall[0].split('').map((e) => e * 1);
         if (wall[1]) {
-            //console.log([wc, wr], [2 * (wc - 1) + 1, 2 * (wr - 1)]);
             board[2 * (wc - 1) + 1][2 * (wr - 1)] = 'W';
             board[2 * (wc - 1) + 1][2 * (wr - 1) - 2] = 'W';
         } else {
@@ -552,8 +542,6 @@ function isWallOK(newWall, meta) {
             board[2 * (wc - 1) + 2][2 * (wr - 1) - 1] = 'W';
         }
     }
-    //console.log(4);
-    //console.log(displayBoard(board));
 
     return isAWayOut(board, [2 * (meta['p1Pos'][0] - 1), 2 * (meta['p1Pos'][1] - 1)], 16, 1) && isAWayOut(board, [2 * (meta['p2Pos'][0] - 1), 2 * (meta['p2Pos'][1] - 1)], 0, 2);
 }
@@ -582,7 +570,6 @@ function updateState(action, player, meta) {
                 if (newPos.length > 2) return false;
                 for (let p of newPos) if (isNaN(p) || p < 1 || p > 9) return false;
             } catch (e) {
-                //console.log("Incorrect move");
                 return false;
             }
 
@@ -658,7 +645,7 @@ function setup2(room_hash, data, meta) {
     logger.trace(`Player 1 turn ${meta['nbIter']}.`);
     logger.trace('####################\n');
     logger.trace(`Calling nextMove...`);
-    nextMove(1, room_hash, meta);
+    nextMove(1, room_hash, meta, getGameState(1, meta));
 }
 
 function nextMove1(room_hash, data, meta) {
@@ -692,7 +679,7 @@ function nextMove1(room_hash, data, meta) {
 function nextMove2(room_hash, data, meta) {
     logger.trace(`... ... Received data: ${JSON.stringify(data)}`);
     let action = data.data;
-    //console.log(JSON.stringify(data));
+
     if (!updateState(action, 2)) {
         logger.trace(`... ... Incorrect Action: ${JSON.stringify(data.data)}`);
         let randomMove = getRandomMove(2);
