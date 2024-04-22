@@ -674,7 +674,7 @@ function nextMove1(room_hash, data, meta) {
     }
 
     if (meta['keepPlaying']) {
-        displayState();
+        displayState(meta);
 
         //p2 move
         logger.trace('');
@@ -709,7 +709,7 @@ function nextMove2(room_hash, data, meta) {
     }
 
     if (meta['keepPlaying']) {
-        displayState();
+        displayState(meta);
 
         logger.trace('');
         logger.trace('####################');
