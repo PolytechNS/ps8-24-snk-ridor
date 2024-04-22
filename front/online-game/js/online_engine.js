@@ -1,7 +1,5 @@
 import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from './online_models.js';
 import { LOG } from './online_main.js';
-import { allBoardFogOfWar, updateFogOfWar } from './online_fogwar.js';
-import { updatePath } from './online_pathFinding.js';
 import { display_message, on_wall_over, on_wall_out, on_wall_click, display_board_one_player, init_board } from './online_board.js';
 import { display_board } from './online_display.js';
 import { setupAnswer } from '../online-game.js';
@@ -73,11 +71,7 @@ export function next_player(event = null) {
     game.nextPlayer();
     document.getElementById('turn').textContent = game.turn_count;
 
-    if (game.turn_count > 1) {
-        updatePath(game.getCurrentPlayer());
-    }
     document.getElementById('player').textContent = ['', 'A', 'B'][game.getCurrentPlayer()];
-    updateFogOfWar(game);
 }
 
 export function getCorridorPossiblePosition(column, line) {
@@ -455,6 +449,5 @@ export function addPlayers(board_div, board) {
     if (LOG) console.log(`addPlayers(${board_div}, ${board}) called`);
 
     display_message("Dans l'attente de l'adversaire", 'action_message', false);
-
     return;
 }

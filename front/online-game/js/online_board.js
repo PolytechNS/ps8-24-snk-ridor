@@ -5,6 +5,14 @@ import { placeWall } from '../online-game.js';
 
 export function init_board(board_div, board) {
     if (LOG) console.log('Initializing board');
+    let game = getGame();
+    if (board == null) {
+        board = game.board;
+    }
+    if (board_div == undefined) {
+        board_div = document.getElementById('board');
+    }
+
     let BOARD_W = BOARD_WIDTH;
     let BOARD_H = BOARD_HEIGHT;
 
@@ -18,10 +26,10 @@ export function init_board(board_div, board) {
             cell.className = 'cell';
             cell.id = `cell-${x}-${y}`;
             if (LOG) cell.textContent = `[${x}, ${y}]`;
-            if ((y == 1 || y == BOARD_H) && !LOG) {
+            if ((y == 1 && game.getOnlinePlayer() == 1) || (y == BOARD_H && game.getOnlinePlayer() == 2 && !LOG)) {
                 cell.classList.add('finish');
             }
-            if (y == 1) {
+            if ((y == 1 && game.getOnlinePlayer() == 1) || (y == BOARD_H && game.getOnlinePlayer() == 2)) {
                 cell.addEventListener('click', firstOnCellClick);
             }
 

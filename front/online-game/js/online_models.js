@@ -1,4 +1,4 @@
-import { display_message } from './online_board.js';
+import { updateFogOfWar } from './online_fogwar.js';
 import { LOG } from './online_main.js';
 
 export let BOARD_HEIGHT = 9;
@@ -98,6 +98,8 @@ export class Game {
 
     setBoard(new_board) {
         this.board = new_board;
+        // update the fog of war
+        updateFogOfWar(this.board);
     }
 
     getBoard() {

@@ -1,7 +1,7 @@
 import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
 import { getGame } from './js/online_models.js';
 import { LOG } from './js/online_main.js';
-import { display_message } from './js/online_board.js';
+import { init_board, display_message } from './js/online_board.js';
 import { next_player } from './js/online_engine.js';
 
 const socket = io();
@@ -18,15 +18,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     socket.on('game:setup', (playerId) => {
         console.log('game:setup ', playerId);
-        if (playerId === 1) {
-            getGame().setOnlinePlayer(1);
-            if (LOG) console.log('The current player is player 1');
-            display_message('Place ton pion', 'action_message', false);
-        } else {
-            getGame().setOnlinePlayer(2);
-            if (LOG) console.log('The current player is player 2');
-            display_message('Place ton pion', 'action_message', false);
-        }
+        getGame().setOnlinePlayer(playerId);
+        init_board();
+        if (LOG) console.log(`The current player is player ${playerId}`);
+        display_message('Place ton pion', 'action_message', false);
     });
 });
 
@@ -56,7 +51,7 @@ export function nextMoveAnswer(position) {
 }
 
 socket.on('game:endGame', (data) => {
-    if (LOG) console.log('game:endGame', data);
+    console.log('game:endGame', data);
     if (data !== 1 && data !== 2) {
         display_message('Match nul !', 'action_message', false);
         return;
