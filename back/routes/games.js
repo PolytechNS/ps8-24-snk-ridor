@@ -175,17 +175,11 @@ function setup(playerId, room_hash, meta) {
 
 function nextMove(playerId, room_hash, meta, gamestate) {
     games[room_hash].game_object = meta;
+    logger.info(`Socket response: game:nextMove`);
     if (playerId === 1) {
-        logger.info(`Socket response: game:nextMove`);
-        // désolé maxime mais j'ai remplacé la ligne commentée suivante par la nouvelle
-        // renvoyant effectivement meta, et non gamestate qui était undefined
-        // games[room_hash].io.to(games[room_hash].player1).emit('game:nextMove', gamestate);
-        games[room_hash].io.to(games[room_hash].player1).emit('game:nextMove', meta);
+        games[room_hash].io.to(games[room_hash].player1).emit('game:nextMove', gamestate);
     } else {
-        logger.info(`Socket response: game:nextMove`);
-        // encore une fois, j'ai remplacé gamestate par meta
-        // games[room_hash].io.to(games[room_hash].player2).emit('game:nextMove', gamestate);
-        games[room_hash].io.to(games[room_hash].player2).emit('game:nextMove', meta);
+        games[room_hash].io.to(games[room_hash].player2).emit('game:nextMove', gamestate);
     }
 }
 
