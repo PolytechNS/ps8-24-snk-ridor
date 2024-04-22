@@ -115,7 +115,7 @@ export function display_board_one_player(board_div, board) {
     }
 }
 
-// display message and dismiss it after 3 seconds
+// display message and dismiss it after 4 seconds
 export function display_message(message, category = 'dev_message', timeout = 4000) {
     if (LOG) {
         console.log(message);
@@ -138,17 +138,19 @@ export function display_message(message, category = 'dev_message', timeout = 400
             action_message.remove();
         }
     }
+    if (message == '') return;
     let message_div = document.createElement('div');
     message_div.classList.add('alert');
     message_div.classList.add(category); // category can be "dev_message", "forbidden_message", "info_message" or "final_message"
     message_div.textContent = message;
     document.getElementById('game-infos').appendChild(message_div);
 
+    // display message for number of miliseconds
     if (timeout === parseInt(timeout)) {
         setTimeout(() => {
             message_div.remove();
         }, timeout);
-    } // display message for number of miliseconds
+    }
 }
 
 // Callback functions for visuals only

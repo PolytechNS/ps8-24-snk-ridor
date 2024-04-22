@@ -60,6 +60,7 @@ export function next_player(event = null) {
 
     //update board in front
     display_board(game);
+
     // the fog of war is updated on display_board
     if (game.turn_count == 200) {
         display_message('Égalité', 'final_message');
@@ -69,6 +70,9 @@ export function next_player(event = null) {
     }
 
     game.nextPlayer();
+    if (game.getCurrentPlayer() === game.getOnlinePlayer()) {
+        display_message('', 'action_message');
+    }
     document.getElementById('turn').textContent = game.turn_count;
 
     document.getElementById('player').textContent = ['', 'A', 'B'][game.getCurrentPlayer()];
@@ -121,74 +125,13 @@ export function getCorridorPossiblePosition(column, line) {
             }
         }
     }
-
     if (LOG) console.log(`getCorridorPossiblePosition(${column}, ${line}) returns ${cells}`);
-    return cells;
-}
-
-export function getCorridorPossiblePositionForPath(column, line) {
-    if (LOG) console.log(`getCorridorPossiblePositionForPath(${column}, ${line}) called`);
-    let cells = [];
-    let wall;
-    if (column > 1) {
-        // if the player is not on the first column, check the left cell
-        wall = document.getElementById(`v-wall-${column - 1}-${line}`);
-        if (!wall.classList.contains('placed') && !wall.classList.contains('wall-hover')) {
-            // if there is a wall on the way
-            cells.push([column - 1, line]);
-        }
-    }
-    if (column < COLUMNS) {
-        // if the player is not on the last line, check the right cell
-        wall = document.getElementById(`v-wall-${column}-${line}`);
-        if (!wall.classList.contains('placed') && !wall.classList.contains('wall-hover')) {
-            // if there is a wall on the way
-            cells.push([column + 1, line]);
-        }
-    }
-    if (line > 1) {
-        // if the player is not on the first line, check the top cell
-        wall = document.getElementById(`h-wall-${column}-${line}`);
-        if (!wall.classList.contains('placed') && !wall.classList.contains('wall-hover')) {
-            // if there is a wall on the way
-            cells.push([column, line - 1]);
-        }
-    }
-    if (line < LINES) {
-        // if the player is not on the last line, check the bottom cell
-        wall = document.getElementById(`h-wall-${column}-${line + 1}`);
-        if (!wall.classList.contains('placed') && !wall.classList.contains('wall-hover')) {
-            // if there is a wall on the way
-            cells.push([column, line + 1]);
-        }
-    }
-    if (LOG) console.log(`getCorridorPossiblePositionForPath(${column}, ${line}) returns ${cells}`);
     return cells;
 }
 
 export function move_player(player, column, line) {
     if (LOG) console.log(`move_player(${player}, ${column}, ${line}) called`);
-    let old_line = player.line;
-    let old_column = player.column;
-
-    if (LOG) console.log(`Player ${player.player} moved from [${old_column}, ${old_line}] to [${column}, ${line}]`);
-    player.line = line;
-    player.column = column;
-
-    let cell = document.getElementById('cell-' + old_column + '-' + old_line);
-    let player_pow = document.getElementById('player-' + player.player);
-    cell.removeChild(player_pow);
-    cell = document.getElementById('cell-' + column + '-' + line);
-    cell.appendChild(player_pow);
-    getGame()['p' + player.player + '_pos'] = [column, line];
-
-    // keep it for now
-    // getGame().getCurrentPlayer().move([column, line]);
-
-    // call the server to update the position
     move(`${column}${line}`);
-    let event = new Event('move', player.player, [old_column, old_line], [column, line]);
-    next_player(event);
 }
 
 export function display() {

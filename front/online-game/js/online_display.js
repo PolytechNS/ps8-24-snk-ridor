@@ -2,6 +2,7 @@ import { newGame, onCellClick } from './online_engine.js';
 import { BOARD_HEIGHT, BOARD_WIDTH } from './online_models.js';
 import { on_wall_click, on_wall_over, on_wall_out } from './online_board.js';
 import { LOG } from './online_main.js';
+import { updateFogOfWarFromBack } from './online_fogwar.js';
 
 let global_board;
 /*
@@ -115,6 +116,29 @@ export function display_board(board) {
     // change the turn number
     let turn_number = document.getElementById('turn');
     turn_number.textContent = board.getTurnCount();
+}
+
+export function display_game(game) {
+    if (LOG) console.log('displayGame');
+    let board = game;
+
+    for (let y = 1; y <= board.length; y++) {
+        for (let x = 1; x <= board[0].length; x++) {
+            let cell = document.getElementById('cell-' + x + '-' + y);
+            if (board[y - 1][x - 1] == -1) {
+                cell.classList.add('invisible');
+            } else if (board[y - 1][x - 1] == 0) {
+                cell.classList.add('visible');
+            } else if (board[y - 1][x - 1] == 1) {
+                cell.classList.add('player1');
+            } else if (board[y - 1][x - 1] == 2) {
+                cell.classList.add('player2');
+            }
+        }
+    }
+
+    // update the fog of war
+    updateFogOfWarFromBack(game);
 }
 
 // do not use this function, use local_board/init_board instead
@@ -275,50 +299,6 @@ export function display_message(message, { category = 'info_message', timeout = 
     } else {
         return message_div;
     }
-}
-
-// do not use this function, use online_board instead
-// for backward compatibility only
-export function display_action_message(message, timeout = 0, buttons = [], cancelable = true, blocking = true) {
-    if (LOG) {
-        console.warn('display_action_message', message);
-    }
-    // remove the previous message
-    let previous_message = document.getElementsByClassName('action_message');
-    for (let i = 0; i < previous_message.length; i++) {
-        previous_message[i].remove();
-    }
-
-    // if the message is empty, do not display it
-    if (message == '') {
-        return;
-    }
-
-    let message_div = document.createElement('div');
-    message_div.classList.add('action_message');
-    if (blocking) {
-        message_div.classList.add('blocking');
-    }
-    if (cancelable) {
-        message_div.classList.add('cancelable');
-    }
-    for (let i = 0; i < buttons.length; i++) {
-        let button = document.createElement('button');
-        button.textContent = buttons[i].text;
-        button.addEventListener('click', buttons[i].callback);
-        message_div.appendChild(button);
-    }
-    message_div.textContent = message;
-    message_div.style.display = 'block';
-    document.getElementsByTagName('body')[0].appendChild(message_div);
-    if (timeout > 0) {
-        setTimeout(function () {
-            message_div.style.display = 'none';
-            message_div.remove();
-        }, timeout);
-    }
-
-    return message_div;
 }
 
 document.addEventListener('DOMContentLoaded', function () {
