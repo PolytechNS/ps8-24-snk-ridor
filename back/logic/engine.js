@@ -580,7 +580,7 @@ function updateState(action, player, meta) {
         case 'wall':
             let wall = action.value;
             logger.trace('... ... Checking wall position');
-            if (!isWallOK(wall)) return false;
+            if (!isWallOK(wall, meta)) return false;
             logger.trace('... ... Wall OK');
             meta['walls'][player - 1].push(wall);
             break;
