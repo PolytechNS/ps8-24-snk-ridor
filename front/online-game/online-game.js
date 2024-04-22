@@ -73,7 +73,7 @@ export function move(position) {
     });
 }
 
-export function placeWall(wall) {
+export function placeWall(position, vertical) {
     /*
      * wall is a list containing 2 elements:
      * - a position string representing the top-left square that the wall is in contact with
@@ -83,7 +83,7 @@ export function placeWall(wall) {
     socket.emit('game:nextMoveAnswer', {
         data: {
             action: 'wall',
-            value: wall,
+            value: [position, vertical],
         },
     });
 }
