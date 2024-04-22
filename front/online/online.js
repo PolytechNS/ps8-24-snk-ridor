@@ -11,6 +11,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const createRoomButton = document.getElementById('create-room-button');
     const logoutButton = document.getElementById('logout-button');
 
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.placeholder = 'Search rooms...';
+    searchInput.classList.add('search-input');
+    searchInput.addEventListener('input', searchRooms);
+    gameList.parentNode.insertBefore(searchInput, gameList);
+
     // Get the user's email from localStorage
     const userEmail = localStorage.getItem('email');
     console.log('User email:', userEmail);
@@ -20,6 +27,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const room = Math.random().toString(36).substring(7);
         console.log('Emitting game:join event with user email:', room);
         socket.emit('game:join', room);
+    }
+    function searchRooms() {
+        const searchValue = searchInput.value.toLowerCase();
+        const listItems = gameList.getElementsByTagName('li');
+
+        for (const item of listItems) {
+            const roomId = item.textContent.split(' - ')[0].toLowerCase();
+            if (roomId.includes(searchValue)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        }
     }
 
     // Log when the connection is established
