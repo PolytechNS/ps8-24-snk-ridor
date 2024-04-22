@@ -1,12 +1,51 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="io.cordova.hellocordova" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>HelloCordova</name>
-    <description>Sample Apache Cordova App</description>
-    <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
-        Apache Cordova Team
+    <name>SNK-ridor</name>
+    <description>Based on Quorridor Board Game with SNK theme</description>
+    <author email="dev@cordova.apache.org" href="https://snk.ps8.academy/">
+        SNK-ridor Team
     </author>
     <content src="index.html" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
+
     <preference name="android-targetSdkVersion" value="33" />
+
+    <platform name="android">
+
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-hdpi"/>
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-ldpi"/>
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-mdpi"/>
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-xhdpi"/>
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-xxhdpi"/>
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-xxxhdpi"/>
+
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-hdpi"/>
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-ldpi"/>
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-mdpi"/>
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-xhdpi"/>
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-xxhdpi"/>
+        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-xxxhdpi"/>
+
+        <icon src="resources/logo.png"/>
+    </platform>
+
+    <platform name="ios">
+
+        <splash src="resources/splashscreen/login-background.jpg" width="320" height="480"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="640" height="960"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="640" height="1136"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="750" height="1334"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="828" height="1792"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="1125" height="2436"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="1242" height="2208"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="1242" height="2688"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="1536" height="2048"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="1668" height="2224"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="1668" height="2388"/>
+        <splash src="resources/splashscreen/login-background.jpg" width="2048" height="2732"/>
+
+        <icon src="resources/logo.png"/>
+    </platform>
+
 </widget>

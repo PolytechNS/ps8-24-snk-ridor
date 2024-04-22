@@ -15,7 +15,8 @@
     "devDependencies": {
         "cordova-android": "^12.0.1",
         "cordova-ios": "^7.1.0",
-        "cordova-plugin-inappbrowser": "^6.0.0"
+        "cordova-plugin-inappbrowser": "^6.0.0",
+        "cordova-plugin-splashscreen": "^6.0.1"
     },
     "cordova": {
         "platforms": [
@@ -23,7 +24,8 @@
             "ios"
         ],
         "plugins": {
-            "cordova-plugin-inappbrowser": {}
+            "cordova-plugin-inappbrowser": {},
+            "cordova-plugin-splashscreen": {}
         }
     }
 }
