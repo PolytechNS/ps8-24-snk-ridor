@@ -346,6 +346,7 @@ export function onCellClick(event) {
     let id = cell.id.split('-');
     let column = parseInt(id[1]); // x
     let line = parseInt(id[2]); // y
+    console.log(`Cell clicked: [${column}, ${line}]`);
 
     // if cell contains a player
     let board = getGame();
