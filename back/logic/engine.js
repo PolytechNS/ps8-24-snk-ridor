@@ -702,7 +702,7 @@ function nextMove2(room_hash, data, meta) {
         logger.trace(`... ... Content received: ${JSON.stringify(data.data)}`);
     }
 
-    meta['gameStatus'] = gameOverStatus();
+    meta['gameStatus'] = gameOverStatus(meta);
     if (meta['gameStatus']) {
         playerLost(meta['gameStatus'], room_hash, meta);
         meta['keepPlaying'] = false;
