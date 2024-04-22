@@ -15,9 +15,8 @@ function setVisibility(x, y, value) {
     }
 }
 
-function updateFogOfWarFromBack(FOW) {
+export function updateFogOfWarFromBack(FOW) {
     if (LOG) console.log('Updating fog of war from back');
-    board_fow = FOW;
     const HEIGHT = FOW.length;
     const WIDTH = FOW[0].length;
     for (let y = HEIGHT - 1; y >= 0; y--) {
