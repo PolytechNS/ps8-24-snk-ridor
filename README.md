@@ -2,7 +2,7 @@
   <br>
   <span style="font-size: 120px">⚔️</span>
   <br>
-  SNK-oridor
+  SNK-ridor
   <br>
 </h1>
 
