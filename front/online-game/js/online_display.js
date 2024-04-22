@@ -211,14 +211,14 @@ export function display_game(game) {
         let wall = walls[i];
         // si le mur est vertical
         if (wall[1] == 1) {
-            document.getElementById('v-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
-            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
-            document.getElementById('v-wall-' + wall[0][0] + '-' + (wall[0][1] - 1)).classList = ['wall-over'];
+            document.getElementById('v-wall-' + wall[0][0] + '-' + wall[0][1]).classList.add('placed');
+            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList.add('placed');
+            document.getElementById('v-wall-' + wall[0][0] + '-' + (wall[0][1] - 1)).classList.add('placed');
         } else {
             // sinon le mur est horizontal
-            document.getElementById('h-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
-            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
-            document.getElementById('h-wall-' + (wall[0][0] - 0 + 1) + '-' + wall[0][1]).classList = ['wall-over'];
+            document.getElementById('h-wall-' + wall[0][0] + '-' + wall[0][1]).classList.add('placed');
+            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList.add('placed');
+            document.getElementById('h-wall-' + (wall[0][0] - 0 + 1) + '-' + wall[0][1]).classList.add('placed');
         }
     }
 
@@ -228,14 +228,14 @@ export function display_game(game) {
         let wall = walls[i];
         // si le mur est vertical
         if (wall[1] == 1) {
-            document.getElementById('v-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
-            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
-            document.getElementById('v-wall-' + wall[0][0] + '-' + (wall[0][1] - 1)).classList = ['wall-over'];
+            document.getElementById('v-wall-' + wall[0][0] + '-' + wall[0][1]).classList.add('placed');
+            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList.add('placed');
+            document.getElementById('v-wall-' + wall[0][0] + '-' + (wall[0][1] - 1)).classList.add('placed');
         } else {
             // sinon le mur est horizontal
-            document.getElementById('h-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
-            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
-            document.getElementById('h-wall-' + (wall[0][0] - 0 + 1) + '-' + wall[0][1]).classList = ['wall-over'];
+            document.getElementById('h-wall-' + wall[0][0] + '-' + wall[0][1]).classList.add('placed');
+            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList.add('placed');
+            document.getElementById('h-wall-' + (wall[0][0] - 0 + 1) + '-' + wall[0][1]).classList.add('placed');
         }
     }
 
