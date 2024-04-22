@@ -1,7 +1,7 @@
 import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from './online_models.js';
 import { LOG } from './online_main.js';
 import { display_message, on_wall_over, on_wall_out, on_wall_click, display_board_one_player, init_board } from './online_board.js';
-import { display_board } from './online_display.js';
+import { display_game } from './online_display.js';
 import { setupAnswer } from '../online-game.js';
 import { move } from '../online-game.js';
 
@@ -59,7 +59,7 @@ export function next_player(event = null) {
     deleteOverview();
 
     //update board in front
-    display_board(game);
+    display_game(game);
 
     // the fog of war is updated on display_board
     if (game.turn_count == 200) {
@@ -377,7 +377,7 @@ function addPlayer(board_div, board, column) {
         getGame()['p2_pos'] = [player_b.column, player_b.line]; // x, y
         cell.appendChild(player_b);
 
-        display_board(board);
+        display_game(board);
         display_message('Attente du premier coup du joueur adverse', 'action_message', false);
     }
 
