@@ -96,12 +96,20 @@ export class Game {
         return this.online_player;
     }
 
-    updateBoard(new_board) {
+    setBoard(new_board) {
         this.board = new_board;
     }
 
     getBoard() {
         return this.board;
+    }
+
+    setPlayerWalls(player, walls) {
+        if (player == 'own') {
+            this.own_walls = walls;
+        } else {
+            this.other_walls = walls;
+        }
     }
 }
 

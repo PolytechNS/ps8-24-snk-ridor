@@ -1,10 +1,11 @@
 import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from './online_models.js';
 import { LOG } from './online_main.js';
-import { updateFogOfWar } from './online_fogwar.js';
+import { allBoardFogOfWar, updateFogOfWar } from './online_fogwar.js';
 import { updatePath } from './online_pathFinding.js';
 import { display_message, on_wall_over, on_wall_out, on_wall_click, display_board_one_player, init_board } from './online_board.js';
 import { display_board } from './online_display.js';
 import { setupAnswer } from '../online-game.js';
+import { move, placeWall } from '../online-game.js';
 
 const LINES = BOARD_HEIGHT;
 const COLUMNS = BOARD_WIDTH;
@@ -58,9 +59,12 @@ export function next_player(event = null) {
     let game = getGame();
     //game.getCurrentPlayer().updateProfile();
     deleteOverview();
+
+    //update board in front
+    display_board(game);
+    // the fog of war is updated on display_board
     if (game.turn_count == 200) {
         display_message('Égalité', 'final_message');
-        //alert('Draw'); // TODO : change this to a better way to display the victory
         return;
     } else if (game.turn_count == 190) {
         display_message('10 derniers tours !', 'info_message');
@@ -73,7 +77,7 @@ export function next_player(event = null) {
         updatePath(game.getCurrentPlayer());
     }
     document.getElementById('player').textContent = ['', 'A', 'B'][game.getCurrentPlayer()];
-    updateFogOfWar(event);
+    updateFogOfWar(game);
 }
 
 export function getCorridorPossiblePosition(column, line) {
@@ -214,15 +218,13 @@ export function move_player(player, column, line) {
     cell = document.getElementById('cell-' + column + '-' + line);
     cell.appendChild(player_pow);
     getGame()['p' + player.player + '_pos'] = [column, line];
-    getGame().getCurrentPlayer().move([column, line]);
 
-    if (checkVictory(player)) {
-        updateFogOfWar(new Event('end', player.player, [player.column, player.line]));
-        deleteOverview();
-        return;
-    }
+    // keep it for now
+    // getGame().getCurrentPlayer().move([column, line]);
+
+    // call the server to update the position
+    move(`${column}${line}`);
     let event = new Event('move', player.player, [old_column, old_line], [column, line]);
-    checkVictory(player);
     next_player(event);
 }
 
@@ -322,7 +324,13 @@ export function firstOnCellClick(event) {
 
     // prepare and send the initial position to the server
     let answer = `${column}${line}`;
-    if (LOG) console.log(`First player placed on [${answer}]`);
+    if (LOG) {
+        if (getGame().getOnlinePlayer() == 1) {
+            console.log(`First player placed on [${answer}]`);
+        } else {
+            console.log(`Second player placed on [${answer}]`);
+        }
+    }
     setupAnswer(answer);
 }
 
@@ -342,7 +350,7 @@ export function onCellClick(event) {
     // if cell contains a player
     let board = getGame();
     let cells;
-    if (board.getCurrentPlayer().position[0] == column && board.getCurrentPlayer().position[1] == line) {
+    if (board.getPlayerPosition(board.getCurrentPlayer())[0] == column && board.getPlayerPosition(board.getCurrentPlayer())[1] == line) {
         cells = getCorridorPossiblePosition(column, line);
         for (let cell of cells) {
             let cellElement = document.getElementById('cell-' + cell[0] + '-' + cell[1]);
@@ -466,7 +474,7 @@ function addPlayer(board_div, board, column) {
         cell.appendChild(player_b);
 
         display_board(board);
-        display_message('Début de la partie !', 'action_message', 1500);
+        display_message('Attente du premier coup du joueur adverse', 'action_message', false);
     }
 
     // if there are already two players, do nothing

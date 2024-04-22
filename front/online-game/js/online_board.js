@@ -174,6 +174,7 @@ export function on_wall_out(event) {
 }
 
 export function on_wall_click(event) {
+    let game = getGame();
     let wall_player = getGame().getCurrentPlayer();
     if (game.remainingWalls(wall_player) == 0) {
         display_message("Vous n'avez plus de murs !", 'forbidden_message');
@@ -189,15 +190,18 @@ export function on_wall_click(event) {
     // TODO : gérer le cas où le joueur n'a plus de murs
 
     // gérer qu'un chemin doit toujours exister
-    for (let p of getGame().players) {
-        if (findPath(p) == null) {
-            if (LOG) {
-                console.log('No path found from ' + getGame().getCurrentPlayer().position + ' to ' + getGame().getCurrentPlayer().goal);
-            }
-            display_message('Impossible de bloquer le chemin avec un mur !', 'forbidden_message');
-            return;
-        }
-    }
+    // plus nécessaire avec la vérification dans le back
+    /*
+     *for (let p of getGame().players) {
+     *    if (findPath(p) == null) {
+     *        if (LOG) {
+     *            console.log('No path found from ' + getGame().getCurrentPlayer().position + ' to ' + getGame().getCurrentPlayer().goal);
+     *        }
+     *        display_message('Impossible de bloquer le chemin avec un mur !', 'forbidden_message');
+     *        return;
+     *    }
+     *}
+     */
     for (let wall of walls) {
         wall.classList.remove('wall-hover');
         wall.classList.add('placed');

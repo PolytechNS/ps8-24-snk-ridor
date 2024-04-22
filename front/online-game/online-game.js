@@ -34,12 +34,16 @@ export function setupAnswer(position) {
     /*
      * position is a string representing the position of the player
      */
-    console.log('setupAnswer');
+    console.log('game:setupAnswer');
     socket.emit('game:setupAnswer', { data: position });
 }
 
-socket.on('game:nextMove', (meta) => {
-    console.log('game:nextMove ', meta);
+socket.on('game:nextMove', (gamestate) => {
+    console.log('game:nextMove ', gamestate);
+    let game = getGame();
+    game.setBoard(gamestate.board);
+    game.setPlayerWalls('own', gamestate.ownWalls);
+    game.setPlayerWalls('other', gamestate.opponentWalls);
     next_player();
 });
 
@@ -49,9 +53,37 @@ export function nextMoveAnswer(position) {
      */
     console.log('nextMoveAnswer');
     socket.emit('game:nextMoveAnswer', { data: position });
-    next_player();
 }
 
 socket.on('game:endGame', (data) => {
     console.log('game:endGame', data);
 });
+
+/* functional functions, to trigger socket on game events */
+export function move(position) {
+    /*
+     * position is a string representing the position of the player
+     */
+    console.log('game:nextMove');
+    socket.emit('game:nextMove', {
+        data: {
+            action: 'move',
+            value: position,
+        },
+    });
+}
+
+export function placeWall(wall) {
+    /*
+     * wall is a list containing 2 elements:
+     * - a position string representing the top-left square that the wall is in contact with
+     * - an integer: 0 if the wall is placed horizontally or 1 if it is vertical
+     */
+    console.log('game:nextMove');
+    socket.emit('game:nextMove', {
+        data: {
+            action: 'wall',
+            value: wall,
+        },
+    });
+}
