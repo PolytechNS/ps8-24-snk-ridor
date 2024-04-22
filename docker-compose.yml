@@ -17,6 +17,9 @@ services:
             - 'traefik.http.routers.snk.tls.certresolver=letsencrypt'
             - 'traefik.http.routers.snk.tls=true'
             - 'traefik.http.services.snk.loadbalancer.server.port=8000'
+        volumes:
+            - ./front:/usr/src/app/front
+            - ./back:/usr/src/app/back
 
     mongo-snk-ridor:
         image: mongo:latest

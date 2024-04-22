@@ -56,14 +56,14 @@ function login(request, response) {
     }
 
     getJsonBody(request).then((jsonBody) => {
-        User.get(jsonBody.email).then((result) => {
+        User.getByEmail(jsonBody.email).then((result) => {
             if (!result || !result.validate_password(jsonBody.password)) {
                 response.statusCode = 400;
                 response.end(JSON.stringify({ error: 'Invalid credentials' }));
                 return;
             }
 
-            let token = sign({ username: result.name, email: result.email });
+            let token = sign({ name: result.name, email: result.email });
             response.end(
                 JSON.stringify({
                     token: token,

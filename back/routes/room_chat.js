@@ -47,6 +47,11 @@ function registerHandlers(io, socket) {
             return;
         }
 
+        if (!rooms[room]) {
+            logger.warn(`Could not find room ${room}`);
+            return;
+        }
+
         // remove the socket from the room
         rooms[room] = rooms[room].filter((player) => player !== socket.id);
         purgeEmptyRooms();
@@ -73,7 +78,15 @@ function registerHandlers(io, socket) {
         logger.info('Socket disconnected');
         // remove the socket from all rooms
         for (let room in rooms) {
-            rooms[room] = rooms[room].filter((player) => player !== socket.id);
+            logger.debug(`Removing socket ${socket.id} from room ${room}`);
+            logger.debug(`room: ${rooms[room]}`);
+            // check that the room exists and is an array
+            if (rooms[room] && Array.isArray(rooms[room])) {
+                rooms[room] = rooms[room].filter((player) => player !== socket.id);
+            } else {
+                delete rooms[room];
+                logger.warn(`Room ${room} is not an array, purging`);
+            }
         }
         purgeEmptyRooms();
         io.emit('message:rooms', rooms);

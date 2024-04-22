@@ -1,9 +1,8 @@
+import { BASE_URL_PAGE, LOGIN_URL } from '/util/path.js';
+
 document.addEventListener('DOMContentLoaded', function () {
-    if (!localStorage.getItem('token')) {
-        window.location.href = '../login/login.html';
-    }
     document.getElementById('logout-button').addEventListener('click', () => {
         localStorage.clear();
-        window.location.href = '../login/login.html';
+        window.location.replace(BASE_URL_PAGE + LOGIN_URL);
     });
 });

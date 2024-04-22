@@ -4,30 +4,30 @@ const { Friend, FRIEND_STATUS } = require('../db/friend');
 const { logger } = require('../libs/logging');
 const { User } = require('../db/user');
 
-function manageRequest(request, response) {
+async function manageRequest(request, response) {
     let url = new URL(request.url, `http://${request.headers.host}`);
 
     let endpoint = url.pathname.split('/');
 
     switch (endpoint[3]) {
         case 'add':
-            add(request, response);
+            await add(request, response);
             break;
 
         case 'accept':
-            accept(request, response);
+            await accept(request, response);
             break;
 
         case 'remove':
-            remove(request, response);
+            await remove(request, response);
             break;
 
         case 'list':
-            list(request, response);
+            await list(request, response);
             break;
 
         case 'find':
-            find(request, response);
+            await find(request, response);
             break;
 
         default:
@@ -35,134 +35,187 @@ function manageRequest(request, response) {
     }
 }
 
-function add(request, response) {
-    let email = getCurrentUser(request);
+async function add(request, response) {
+    let name = getCurrentUser(request);
 
-    if (!email) {
+    if (!name) {
         response.statusCode = 401;
         response.end('Unauthorized');
         return;
     }
 
-    getJsonBody(request).then((jsonBody) => {
-        logger.debug(`Adding friend: ${email} -> ${jsonBody.friend_email}`);
-        let friend = new Friend(email, jsonBody.friend_email);
+    try {
+        const jsonBody = await getJsonBody(request);
+        logger.debug(`Adding friend: ${name} -> ${jsonBody.friend_name}`);
 
-        Friend.create(friend).then((result) => {
-            if (!result || result.error) {
-                response.statusCode = 400;
-                if (result) {
-                    response.end(result.error);
-                    return;
-                }
+        const user = await User.getByName(name);
+        const friend = await User.getByName(jsonBody.friend_name);
 
-                response.end('Friend not created');
+        if (!user || !friend) {
+            response.statusCode = 400;
+            response.end('User or friend not found');
+            return;
+        }
+
+        let friendObj = new Friend(user.name, friend.name);
+
+        const result = await Friend.create(friendObj);
+        if (!result || result.error) {
+            response.statusCode = 400;
+            if (result) {
+                response.end(result.error);
                 return;
             }
 
-            response.end('Friend created');
-        });
-    });
+            response.end('Friend not created');
+            return;
+        }
+
+        response.end('Friend created');
+    } catch (error) {
+        logger.error(`Error in add function: ${error.message}`);
+        response.statusCode = 500;
+        response.end('Internal Server Error');
+    }
 }
 
-function accept(request, response) {
-    let email = getCurrentUser(request);
+async function accept(request, response) {
+    let name = getCurrentUser(request);
 
-    if (!email) {
+    if (!name) {
         response.statusCode = 401;
         response.end('Unauthorized');
         return;
     }
 
-    getJsonBody(request).then((jsonBody) => {
-        Friend.get(email, jsonBody.friend_email).then((result) => {
-            logger.info('Accepting friend request    =     ' + jsonBody);
-            if (!result) {
-                response.statusCode = 400;
-                response.end('Friend not found');
-                return;
-            }
+    try {
+        const jsonBody = await getJsonBody(request);
+        const user = await User.getByName(name);
+        const friend = await User.getByName(jsonBody.friend_name);
 
-            if (result.friend_email !== email) {
-                response.statusCode = 400;
-                response.end('You are not the friend recipient');
-                return;
-            }
+        if (!user || !friend) {
+            response.statusCode = 400;
+            response.end('User or friend not found');
+            return;
+        }
 
-            Friend.updateStatus(jsonBody.friend_email, email, FRIEND_STATUS.ACCEPTED).then((result) => {
-                if (!result) {
-                    response.statusCode = 400;
-                    response.end('Friend not accepted');
-                    return;
-                }
+        const result = await Friend.get(user.name, friend.name);
+        logger.info('Accepting friend request    =     ' + jsonBody);
+        if (!result) {
+            response.statusCode = 400;
+            response.end('Friend not found');
+            return;
+        }
 
-                if (result.modifiedCount === 0) {
-                    response.statusCode = 400;
-                    response.end('Friend not accepted');
-                    return;
-                }
-                console.log('friend add request accepted');
-                response.end('Friend accepted');
-            });
-        });
-    });
+        if (result.friend_name !== user.name) {
+            response.statusCode = 400;
+            response.end('You are not the friend recipient');
+            return;
+        }
+
+        const updateResult = await Friend.updateStatus(friend.name, user.name, FRIEND_STATUS.ACCEPTED);
+        if (!updateResult) {
+            response.statusCode = 400;
+            response.end('Friend not accepted');
+            return;
+        }
+
+        if (updateResult.modifiedCount === 0) {
+            response.statusCode = 400;
+            response.end('Friend not accepted');
+            return;
+        }
+        console.log('friend add request accepted');
+        response.end('Friend accepted');
+    } catch (error) {
+        logger.error(`Error in accept function: ${error.message}`);
+        response.statusCode = 500;
+        response.end('Internal Server Error');
+    }
 }
 
-function remove(request, response) {
-    let email = getCurrentUser(request);
+async function remove(request, response) {
+    let name = getCurrentUser(request);
 
-    if (!email) {
+    if (!name) {
         response.statusCode = 401;
         response.end('Unauthorized');
         return;
     }
 
-    getJsonBody(request).then((jsonBody) => {
-        Friend.delete(email, jsonBody.friend_email).then((result) => {
-            if (!result) {
-                response.statusCode = 400;
-                response.end('Friend not removed');
-                return;
-            }
+    try {
+        const jsonBody = await getJsonBody(request);
+        const user = await User.getByName(name);
+        const friend = await User.getByName(jsonBody.friend_name);
 
-            if (result.deletedCount === 0) {
-                response.statusCode = 400;
-                response.end('Friend not removed');
-                return;
-            }
+        if (!user || !friend) {
+            response.statusCode = 400;
+            response.end('User or friend not found');
+            return;
+        }
 
-            response.end('Friend removed');
-        });
-    });
+        const result = await Friend.delete(user.name, friend.name);
+        if (!result) {
+            response.statusCode = 400;
+            response.end('Friend not removed');
+            return;
+        }
+
+        if (result.deletedCount === 0) {
+            response.statusCode = 400;
+            response.end('Friend not removed');
+            return;
+        }
+
+        response.end('Friend removed');
+    } catch (error) {
+        logger.error(`Error in remove function: ${error.message}`);
+        response.statusCode = 500;
+        response.end('Internal Server Error');
+    }
 }
 
-function list(request, response) {
-    let email = getCurrentUser(request);
-    if (!email) {
+async function list(request, response) {
+    let name = getCurrentUser(request);
+    if (!name) {
         response.statusCode = 401;
         response.end('Unauthorized');
         return;
     }
 
-    Friend.getAll(email).then((result) => {
+    try {
+        const user = await User.getByName(name);
+
+        if (!user) {
+            response.statusCode = 400;
+            response.end('User not found');
+            return;
+        }
+
+        const result = await Friend.getAll(user.name);
         if (!result || result.length === 0) {
             response.end(JSON.stringify([]));
             return;
         }
         response.end(JSON.stringify(result));
-    });
+    } catch (error) {
+        logger.error(`Error in list function: ${error.message}`);
+        response.statusCode = 500;
+        response.end('Internal Server Error');
+    }
 }
 
-function find(request, response) {
-    let email = getCurrentUser(request);
+async function find(request, response) {
+    let name = getCurrentUser(request);
 
-    if (!email) {
+    if (!name) {
         response.statusCode = 401;
         response.end('Unauthorized');
         return;
     }
 
-    User.getAll().then((result) => {
+    try {
+        const result = await User.getAll();
         if (!result || result.length === 0) {
             response.statusCode = 400;
             response.end('No users found');
@@ -170,7 +223,11 @@ function find(request, response) {
         }
 
         response.end(JSON.stringify(result));
-    });
+    } catch (error) {
+        logger.error(`Error in find function: ${error.message}`);
+        response.statusCode = 500;
+        response.end('Internal Server Error');
+    }
 }
 
 module.exports = { manageRequest };

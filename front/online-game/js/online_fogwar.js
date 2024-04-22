@@ -1,5 +1,5 @@
-import { LOG } from './local_main.js';
-import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from './local_models.js';
+import { LOG } from './online_main.js';
+import { BOARD_HEIGHT, BOARD_WIDTH, getGame, Event, Player } from './online_models.js';
 
 let board_fow;
 
@@ -323,7 +323,7 @@ function updatePlayerVisibility() {
         return;
     }
     let game = getGame();
-    let currentPlayer = game.getCurrentPlayer(); // Obtenir le joueur actuel
+    let currentPlayer = game.getOnlinePlayer(); // Obtenir le joueur actuel
     let player1Element = document.getElementById('player-1');
     let player2Element = document.getElementById('player-2');
 
@@ -356,4 +356,16 @@ function updatePlayerVisibility() {
     }
 
     if (LOG) console.log('PlayerVisibility updated');
+}
+
+function updateFogOfWarFromBack(FOW) {
+    board_fow = FOW;
+    for (let y = BOARD_HEIGHT - 1; y >= 0; y--) {
+        for (let x = 0; x < BOARD_WIDTH; x++) {
+            if (FOW[x][y] == -1 || FOW[x][y] == 0 || FOW[x][y] == 1) {
+                setVisibility(x, y, FOW[x][y]);
+            }
+        }
+    }
+    updatePlayerVisibility();
 }

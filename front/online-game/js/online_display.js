@@ -1,8 +1,8 @@
-import { newGame, onCellClick } from './local_engine.js';
-import { BOARD_HEIGHT, BOARD_WIDTH } from './local_models.js';
-import { on_wall_click, on_wall_over, on_wall_out } from './local_board.js';
-import { LOG } from './local_main.js';
-import { updateFogOfWar } from './local_fogwar.js';
+import { newGame, onCellClick } from './online_engine.js';
+import { BOARD_HEIGHT, BOARD_WIDTH } from './online_models.js';
+import { on_wall_click, on_wall_over, on_wall_out } from './online_board.js';
+import { LOG } from './online_main.js';
+import { updateFogOfWar } from './online_fogwar.js';
 
 let global_board;
 /*
@@ -78,7 +78,7 @@ export function display_board(board) {
 
         // if the player is not on the board yet, or hide by fog of war
         // do not display it
-        if (position[0] != null && position[1] != null && position[0] != undefined && position[1] != undefined) {
+        if (position[0] != null && position[1] != null && position[0] != undefined && position[1] != undefined && position[0] > 0 && position[1] > 0) {
             let player = document.createElement('div');
             player.classList.add('player', 'player-' + i);
             player.id = 'player-' + i;
@@ -94,6 +94,7 @@ export function display_board(board) {
             img.classList.add('pawn-avatar');
             player.appendChild(img);
 
+            console.log('position', position);
             let cell = document.getElementById('cell-' + position[0] + '-' + position[1]);
             cell.appendChild(player);
         }
@@ -109,7 +110,7 @@ export function display_board(board) {
 
         // change the profile picture
         let img = player_profile.getElementsByClassName('avatar')[0];
-        img.src = '../../resources/persons/' + board.getPlayer(i).avatar + '.png';
+        //img.src = '../../resources/persons/' + board.getPlayer(i).avatar + '.png';
     }
 
     // change the turn number
@@ -120,6 +121,7 @@ export function display_board(board) {
 
 // do not use this function, use local_board/init_board instead
 export function display_initial_board(playerId, board) {
+    if (LOG) console.log('display_initial_board');
     global_board = board;
     let BOARD_W = board.width();
     let BOARD_H = board.height();
@@ -196,22 +198,6 @@ export function display_initial_board(playerId, board) {
     turn_number.textContent = board.getTurnCount();
 }
 
-export function placePlayer(event) {
-    let board = global_board;
-    let cell = event.target;
-    let coords = cell.id
-        .split('-')
-        .slice(1)
-        .map((x) => parseInt(x));
-    try {
-        board.placePlayer(1, coords[0], coords[1]);
-        display_board(board);
-    } catch (e) {
-        display_message('Une erreur est survenue, regarder les logs pour savoir pourquoi', { category: 'forbidden_message' });
-        return;
-    }
-}
-
 function resetOverviews() {
     let cells = document.getElementsByClassName('cell');
     for (let i = 0; i < cells.length; i++) {
@@ -275,6 +261,9 @@ export function display_message(message, { category = 'info_message', timeout = 
      * - forbidden_message
      * - dev_message
      */
+    if (LOG) {
+        console.log('display_message', message);
+    }
     let message_div = document.createElement('div');
     message_div.classList.add('alert', category);
     message_div.textContent = message;
@@ -290,7 +279,12 @@ export function display_message(message, { category = 'info_message', timeout = 
     }
 }
 
+// do not use this function, use online_board instead
+// for backward compatibility only
 export function display_action_message(message, timeout = 0, buttons = [], cancelable = true, blocking = true) {
+    if (LOG) {
+        console.warn('display_action_message', message);
+    }
     // remove the previous message
     let previous_message = document.getElementsByClassName('action_message');
     for (let i = 0; i < previous_message.length; i++) {
