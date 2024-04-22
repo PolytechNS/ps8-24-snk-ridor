@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Chat window</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/chat/chat-window.css" />
+        <script src="/chat/chat.js" type="module" defer></script>
+        <script src="/chat/chat-window.js" type="module" defer></script>
+        <script src="/bottom-bar/bottom-bar.js" type="module"></script>
+        <link rel="stylesheet" href="/bottom-bar/bottom-bar.css" />
+    </head>
+    <body>
+        <div class="chat-container">
+            <div class="chat-header">
+                <button class="back-button">&lt; Back</button>
+                <span id="chatHeader"></span>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Type your message..." />
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+        <chat-global></chat-global>
+        <bottom-bar></bottom-bar>
+    </body>
+</html>

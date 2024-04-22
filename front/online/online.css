@@ -133,6 +133,7 @@ header {
     box-shadow: 0 1px rgba(0, 0, 0, 0.3);
     transform: translateY(2px);
 }
+
 .back-button {
     position: absolute;
     top: 20px;
@@ -175,4 +176,38 @@ header {
 
 .delete-button:hover {
     background-color: #d32f2f;
+}
+
+@media (max-width: 730px), (orientation: landscape) and (max-device-height: 480px) {
+    .container {
+        flex-direction: column;
+        width: 90%;
+        height: calc(100vh - 120px);
+        padding: 10px;
+    }
+
+    .rooms-list {
+        width: 100%;
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .create-room {
+        width: 100%;
+        position: static;
+        margin-bottom: 20px;
+    }
+
+    header {
+        display: none;
+    }
+
+    .back-button {
+        display: none;
+    }
+    chat-global {
+        display: none;
+    }
 }
