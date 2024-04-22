@@ -120,11 +120,11 @@ export function display_board(board) {
 }
 
 export function display_game(game) {
-    if (LOG) console.log('displayGame');
+    if (LOG) console.log('displayGame', game);
     let board = game.board;
     global_board = board;
-    let BOARD_W = board.width();
-    let BOARD_H = board.height();
+    let BOARD_W = board.length;
+    let BOARD_H = board[0].length;
 
     // reset the board
     let board_div = document.getElementById('board');
@@ -193,40 +193,83 @@ export function display_game(game) {
         } else {
             player_profile = document.getElementById('other_profile');
         }
-        player_profile.getElementsByClassName('walls')[0].textContent = board.remainingWalls(i);
+        player_profile.getElementsByClassName('walls')[0].textContent = game.remainingWalls(i);
 
         // change the profile picture
         let img = player_profile.getElementsByClassName('avatar')[0];
-        img.src = 'resources/persons/' + board.getPlayer(i).avatar + '.png';
+        //img.src = 'resources/persons/' + game.getPlayer(i).avatar + '.png';
     }
 
     // change the turn number
     let turn_number = document.getElementById('turn');
-    turn_number.textContent = board.getTurnCount();
+    turn_number.textContent = game.getTurnCount();
 
     // add players walls
-    walls = game.getPlayerWalls('own');
+    let walls = game.getPlayerWalls('own');
+    console.log('walls', walls);
     for (let i = 0; i < walls.length; i++) {
-        wall = walls[i];
+        let wall = walls[i];
+        // si le mur est vertical
         if (wall[1] == 1) {
-            board_div.getElementById('v-wall-' + wall[0] + '-' + wall[1]).classList.add('wall-over');
+            document.getElementById('v-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
+            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
+            document.getElementById('v-wall-' + wall[0][0] + '-' + (wall[0][1] - 1)).classList = ['wall-over'];
         } else {
-            board_div.getElementById('h-wall-' + wall[0] + '-' + wall[1]).classList.add('wall-over');
+            // sinon le mur est horizontal
+            document.getElementById('h-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
+            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
+            document.getElementById('h-wall-' + (wall[0][0] - 0 + 1) + '-' + wall[0][1]).classList = ['wall-over'];
         }
     }
 
     walls = game.getPlayerWalls('other');
+    console.log('walls', walls);
     for (let i = 0; i < walls.length; i++) {
-        wall = walls[i];
+        let wall = walls[i];
+        // si le mur est vertical
         if (wall[1] == 1) {
-            board_div.getElementById('v-wall-' + wall[0] + '-' + wall[1]).classList.add('wall-over');
+            document.getElementById('v-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
+            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
+            document.getElementById('v-wall-' + wall[0][0] + '-' + (wall[0][1] - 1)).classList = ['wall-over'];
         } else {
-            board_div.getElementById('h-wall-' + wall[0] + '-' + wall[1]).classList.add('wall-over');
+            // sinon le mur est horizontal
+            document.getElementById('h-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
+            document.getElementById('s-wall-' + wall[0][0] + '-' + wall[0][1]).classList = ['wall-over'];
+            document.getElementById('h-wall-' + (wall[0][0] - 0 + 1) + '-' + wall[0][1]).classList = ['wall-over'];
+        }
+    }
+
+    // add pawn(s)
+    for (let y = BOARD_H; y > 0; y--) {
+        for (let x = 1; x <= BOARD_W; x++) {
+            if (game.board[x - 1][y - 1] == 1) {
+                let cell = document.getElementById('cell-' + x + '-' + y);
+                let player = document.createElement('div');
+                player.classList.add('player', 'player-1');
+                player.id = 'player-1';
+                let img = document.createElement('img');
+                img.src = 'resources/persons/titan_eren.png';
+                img.alt = 'paw 1';
+                img.classList.add('pawn-avatar');
+                player.appendChild(img);
+                cell.appendChild(player);
+            } else if (game.board[x - 1][y - 1] == 2) {
+                let cell = document.getElementById('cell-' + x + '-' + y);
+                let player = document.createElement('div');
+                player.classList.add('player', 'player-2');
+                player.id = 'player-2';
+                let img = document.createElement('img');
+                img.src = 'resources/persons/humain_annie.png';
+                img.alt = 'paw 2';
+                img.classList.add('pawn-avatar');
+                player.appendChild(img);
+                cell.appendChild(player);
+            }
         }
     }
 
     // update the fog of war
-    updateFogOfWarFromBack(game);
+    updateFogOfWarFromBack(game.board);
 }
 
 // do not use this function, use local_board/init_board instead

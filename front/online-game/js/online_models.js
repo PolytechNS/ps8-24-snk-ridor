@@ -98,7 +98,7 @@ export class Game {
 
     setBoard(new_board) {
         this.board = new_board;
-        display_game(this.board);
+        display_game(this);
     }
 
     getBoard() {
@@ -110,6 +110,14 @@ export class Game {
             this.own_walls = walls;
         } else {
             this.other_walls = walls;
+        }
+    }
+
+    getPlayerWalls(player) {
+        if (player == 'own') {
+            return this.own_walls;
+        } else {
+            return this.other_walls;
         }
     }
 }
