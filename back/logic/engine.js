@@ -585,8 +585,9 @@ function updateState(action, player, meta) {
             meta['walls'][player - 1].push(wall);
             break;
         case 'idle':
-            let move = getRandomMove();
-            return move.action === 'idle';
+            return {
+                action: 'idle',
+            };
         default:
             return false;
     }
@@ -666,7 +667,7 @@ function nextMove1(room_hash, data, meta) {
     let action = data.data;
     if (!updateState(action, 1, meta)) {
         logger.trace(`... ... Incorrect Action: ${JSON.stringify(data.data)}`);
-        let randomMove = getRandomMove(1);
+        let randomMove = getRandomMove(1, meta);
         updateState(randomMove, 1, meta);
         logger.trace(`... ... Replacement action: ${JSON.stringify(randomMove)}`);
     } else {
@@ -694,7 +695,7 @@ function nextMove2(room_hash, data, meta) {
 
     if (!updateState(action, 2, meta)) {
         logger.trace(`... ... Incorrect Action: ${JSON.stringify(data.data)}`);
-        let randomMove = getRandomMove(2);
+        let randomMove = getRandomMove(2, meta);
         updateState(randomMove, 2, meta);
         logger.trace(`... ... Replacement action: ${JSON.stringify(randomMove)}`);
     } else {
