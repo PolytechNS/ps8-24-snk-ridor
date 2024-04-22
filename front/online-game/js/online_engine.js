@@ -172,37 +172,6 @@ export function getCorridorPossiblePositionForPath(column, line) {
     return cells;
 }
 
-function checkVictory(player) {
-    if (LOG) console.log(`checkVictory(${player}) called`);
-    // if the player is on the opposite line, it remains one move for the other player to win
-    // if the other player place himself on the opposite line, it is a draw
-    // on the other case, the first player wins
-    let wins = [];
-    for (let p of getGame().players) {
-        if (p.position[1] == p.goal) {
-            // if the player has reach the opposite line
-            wins.push(p);
-        }
-    }
-
-    if (wins.length == 1) {
-        if (1 == turn % 2) {
-            // if it is an odd turn, it is player A's turn, so player B has won
-            display_message(`Victoire du joueur ${wins[0].id}`, 'final_message');
-            return true;
-        } else {
-            // if it is an even turn, it is player B's turn, so player B has one move to make a draw
-            display_message(`Dernier tour\nLe joueur ${wins[0].id} a atteint son objectif`, 'info_message');
-            return false;
-        }
-    } else if (wins.length == 2) {
-        // if both players have reached the opposite line, it is a draw
-        display_message(`Égalité`, 'final_message');
-        return true;
-    }
-    return false;
-}
-
 export function move_player(player, column, line) {
     if (LOG) console.log(`move_player(${player}, ${column}, ${line}) called`);
     let old_line = player.line;
@@ -283,9 +252,6 @@ export function display() {
 
     // Display the players
     addPlayers(board, getGame());
-
-    // display fog of war
-    updateFogOfWar('beginning');
 }
 
 function isPlayerTurn(player) {

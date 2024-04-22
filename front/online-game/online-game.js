@@ -56,7 +56,16 @@ export function nextMoveAnswer(position) {
 }
 
 socket.on('game:endGame', (data) => {
-    console.log('game:endGame', data);
+    if (LOG) console.log('game:endGame', data);
+    if (data !== 1 && data !== 2) {
+        display_message('Match nul !', 'action_message', false);
+        return;
+    }
+    if (data === getGame().getOnlinePlayer()) {
+        display_message('Victoire !', 'action_message', false);
+    } else {
+        display_message('Défaite !', 'action_message', false);
+    }
 });
 
 /* functional functions, to trigger socket on game events */
