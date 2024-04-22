@@ -664,10 +664,10 @@ function nextMove1(room_hash, data, meta) {
     logger.trace('... Analysing nextMove response...');
     logger.trace(`... ... Received data: ${JSON.stringify(data)}`);
     let action = data.data;
-    if (!updateState(action, 1)) {
+    if (!updateState(action, 1, meta)) {
         logger.trace(`... ... Incorrect Action: ${JSON.stringify(data.data)}`);
         let randomMove = getRandomMove(1);
-        updateState(randomMove, 1);
+        updateState(randomMove, 1, meta);
         logger.trace(`... ... Replacement action: ${JSON.stringify(randomMove)}`);
     } else {
         logger.trace(`... ... Content received: ${JSON.stringify(data.data)}`);
@@ -692,10 +692,10 @@ function nextMove2(room_hash, data, meta) {
     logger.trace(`... ... Received data: ${JSON.stringify(data)}`);
     let action = data.data;
 
-    if (!updateState(action, 2)) {
+    if (!updateState(action, 2, meta)) {
         logger.trace(`... ... Incorrect Action: ${JSON.stringify(data.data)}`);
         let randomMove = getRandomMove(2);
-        updateState(randomMove, 2);
+        updateState(randomMove, 2, meta);
         logger.trace(`... ... Replacement action: ${JSON.stringify(randomMove)}`);
     } else {
         logger.trace(`... ... Content received: ${JSON.stringify(data.data)}`);
