@@ -32,9 +32,7 @@ describe('nextMove function', () => {
     beforeEach(async () => {
         gameState.opponentWalls = [];
         gameState.ownWalls = [];
-        gameState.board = JSON.parse(
-            JSON.stringify(Array(10).fill(Array(10).fill(0)))
-        );
+        gameState.board = JSON.parse(JSON.stringify(Array(10).fill(Array(10).fill(0))));
 
         await setup(1);
     });
@@ -85,9 +83,7 @@ describe('nextMove function', () => {
 
         gameState.ownWalls.push(['78', 0]);
 
-        gameState.board = JSON.parse(
-            JSON.stringify(Array(9).fill(Array(9).fill(0)))
-        );
+        gameState.board = JSON.parse(JSON.stringify(Array(9).fill(Array(9).fill(0))));
         gameState.board[1][8] = 1;
         const move = await nextMove(gameState);
         chai.expect(move.action).to.equal('move');
@@ -110,12 +106,8 @@ describe('nextMove function', () => {
         while (true) {
             const move = await nextMove(gameState);
             if (move.action === 'move') {
-                gameState.board = JSON.parse(
-                    JSON.stringify(Array(9).fill(Array(9).fill(0)))
-                );
-                gameState.board[parseInt(move.value[0])][
-                    parseInt(move.value[1])
-                ] = 1;
+                gameState.board = JSON.parse(JSON.stringify(Array(9).fill(Array(9).fill(0))));
+                gameState.board[parseInt(move.value[0])][parseInt(move.value[1])] = 1;
                 console.log('Player moved to', move.value);
                 if (move.value[1] === '9') {
                     return;

@@ -60,46 +60,18 @@ function nextMove(gameState) {
 
 function calculateNextWallPosition(gameState) {
     if (goal === 9) {
-        if (
-            !gameState.opponentWalls.some(
-                (wall) => wall[0] === '28' && wall[1] === 0
-            ) &&
-            !gameState.ownWalls.some(
-                (wall) => wall[0] === '28' && wall[1] === 0
-            )
-        ) {
+        if (!gameState.opponentWalls.some((wall) => wall[0] === '28' && wall[1] === 0) && !gameState.ownWalls.some((wall) => wall[0] === '28' && wall[1] === 0)) {
             wallsPlaced++;
             return ['28', 0];
-        } else if (
-            !gameState.opponentWalls.some(
-                (wall) => wall[0] === '78' && wall[1] === 0
-            ) &&
-            !gameState.ownWalls.some(
-                (wall) => wall[0] === '78' && wall[1] === 0
-            )
-        ) {
+        } else if (!gameState.opponentWalls.some((wall) => wall[0] === '78' && wall[1] === 0) && !gameState.ownWalls.some((wall) => wall[0] === '78' && wall[1] === 0)) {
             wallsPlaced++;
             return ['78', 0];
         }
     } else if (goal === 1) {
-        if (
-            !gameState.opponentWalls.some(
-                (wall) => wall[0] === '32' && wall[1] === 0
-            ) &&
-            !gameState.ownWalls.some(
-                (wall) => wall[0] === '32' && wall[1] === 0
-            )
-        ) {
+        if (!gameState.opponentWalls.some((wall) => wall[0] === '32' && wall[1] === 0) && !gameState.ownWalls.some((wall) => wall[0] === '32' && wall[1] === 0)) {
             wallsPlaced++;
             return ['82', 0];
-        } else if (
-            !gameState.opponentWalls.some(
-                (wall) => wall[0] === '72' && wall[1] === 0
-            ) &&
-            !gameState.ownWalls.some(
-                (wall) => wall[0] === '72' && wall[1] === 0
-            )
-        ) {
+        } else if (!gameState.opponentWalls.some((wall) => wall[0] === '72' && wall[1] === 0) && !gameState.ownWalls.some((wall) => wall[0] === '72' && wall[1] === 0)) {
             wallsPlaced++;
             return ['73', 0];
         }
@@ -148,11 +120,7 @@ class GameState {
     }
 
     static fromDict(dict) {
-        return new GameState(
-            dict['opponentWalls'],
-            dict['ownWalls'],
-            dict['board']
-        );
+        return new GameState(dict['opponentWalls'], dict['ownWalls'], dict['board']);
     }
 
     static fromBoard(board, player) {
@@ -174,9 +142,7 @@ class GameState {
         let position = board.getPlayer(player.getId() - 1).getPosition();
         b[position.getX()][position.getY()] = 1;
 
-        let opponentPosition = board
-            .getPlayer(player.getId() === 2 ? 0 : 1)
-            .getPosition();
+        let opponentPosition = board.getPlayer(player.getId() === 2 ? 0 : 1).getPosition();
         if (opponentPosition) {
             if (b[opponentPosition.getX()][opponentPosition.getY()] === 0) {
                 b[opponentPosition.getX()][opponentPosition.getY()] = 2;
@@ -276,14 +242,7 @@ function getBestMove(gameState) {
 
     // If there is a wall in front of us, move to the right or left
     if (player === 1) {
-        if (
-            gameState.ownWalls.some(
-                (wall) => wall[0] === `${playerPos[0]}${playerPos[1] + 1}`
-            ) ||
-            gameState.opponentWalls.some(
-                (wall) => wall[0] === `${playerPos[0]}${playerPos[1] + 1}`
-            )
-        ) {
+        if (gameState.ownWalls.some((wall) => wall[0] === `${playerPos[0]}${playerPos[1] + 1}`) || gameState.opponentWalls.some((wall) => wall[0] === `${playerPos[0]}${playerPos[1] + 1}`)) {
             if (playerPos[0] + 1 > 9 && mode === 'right') {
                 mode = 'left';
             }
@@ -301,14 +260,7 @@ function getBestMove(gameState) {
     }
 
     if (player === 2) {
-        if (
-            gameState.ownWalls.some(
-                (wall) => wall[0] === `${playerPos[0]}${playerPos[1] - 1}`
-            ) ||
-            gameState.opponentWalls.some(
-                (wall) => wall[0] === `${playerPos[0]}${playerPos[1] - 1}`
-            )
-        ) {
+        if (gameState.ownWalls.some((wall) => wall[0] === `${playerPos[0]}${playerPos[1] - 1}`) || gameState.opponentWalls.some((wall) => wall[0] === `${playerPos[0]}${playerPos[1] - 1}`)) {
             if (playerPos[0] + 1 > 9 && mode === 'right') {
                 mode = 'left';
             }

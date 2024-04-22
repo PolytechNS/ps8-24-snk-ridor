@@ -6,7 +6,6 @@
     "scripts": {
         "test": "mocha **/*.test.js",
         "start": "node ./back/index.js",
-        "arena": "node ./back/logic/arena.js",
         "prepare": "husky install"
     },
     "repository": {
