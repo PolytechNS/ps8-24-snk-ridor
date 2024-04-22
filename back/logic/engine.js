@@ -610,6 +610,12 @@ function startGame(room_hash, meta) {
 function setup1(room_hash, data, meta) {
     logger.trace('... Analysing setup response...');
     try {
+        if (data.data.length < 2 && data.data[1] !== '1') {
+            logger.trace(`... ... Bad content: ${data.data}`);
+            playerLost(1, room_hash, meta);
+            meta['keepPlaying'] = false;
+        }
+
         meta['p1Pos'] = data.data.split('').map((e) => e * 1);
     } catch (e) {
         logger.trace(`... ... Bad content: ${data.data}`);
@@ -630,6 +636,12 @@ function setup2(room_hash, data, meta) {
     logger.trace('... Analysing setup response...');
     logger.trace(`... ... Response time OK`);
     try {
+        if (data.data.length < 2 && data.data[1] !== '9') {
+            logger.trace(`... ... Bad content: ${data.data}`);
+            playerLost(2, room_hash, meta);
+            meta['keepPlaying'] = false;
+        }
+
         meta['p2Pos'] = data.data.split('').map((e) => e * 1);
     } catch (e) {
         logger.trace(`... ... Bad content: ${data.data}`);
