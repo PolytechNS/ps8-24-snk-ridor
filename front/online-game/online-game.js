@@ -77,6 +77,7 @@ export function setupAnswer(position) {
     socket.emit('game:setupAnswer', { data: position });
 }
 
+
 export function nextMoveAnswer(position) {
     /*
      * position is a string representing the position of the player
