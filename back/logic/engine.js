@@ -573,7 +573,7 @@ function updateState(action, player, meta) {
                 return false;
             }
 
-            if (!isMoveOK(player, newPos)) return false;
+            if (!isMoveOK(player, newPos, meta)) return false;
             if (player === 1) meta['p1Pos'] = newPos;
             else meta['p2Pos'] = newPos;
             break;
