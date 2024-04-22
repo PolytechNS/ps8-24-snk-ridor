@@ -1,7 +1,7 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, Event, getGame } from './online_models.js';
 import { onCellClick, next_player, firstOnCellClick } from './online_engine.js';
 import { LOG } from './online_main.js';
-import { findPath } from './online_pathFinding.js';
+import { placeWall } from '../online-game.js';
 
 export function init_board(board_div, board) {
     if (LOG) console.log('Initializing board');
@@ -174,6 +174,7 @@ export function on_wall_out(event) {
 }
 
 export function on_wall_click(event) {
+    if (LOG) console.log('Wall clicked', event);
     let game = getGame();
     let wall_player = getGame().getCurrentPlayer();
     if (game.remainingWalls(wall_player) == 0) {
@@ -209,7 +210,11 @@ export function on_wall_click(event) {
         wall.classList.add(`wall-p${wall_player}`);
         wall.player = wall_player;
     }
-    wall_player.placeWall();
+
+    // trigger the socket event
+    placeWall(walls, 0);
+
+    // update the remaining walls
     display_message(`il reste ${game.remainingWalls(wall_player)} murs`, 'dev_message');
     let wall_event = new Event('wall', wall_player, event.walls);
     next_player(wall_event);

@@ -369,7 +369,7 @@ export function onCellClick(event) {
         cell.selected = false;
     }
     if (cell.overviewed) {
-        getPlayerTurn().classList.toggle('border-active');
+        //getPlayerTurn().classList.toggle('border-active');
         move_player(getPlayerTurn(), column, line);
     } else {
         deleteOverview();

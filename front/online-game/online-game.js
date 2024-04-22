@@ -51,7 +51,7 @@ export function nextMoveAnswer(position) {
     /*
      * position is a string representing the position of the player
      */
-    console.log('nextMoveAnswer');
+    console.log('game:nextMoveAnswer');
     socket.emit('game:nextMoveAnswer', { data: position });
 }
 
@@ -64,8 +64,8 @@ export function move(position) {
     /*
      * position is a string representing the position of the player
      */
-    console.log('game:nextMove');
-    socket.emit('game:nextMove', {
+    console.log('game:nextMoveAnswer');
+    socket.emit('game:nextMoveAnswer', {
         data: {
             action: 'move',
             value: position,
@@ -79,8 +79,8 @@ export function placeWall(wall) {
      * - a position string representing the top-left square that the wall is in contact with
      * - an integer: 0 if the wall is placed horizontally or 1 if it is vertical
      */
-    console.log('game:nextMove');
-    socket.emit('game:nextMove', {
+    console.log('game:nextMoveAnswer');
+    socket.emit('game:nextMoveAnswer', {
         data: {
             action: 'wall',
             value: wall,
