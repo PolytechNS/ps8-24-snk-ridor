@@ -55,49 +55,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function displayLeaderboard(data) {
         console.log(data);
-        const leaderboardList = document.getElementById('leaderboard');
-        leaderboardList.innerHTML = '';
+        let leaderboardList = document.getElementById('leaderboard');
+        let text = '<h1>Leaderboard</h1><br><ul>';
 
-        data.forEach((entry, index) => {
+        for (let i = 0; i < data.length; i++) {
+            let element = data[i];
             const listItem = document.createElement('li');
-            listItem.textContent = `${index + 1}. ${entry.name} - ${entry.elo}`;
-            leaderboardList.appendChild(listItem);
-        });
-    }
-
-    function populateLeaderboard() {
-        const podium = document.getElementById('podium');
-        const userList = document.getElementById('userList');
-
-        // Clear existing content
-        podium.innerHTML = '';
-        userList.innerHTML = '';
-
-        // Populate podium
-        for (let i = 0; i < 3; i++) {
-            const user = leaderboardData[i];
-            const userElement = createUserElement(user);
-            podium.appendChild(userElement);
+            listItem.textContent = `${i + 1}. ${element.name} - ${element.elo}`;
+            text += listItem.outerHTML;
         }
 
-        // Populate user list
-        for (let i = 3; i < leaderboardData.length; i++) {
-            const user = leaderboardData[i];
-            const userElement = createUserElement(user);
-            userList.appendChild(userElement);
-        }
-    }
-
-    // Function to create user element
-    function createUserElement(user) {
-        const userElement = document.createElement('li');
-        userElement.classList.add('user');
-        userElement.innerHTML = `
-    <img src="${user.avatar}" alt="${user.name}">
-    <span>${user.name}</span>
-    <span>${user.score}</span>
-  `;
-        return userElement;
+        text += '</ul>';
+        leaderboardList.innerHTML = text;
     }
 
     function displayMe(data) {
