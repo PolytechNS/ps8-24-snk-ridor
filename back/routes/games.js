@@ -7,12 +7,21 @@ const TIME_LIMIT_S = 60; // 1 minute
 
 games = {};
 
-// games = {
-//     'room_hash': {"game_object": game_object, "player1": player1, "player2": player2}
-// }
-
 function registerHandlers(io, socket) {
     logger.debug('Registering game socket handlers');
+
+    // on disconnect make player lose
+    socket.on('disconnect', () => {
+        logger.info('Socket disconnected');
+        let room_hash = Object.keys(games).find((room) => games[room].player1 === socket.id || games[room].player2 === socket.id);
+        if (!room_hash) {
+            logger.warn(`Could not find room for socket ${socket.id}`);
+            return;
+        }
+
+        let playerId = games[room_hash].player1 === socket.id ? 1 : 2;
+        endGame(playerId, room_hash, games[room_hash].game_object);
+    });
 
     socket.on('game:join', (room_hash) => {
         logger.info('Socket request: game:join');
