@@ -6,6 +6,9 @@ function joinAI(room_hash) {
 
     socket.on('connect', () => {
         socket.emit('game:join', room_hash);
+    });
+
+    socket.on('game:start', (player) => {
         socket.emit('game:ready', socket.id);
     });
 
