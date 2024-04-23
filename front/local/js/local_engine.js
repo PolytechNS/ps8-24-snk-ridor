@@ -206,7 +206,7 @@ export function getCorridorPossiblePositionForPath(column, line) {
     return cells;
 }
 
-function checkVictory() {
+export function checkVictory() {
     if (LOG) console.log(`checkVictory() called`);
     // if the player is on the opposite line, it remains one move for the other player to win
     // if the other player place himself on the opposite line, it is a draw
