@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function joinRoom(roomId) {
         console.log('Emitting room:join event with room ID:', roomId);
         socket.emit('game:join', roomId);
+        socket.emit('game:login', userEmail);
     }
 
     socket.on('game:start', () => {

@@ -211,15 +211,15 @@ export function on_wall_click(event) {
     }
     wall_player.placeWall();
 
+    display_message(`il reste ${wall_player.remaining_walls} murs`, 'dev_message');
+    let wall_event = new Event('wall', wall_player, event.walls);
+    next_player(wall_event);
+
     if (checkVictory()) {
         updateFogOfWar(new Event('end', player.player, [player.column, player.line]));
         deleteOverview();
         return;
     }
-
-    display_message(`il reste ${wall_player.remaining_walls} murs`, 'dev_message');
-    let wall_event = new Event('wall', wall_player, event.walls);
-    next_player(wall_event);
 }
 
 // Helper functions

@@ -57,11 +57,6 @@ export function newGame() {
 }
 
 export function next_player(event = null) {
-    if (checkVictory()) {
-        updateFogOfWar(new Event('end', player.player, [player.column, player.line]));
-        deleteOverview();
-        return;
-    }
     if (LOG) console.log(`next_player() called`);
 
     let player = getGame().getCurrentPlayer();
@@ -207,7 +202,7 @@ export function getCorridorPossiblePositionForPath(column, line) {
 }
 
 export function checkVictory() {
-    if (LOG) console.log(`checkVictory() called`);
+    console.log(`checkVictory() called`);
     // if the player is on the opposite line, it remains one move for the other player to win
     // if the other player place himself on the opposite line, it is a draw
     // on the other case, the first player wins
@@ -218,8 +213,10 @@ export function checkVictory() {
             wins.push(p);
         }
     }
+    console.log(wins);
 
     if (wins.length == 1) {
+        console.log(`tour ${turn} : Victoire du joueur ${wins[0].i}`);
         if (1 == turn % 2) {
             // if it is an odd turn, it is player A's turn, so player B has won
             display_message(`Victoire du joueur ${wins[0].id}`, 'final_message');
@@ -230,6 +227,7 @@ export function checkVictory() {
             return false;
         }
     } else if (wins.length == 2) {
+        console.log(`tour ${turn} : Égalité`);
         // if both players have reached the opposite line, it is a draw
         display_message(`Égalité`, 'final_message');
         return true;
@@ -263,13 +261,14 @@ export function move_player(player, column, line) {
     getGame()['p' + player.player + '_pos'] = [column, line];
     getGame().getCurrentPlayer().move([column, line]);
 
+    let event = new Event('move', player.player, [old_column, old_line], [column, line]);
+    next_player(event);
+
     if (checkVictory()) {
         updateFogOfWar(new Event('end', player.player, [player.column, player.line]));
         deleteOverview();
         return;
     }
-    let event = new Event('move', player.player, [old_column, old_line], [column, line]);
-    next_player(event);
 }
 
 export function display() {
@@ -348,7 +347,7 @@ function getPlayerTurn() {
     return retour;
 }
 
-function deleteOverview() {
+export function deleteOverview() {
     if (LOG) console.log(`deleteOverview() called`);
     let overview = document.querySelectorAll('.position_overview');
     overview.forEach((element) => {

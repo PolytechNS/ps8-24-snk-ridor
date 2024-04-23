@@ -1,8 +1,6 @@
 import { Game, getGame } from './local_models.js';
 import { init_board } from './local_board.js';
 import { addPlayers } from './local_engine.js';
-import { updatePath } from './local_pathFinding.js';
-import { updateFogOfWar } from './local_fogwar.js';
 
 export const LOG = false;
 
