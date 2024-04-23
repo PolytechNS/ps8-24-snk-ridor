@@ -3,14 +3,17 @@ import { getGame } from './js/online_models.js';
 import { LOG } from './js/online_main.js';
 import { init_board, display_message } from './js/online_board.js';
 import { next_player } from './js/online_engine.js';
+import { displayEndGame } from './js/online_display.js';
 
-const socket = io();
+var socket;
 
 document.addEventListener('DOMContentLoaded', function () {
     console.log('arrived in online-game.js');
 
+    socket = io();
+
     // retrieve socket id
-    const old_socket_id = localStorage.getItem('socket_id');
+    var old_socket_id = localStorage.getItem('socket_id');
 
     socket.on('connect', () => {
         socket.emit('game:ready', old_socket_id);
@@ -23,6 +26,46 @@ document.addEventListener('DOMContentLoaded', function () {
         if (LOG) console.log(`The current player is player ${playerId}`);
         display_message('Place ton pion', 'action_message', false);
     });
+
+    socket.on('game:nextMove', (gamestate) => {
+        console.log('game:nextMove ', gamestate);
+        let game = getGame();
+        game.setBoard(gamestate.board);
+        game.setPlayerWalls('own', gamestate.ownWalls);
+        game.setPlayerWalls('other', gamestate.opponentWalls);
+        next_player();
+    });
+
+    socket.on('game:updateBoard', (gamestate) => {
+        /*
+         * gamestate is a dictionary containing:
+         * - a board list
+         * - a list of walls for the player
+         * - a list of walls for the opponent
+         *
+         * this function is called after the end of the turn to update the board
+         */
+        console.log('game:updateBoard ', gamestate);
+
+        let game = getGame();
+        game.setPlayerWalls('own', gamestate.ownWalls);
+        game.setPlayerWalls('other', gamestate.opponentWalls);
+        game.setBoard(gamestate.board);
+    });
+
+    socket.on('game:endGame', (data) => {
+        console.log('game:endGame', data);
+        displayEndGame(data);
+        if (data !== 1 && data !== 2) {
+            display_message('Match nul !', 'action_message', false);
+            return;
+        }
+        if (data === getGame().getOnlinePlayer()) {
+            display_message('Défaite !', 'action_message', false);
+        } else {
+            display_message('Victoire !', 'action_message', false);
+        }
+    });
 });
 
 export function setupAnswer(position) {
@@ -32,15 +75,6 @@ export function setupAnswer(position) {
     console.log('game:setupAnswer');
     socket.emit('game:setupAnswer', { data: position });
 }
-
-socket.on('game:nextMove', (gamestate) => {
-    console.log('game:nextMove ', gamestate);
-    let game = getGame();
-    game.setBoard(gamestate.board);
-    game.setPlayerWalls('own', gamestate.ownWalls);
-    game.setPlayerWalls('other', gamestate.opponentWalls);
-    next_player();
-});
 
 export function nextMoveAnswer(position) {
     /*
@@ -52,36 +86,6 @@ export function nextMoveAnswer(position) {
     console.log('game:nextMoveAnswer');
     socket.emit('game:nextMoveAnswer', { data: position });
 }
-
-socket.on('game:updateBoard', (gamestate) => {
-    /*
-     * gamestate is a dictionary containing:
-     * - a board list
-     * - a list of walls for the player
-     * - a list of walls for the opponent
-     *
-     * this function is called after the end of the turn to update the board
-     */
-    console.log('game:updateBoard ', gamestate);
-
-    let game = getGame();
-    game.setPlayerWalls('own', gamestate.ownWalls);
-    game.setPlayerWalls('other', gamestate.opponentWalls);
-    game.setBoard(gamestate.board);
-});
-
-socket.on('game:endGame', (data) => {
-    console.log('game:endGame', data);
-    if (data !== 1 && data !== 2) {
-        display_message('Match nul !', 'action_message', false);
-        return;
-    }
-    if (data === getGame().getOnlinePlayer()) {
-        display_message('Défaite !', 'action_message', false);
-    } else {
-        display_message('Victoire !', 'action_message', false);
-    }
-});
 
 /* functional functions, to trigger socket on game events */
 export function move(position) {

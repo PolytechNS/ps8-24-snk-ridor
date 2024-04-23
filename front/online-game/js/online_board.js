@@ -192,6 +192,11 @@ export function on_wall_click(event) {
         return;
     }
 
+    if (game.getOnlinePlayer() != getGame().getCurrentPlayer()) {
+        display_message("Ce n'est pas votre tour !", 'forbidden_message');
+        return;
+    }
+
     let wall = event.target;
     // trigger the socket event
     let retour = wall.id.split('-');
