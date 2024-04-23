@@ -2,10 +2,8 @@ import { BOARD_WIDTH, BOARD_HEIGHT, Event, getGame } from './local_models.js';
 import { next_player, firstOnCellClick } from './local_engine.js';
 import { LOG } from './local_main.js';
 import { findPath } from './local_pathFinding.js';
-import { checkVictory, deleteOverview } from './local_engine.js';
-import { updateFogOfWar } from './local_fogwar.js';
 
-export function init_board(board_div, board) {
+export function init_board(board_div) {
     if (LOG) console.log('Initializing board');
     let BOARD_W = BOARD_WIDTH;
     let BOARD_H = BOARD_HEIGHT;
@@ -214,12 +212,6 @@ export function on_wall_click(event) {
     display_message(`il reste ${wall_player.remaining_walls} murs`, 'dev_message');
     let wall_event = new Event('wall', wall_player, event.walls);
     next_player(wall_event);
-
-    if (checkVictory()) {
-        updateFogOfWar(new Event('end', player.player, [player.column, player.line]));
-        deleteOverview();
-        return;
-    }
 }
 
 // Helper functions

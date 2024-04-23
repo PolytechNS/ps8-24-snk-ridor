@@ -58,21 +58,26 @@ export function newGame() {
 
 export function next_player(event = null) {
     if (LOG) console.log(`next_player() called`);
-
-    let player = getGame().getCurrentPlayer();
-
     let game = getGame();
+
+    let player = game.getCurrentPlayer();
+
     game.getCurrentPlayer().updateProfile();
     deleteOverview();
     if (game.turn_count == 200) {
         display_message('Égalité', 'final_message');
-        //alert('Draw'); // TODO : change this to a better way to display the victory
         return;
     } else if (game.turn_count == 190) {
         display_message('10 derniers tours !', 'info_message');
     }
 
     game.nextPlayer();
+    if (checkVictory()) {
+        updateFogOfWar(new Event('end', player.player, [player.column, player.line]));
+        deleteOverview();
+        return;
+    }
+
     document.getElementById('turn').textContent = game.turn_count;
     updatePath(game.getCurrentPlayer());
     document.getElementById('player').textContent = ['', 'A', 'B'][game.getCurrentPlayer().id];
@@ -82,6 +87,13 @@ export function next_player(event = null) {
 
     document.getElementById('continue_button').addEventListener('click', function () {
         hideTransitionScreen(); // Cache l'écran de transition
+    });
+
+    // hide transition screen on enter or space key press
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+            hideTransitionScreen(); // Cache l'écran de transition
+        }
     });
 }
 
@@ -216,8 +228,8 @@ export function checkVictory() {
     console.log(wins);
 
     if (wins.length == 1) {
-        console.log(`tour ${turn} : Victoire du joueur ${wins[0].i}`);
-        if (1 == turn % 2) {
+        console.log(`tour ${getGame().turn_count} : Victoire du joueur ${wins[0].id}`);
+        if (1 == getGame().turn_count % 2) {
             // if it is an odd turn, it is player A's turn, so player B has won
             display_message(`Victoire du joueur ${wins[0].id}`, 'final_message');
             return true;
@@ -263,12 +275,6 @@ export function move_player(player, column, line) {
 
     let event = new Event('move', player.player, [old_column, old_line], [column, line]);
     next_player(event);
-
-    if (checkVictory()) {
-        updateFogOfWar(new Event('end', player.player, [player.column, player.line]));
-        deleteOverview();
-        return;
-    }
 }
 
 export function display() {
