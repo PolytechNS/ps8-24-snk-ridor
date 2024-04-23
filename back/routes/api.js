@@ -1,6 +1,7 @@
 const auth = require('./auth');
 const friend = require('./friend');
 const user = require('./user');
+const leaderboard = require('./leaderboard');
 
 function manageRequest(request, response) {
     let url = new URL(request.url, `http://${request.headers.host}`);
@@ -18,6 +19,10 @@ function manageRequest(request, response) {
 
         case 'user':
             user.manageRequest(request, response);
+            break;
+
+        case 'leaderboard':
+            leaderboard.manageRequest(request, response);
             break;
 
         default:

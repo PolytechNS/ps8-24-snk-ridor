@@ -111,6 +111,30 @@ class User {
 
         return await users.updateOne({ email: email }, { $set: user });
     }
+
+    static async getTop() {
+        const db = await getMongoDatabase();
+        const users = db.collection('users');
+
+        return users
+            .find()
+            .sort({ elo: -1 })
+            .toArray()
+            .then((result) => {
+                let users_objs = [];
+
+                result.forEach((user) => {
+                    let user_obj = new User('', '', '');
+                    user_obj.name = user.name;
+                    user_obj.email = user.email;
+                    user_obj.elo = user.elo;
+
+                    users_objs.push(user_obj);
+                });
+
+                return users_objs;
+            });
+    }
 }
 
 function hashPassword(password) {
