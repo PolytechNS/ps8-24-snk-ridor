@@ -214,7 +214,6 @@ export function getCorridorPossiblePositionForPath(column, line) {
 }
 
 export function checkVictory() {
-    console.log(`checkVictory() called`);
     // if the player is on the opposite line, it remains one move for the other player to win
     // if the other player place himself on the opposite line, it is a draw
     // on the other case, the first player wins
@@ -225,10 +224,8 @@ export function checkVictory() {
             wins.push(p);
         }
     }
-    console.log(wins);
 
     if (wins.length == 1) {
-        console.log(`tour ${getGame().turn_count} : Victoire du joueur ${wins[0].id}`);
         if (1 == getGame().turn_count % 2) {
             // if it is an odd turn, it is player A's turn, so player B has won
             display_message(`Victoire du joueur ${wins[0].id}`, 'final_message');
@@ -239,7 +236,6 @@ export function checkVictory() {
             return false;
         }
     } else if (wins.length == 2) {
-        console.log(`tour ${turn} : Égalité`);
         // if both players have reached the opposite line, it is a draw
         display_message(`Égalité`, 'final_message');
         return true;
