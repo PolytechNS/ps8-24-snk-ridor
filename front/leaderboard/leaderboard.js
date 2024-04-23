@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(handleResponse)
             .then((data) => {
-                displayLeaderboard(data);
+                populateLeaderboard(data);
             })
             .catch((error) => {
                 console.error('Error during leaderboard retrieval:', error);
@@ -60,9 +60,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
         data.forEach((entry, index) => {
             const listItem = document.createElement('li');
-            listItem.textContent = `${index + 1}. ${entry.user_name} - ${entry.elo}`;
+            listItem.textContent = `${index + 1}. ${entry.name} - ${entry.elo}`;
             leaderboardList.appendChild(listItem);
         });
+    }
+
+    function populateLeaderboard(data) {
+        const podium = document.getElementById('podium');
+        const userList = document.getElementById('userList');
+
+        // Clear existing content
+        podium.innerHTML = '';
+        userList.innerHTML = '';
+
+        // Populate podium
+        for (let i = 0; i < 3; i++) {
+            const user = data[i];
+            const userElement = createUserElement(user);
+            podium.appendChild(userElement);
+        }
+
+        // Populate user list
+        for (let i = 3; i < data.length; i++) {
+            const user = data[i];
+            const userElement = createUserElement(user);
+            userList.appendChild(userElement);
+        }
+    }
+
+    // Function to create user element
+    function createUserElement(user) {
+        const userElement = document.createElement('li');
+        userElement.classList.add('user');
+        userElement.innerHTML = `
+          <img src="${user.avatar}" alt="${user.name}">
+          <span>${user.name}</span>
+          <span>${user.score}</span>
+        `;
+        return userElement;
     }
 
     function displayMe(data) {
