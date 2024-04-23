@@ -1,5 +1,5 @@
-import { logger } from '../libs/logging';
-import { User } from '../db/user';
+const { User } = require('../db/user');
+const { logger } = require('../libs/logging');
 
 function updateElo(player1, player2, loser) {
     // retrieve users from db

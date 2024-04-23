@@ -267,8 +267,6 @@ function endGame(losingPlayer, room_hash, meta) {
     if (games[room_hash].player1email && games[room_hash].player2email) {
         updateElo(games[room_hash].player1email, games[room_hash].player2email, losingPlayer);
     }
-
-    delete games[room_hash];
 }
 
 module.exports = {
