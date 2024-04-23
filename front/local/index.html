@@ -6,6 +6,8 @@
         <link rel="stylesheet" href="/styles/style.css" />
         <link rel="stylesheet" href="/styles/layout.css" />
         <link rel="stylesheet" href="/styles/fogwar.css" />
+        <link rel="manifest" href="/manifest.json" />
+        <script src="/sw/install-sw.js"></script>
         <script src="/local/js/local_display.js" type="module"></script>
         <script src="/util/guard.js" type="module"></script>
     </head>
@@ -21,7 +23,6 @@
                     <img src="/resources/persons/humain_annie.png" alt="avatar" class="avatar" />
                     <a id="other_pseudo">Joueur B</a>
                 </div>
-                <!--div>Score : <a id="other_score">54 827</a></div-->
                 <div class="profile-game-infos">walls : <a class="walls" id="other_walls">0</a><br /></div>
             </div>
 
@@ -30,7 +31,6 @@
                     <img src="/resources/persons/titan_eren.png" alt="avatar" class="avatar" />
                     <a id="self_pseudo">Joueur A</a>
                 </div>
-                <!--div>Score : <a id="self_score">72 845</a></div-->
                 <div class="profile-game-infos">walls : <a class="walls" id="self_walls">0</a><br /></div>
             </div>
         </aside>
