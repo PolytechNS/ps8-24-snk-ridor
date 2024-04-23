@@ -1,5 +1,6 @@
 const { logger } = require('../libs/logging');
 const { startGame, setup1, setup2, nextMove1, nextMove2 } = require('../logic/engine');
+const { joinAI } = require('../logic/ai_player');
 
 games = {};
 
@@ -166,6 +167,23 @@ function registerHandlers(io, socket) {
             nextMove2(room_hash, msg, games[room_hash].game_object);
             games[room_hash].game_object['currentPlayer'] = 1;
         }
+    });
+
+    // When game:ai is called, an AI player is placed in the game instead of another player
+    socket.on('game:ai', () => {
+        let room_hash = Object.keys(games).find((room) => games[room].player1 === socket.id);
+
+        if (!room_hash) {
+            logger.warn(`Could not find room for socket ${socket.id}`);
+            return;
+        }
+
+        if (games[room_hash].player2) {
+            logger.warn(`Room ${room_hash} is full`);
+            return;
+        }
+
+        joinAI(room_hash);
     });
 }
 
