@@ -13,9 +13,11 @@ function joinAI(room_hash) {
     });
 
     socket.on('game:setup', (data) => {
-        if (data.player === 2) {
-            socket.emit('game:setupA', { x: 0, y: 0 });
-        }
+        socket.emit('game:setupAnswer', { data: '99' });
+    });
+
+    socket.on('game:nextMove', (data) => {
+        socket.emit('game:nextMoveAnswer', { data: '99' });
     });
 }
 
