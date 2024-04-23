@@ -17,19 +17,19 @@
 
     <platform name="android">
 
-        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="www/img/logo_without_text.png" />
+        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="www/img/logo_splash.png" />
         <preference name="AndroidWindowSplashScreenBackground" value="#000000" />
 
-        <icon src="www/img/logo_without_text.png"/>
+        <icon src="www/img/logo_home.png"/>
 
     </platform>
 
     <platform name="ios">
 
-        <preference name="IOSWindowSplashScreenAnimatedIcon" value="www/img/logo_without_text.png" />
+        <preference name="IOSWindowSplashScreenAnimatedIcon" value="www/img/logo_splash.png" />
         <preference name="IOSWindowSplashScreenBackground" value="#000000" />
 
-        <icon src="www/img/logo_without_text.png"/>
+        <icon src="www/img/logo_home.png"/>
     </platform>
 
 </widget>

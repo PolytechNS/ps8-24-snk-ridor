@@ -12,7 +12,23 @@ function onDeviceReady() {
     window.setTimeout(function () {
         navigator.splashscreen.hide();
     }, 3000); // Le splash screen est affiché pendant 3 secondes
+
+    console.log(navigator.connection.type); // Affiche le type de connexion réseau
 }
 
 // Ajout de l'écouteur pour l'événement deviceready au niveau global
 document.addEventListener('deviceready', onDeviceReady, false);
+
+//PLUGIN NETWORK INFORMATION
+
+// Écouter pour les changements d'état de la connexion réseau
+document.addEventListener('offline', onOffline, false);
+document.addEventListener('online', onOnline, false);
+
+function onOffline() {
+    // L'application est maintenant hors ligne
+}
+
+function onOnline() {
+    // L'application est maintenant en ligne
+}
