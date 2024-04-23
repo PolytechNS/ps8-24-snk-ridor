@@ -198,15 +198,15 @@ function setup(playerId, room_hash, meta) {
     }
 }
 
-function nextMove(playerId, room_hash, meta, gamestate, opponentGamestate) {
+function nextMove(playerId, room_hash, meta, gameState, opponentGameState) {
     games[room_hash].game_object = meta;
     logger.info(`Socket response: game:nextMove`);
     if (playerId === 1) {
-        games[room_hash].io.to(games[room_hash].player1).emit('game:nextMove', gamestate);
-        games[room_hash].io.to(games[room_hash].player2).emit('game:updateBoard', opponentGamestate);
+        games[room_hash].io.to(games[room_hash].player1).emit('game:nextMove', gameState);
+        games[room_hash].io.to(games[room_hash].player2).emit('game:updateBoard', opponentGameState);
     } else {
-        games[room_hash].io.to(games[room_hash].player2).emit('game:nextMove', gamestate);
-        games[room_hash].io.to(games[room_hash].player1).emit('game:updateBoard', opponentGamestate);
+        games[room_hash].io.to(games[room_hash].player2).emit('game:nextMove', gameState);
+        games[room_hash].io.to(games[room_hash].player1).emit('game:updateBoard', opponentGameState);
     }
     logger.info(`Socket response: game:updatedBoard`);
 }
