@@ -1,4 +1,4 @@
-const { User, hashPassword } = require('../db/user');
+const { User } = require('../db/user');
 const { getCurrentUser, getJsonBody } = require('../libs/jenkspress');
 
 function manageRequest(request, response) {

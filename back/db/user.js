@@ -119,6 +119,7 @@ class User {
         return users
             .find()
             .sort({ elo: -1 })
+            .limit(100)
             .toArray()
             .then((result) => {
                 let users_objs = [];
