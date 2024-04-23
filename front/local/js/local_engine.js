@@ -57,7 +57,15 @@ export function newGame() {
 }
 
 export function next_player(event = null) {
+    if (checkVictory()) {
+        updateFogOfWar(new Event('end', player.player, [player.column, player.line]));
+        deleteOverview();
+        return;
+    }
     if (LOG) console.log(`next_player() called`);
+
+    let player = getGame().getCurrentPlayer();
+
     let game = getGame();
     game.getCurrentPlayer().updateProfile();
     deleteOverview();
@@ -198,8 +206,8 @@ export function getCorridorPossiblePositionForPath(column, line) {
     return cells;
 }
 
-function checkVictory(player) {
-    if (LOG) console.log(`checkVictory(${player}) called`);
+function checkVictory() {
+    if (LOG) console.log(`checkVictory() called`);
     // if the player is on the opposite line, it remains one move for the other player to win
     // if the other player place himself on the opposite line, it is a draw
     // on the other case, the first player wins
@@ -255,13 +263,12 @@ export function move_player(player, column, line) {
     getGame()['p' + player.player + '_pos'] = [column, line];
     getGame().getCurrentPlayer().move([column, line]);
 
-    if (checkVictory(player)) {
+    if (checkVictory()) {
         updateFogOfWar(new Event('end', player.player, [player.column, player.line]));
         deleteOverview();
         return;
     }
     let event = new Event('move', player.player, [old_column, old_line], [column, line]);
-    checkVictory(player);
     next_player(event);
 }
 

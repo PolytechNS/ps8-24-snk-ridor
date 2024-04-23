@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     socket = io();
 
+    // retrieve socket id
+    var old_socket_id = localStorage.getItem('socket_id');
+
     socket.on('connect', () => {
         socket.emit('game:ready', old_socket_id);
     });
