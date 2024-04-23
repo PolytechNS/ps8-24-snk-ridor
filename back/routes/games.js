@@ -154,11 +154,7 @@ function registerHandlers(io, socket) {
         if (games[room_hash].player1ready && games[room_hash].player2ready) {
             logger.debug(`Starting game in room ${room_hash}`);
 
-            // Start a timer for player 1
-            games[room_hash].timeout = setTimeout(() => {
-                logger.warn('Player 1 took too long to setup the board');
-                endGame(1, room_hash, games[room_hash].game_object);
-            });
+            startTimer(1, room_hash);
             startGame(room_hash, games[room_hash].game_object);
         }
     });
@@ -176,28 +172,21 @@ function registerHandlers(io, socket) {
                 logger.warn('Player 2 is not allowed to setup the board before player 1');
                 return;
             }
-            clearTimeout(games[room_hash].timeout);
+
+            startTimer(1, room_hash);
             setup1(room_hash, msg, games[room_hash].game_object);
             logger.trace("Player 2's turn");
             games[room_hash].game_object['currentPlayer'] = 2;
-            // start a timer for player 2
-            games[room_hash].timeout = setTimeout(() => {
-                logger.warn('Player 2 took too long to setup the board');
-                endGame(2, room_hash, games[room_hash].game_object);
-            }, TIME_LIMIT_S * 1000);
         } else {
             if (games[room_hash].game_object['currentPlayer'] === 1 || games[room_hash].game_object['currentPlayer'] === undefined) {
                 logger.warn('Player 1 is not allowed to setup the board before player 2');
                 return;
             }
-            clearTimeout(games[room_hash].timeout);
+
+            startTimer(1, room_hash);
             setup2(room_hash, msg, games[room_hash].game_object);
             logger.trace("Player 1's turn");
             games[room_hash].game_object['currentPlayer'] = 1;
-            games[room_hash].timeout = setTimeout(() => {
-                logger.warn('Player 1 took too long to setup the board');
-                endGame(1, room_hash, games[room_hash].game_object);
-            }, TIME_LIMIT_S * 1000);
         }
     });
 
@@ -211,28 +200,21 @@ function registerHandlers(io, socket) {
                 logger.warn('Player 2 is not allowed to make a move before player 1');
                 return;
             }
-            clearTimeout(games[room_hash].timeout);
+
+            startTimer(2, room_hash);
             nextMove1(room_hash, msg, games[room_hash].game_object);
             logger.trace("Player 2's turn");
             games[room_hash].game_object['currentPlayer'] = 2;
-            // start a timer for player 2
-            games[room_hash].timeout = setTimeout(() => {
-                logger.warn('Player 2 took too long to make a move');
-                endGame(2, room_hash, games[room_hash].game_object);
-            }, TIME_LIMIT_S * 1000);
         } else {
             if (games[room_hash].game_object['currentPlayer'] !== 2) {
                 logger.warn('Player 1 is not allowed to make a move before player 2');
                 return;
             }
-            clearTimeout(games[room_hash].timeout);
+
+            startTimer(1, room_hash);
             nextMove2(room_hash, msg, games[room_hash].game_object);
             logger.trace("Player 1's turn");
             games[room_hash].game_object['currentPlayer'] = 1;
-            games[room_hash].timeout = setTimeout(() => {
-                logger.warn('Player 1 took too long to make a move');
-                endGame(1, room_hash, games[room_hash].game_object);
-            }, TIME_LIMIT_S * 1000);
         }
     });
 
@@ -309,6 +291,26 @@ function endGame(losingPlayer, room_hash, meta) {
     // If both players are registered
     if (games[room_hash].player1email && games[room_hash].player2email) {
         updateElo(games[room_hash].player1email, games[room_hash].player2email, losingPlayer);
+    }
+}
+
+function startTimer(player, room_hash) {
+    if (games[room_hash].timeout) {
+        logger.debug('Clearing previous timeout');
+        clearTimeout(games[room_hash].timeout);
+    }
+
+    logger.debug(`Starting timer for player ${player} of ${TIME_LIMIT_S} seconds`);
+    games[room_hash].timeout = setTimeout(() => {
+        logger.warn(`Player ${player} took too long to make a move`);
+        endGame(player, room_hash, games[room_hash].game_object);
+    }, TIME_LIMIT_S * 1000);
+}
+
+function clearTimer(room_hash) {
+    if (games[room_hash].timeout) {
+        logger.debug('Clearing timeout');
+        clearTimeout(games[room_hash].timeout);
     }
 }
 
