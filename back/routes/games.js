@@ -263,6 +263,8 @@ function endGame(losingPlayer, room_hash, meta) {
     logger.info(`Socket response: game:endGame`);
     games[room_hash].io.to(games[room_hash].player2).emit('game:endGame', losingPlayer);
 
+    logger.debug(`Updating elo for ${games[room_hash].player1email} and ${games[room_hash].player2email}`);
+
     // If both players are registered
     if (games[room_hash].player1email && games[room_hash].player2email) {
         updateElo(games[room_hash].player1email, games[room_hash].player2email, losingPlayer);
