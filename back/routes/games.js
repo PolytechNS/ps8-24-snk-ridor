@@ -128,7 +128,7 @@ function registerHandlers(io, socket) {
         let playerId = games[room_hash].player1 === socket.id ? 1 : 2;
 
         logger.trace(`Player ${playerId} setup answer in room ${room_hash}`);
-        logger.trace(msg);
+        logger.trace(JSON.stringify(msg));
 
         if (playerId === 1) {
             if (games[room_hash].game_object['currentPlayer'] !== 1 || games[room_hash].game_object['currentPlayer'] === undefined) {
@@ -138,7 +138,7 @@ function registerHandlers(io, socket) {
             setup1(room_hash, msg, games[room_hash].game_object);
             games[room_hash].game_object['currentPlayer'] = 2;
         } else {
-            if (games[room_hash].game_object['currentPlayer'] !== 2 || games[room_hash].game_object['currentPlayer'] === undefined) {
+            if (games[room_hash].game_object['currentPlayer'] !== 2) {
                 logger.warn('Player 1 is not allowed to setup the board before player 2');
                 return;
             }
