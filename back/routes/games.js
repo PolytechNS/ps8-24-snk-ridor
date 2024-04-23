@@ -128,10 +128,19 @@ function registerHandlers(io, socket) {
 
         logger.trace(`Player ${playerId} setup answer in room ${room_hash}`);
         logger.trace(msg);
+
         if (playerId === 1) {
+            if (games[room_hash].game_object['currentPlayer'] !== 1 || games[room_hash].game_object['currentPlayer'] === undefined) {
+                logger.warn('Player 2 is not allowed to setup the board before player 1');
+            }
             setup1(room_hash, msg, games[room_hash].game_object);
+            games[room_hash].game_object['currentPlayer'] = 2;
         } else {
+            if (games[room_hash].game_object['currentPlayer'] !== 2 || games[room_hash].game_object['currentPlayer'] === undefined) {
+                logger.warn('Player 1 is not allowed to setup the board before player 2');
+            }
             setup2(room_hash, msg, games[room_hash].game_object);
+            games[room_hash].game_object['currentPlayer'] = 1;
         }
     });
 
@@ -141,9 +150,17 @@ function registerHandlers(io, socket) {
         let playerId = games[room_hash].player1 === socket.id ? 1 : 2;
 
         if (playerId === 1) {
+            if (games[room_hash].game_object['currentPlayer'] !== 1) {
+                logger.warn('Player 2 is not allowed to make a move before player 1');
+            }
             nextMove1(room_hash, msg, games[room_hash].game_object);
+            games[room_hash].game_object['currentPlayer'] = 2;
         } else {
+            if (games[room_hash].game_object['currentPlayer'] !== 2) {
+                logger.warn('Player 1 is not allowed to make a move before player 2');
+            }
             nextMove2(room_hash, msg, games[room_hash].game_object);
+            games[room_hash].game_object['currentPlayer'] = 1;
         }
     });
 }
