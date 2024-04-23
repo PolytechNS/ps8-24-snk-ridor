@@ -279,7 +279,7 @@ function nextMove(playerId, room_hash, meta, gameState, opponentGameState) {
 }
 
 function endGame(losingPlayer, room_hash, meta) {
-    clearTimeout(games[room_hash].timeout);
+    clearTimer(room_hash);
     games[room_hash].game_object = meta;
     logger.info(`Socket response: game:endGame`);
     games[room_hash].io.to(games[room_hash].player1).emit('game:endGame', losingPlayer);
