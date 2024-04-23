@@ -1,4 +1,4 @@
-import { BASE_URL_PAGE, LOGIN_URL } from '/util/path.js';
+import { BASE_URL_PAGE, LOGIN_URL, ONLINE_GAME_URL } from '/util/path.js';
 import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
 
 document.addEventListener('DOMContentLoaded', function () {
