@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     socket.on('game:endGame', (data) => {
         console.log('game:endGame', data);
-        displayEndGame(data);
+        displayEndGame();
         if (data !== 1 && data !== 2) {
             display_message('Match nul !', 'action_message', false);
             return;

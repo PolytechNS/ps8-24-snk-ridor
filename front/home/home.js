@@ -6,6 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.clear();
         window.location.replace(BASE_URL_PAGE + LOGIN_URL);
     });
+
+    document.getElementById('vs-bot-play_button').addEventListener('click', () => {
+        joinAI();
+    });
 });
 
 function joinAI() {
@@ -20,6 +24,13 @@ function joinAI() {
         console.log('Emitting game:join event with user email:', room);
         socket.emit('game:join', room);
         socket.emit('game:ai');
+    });
+
+    socket.on('game:start', () => {
+        // remember socket id
+        localStorage.setItem('socket_id', socket.id);
+        console.log('Received game:start event');
+        document.location.href = BASE_URL_PAGE + ONLINE_GAME_URL;
     });
 
     // Log any error that occurs
