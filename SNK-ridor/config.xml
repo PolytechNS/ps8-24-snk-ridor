@@ -11,41 +11,25 @@
 
     <preference name="android-targetSdkVersion" value="33" />
 
+    <!-- Préférences pour le splash screen -->
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="3000" /> <!-- Durée d'affichage en millisecondes -->
+
     <platform name="android">
 
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-hdpi"/>
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-ldpi"/>
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-mdpi"/>
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-xhdpi"/>
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-xxhdpi"/>
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="land-xxxhdpi"/>
+        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="www/img/logo_without_text.png" />
+        <preference name="AndroidWindowSplashScreenBackground" value="#000000" />
 
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-hdpi"/>
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-ldpi"/>
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-mdpi"/>
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-xhdpi"/>
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-xxhdpi"/>
-        <AndroidWindowSplashScreenAnimatedIcon src="resources/splashscreen/login-background.jpg" density="port-xxxhdpi"/>
+        <icon src="www/img/logo.png"/>
 
-        <icon src="resources/logo.png"/>
     </platform>
 
     <platform name="ios">
 
-        <splash src="resources/splashscreen/login-background.jpg" width="320" height="480"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="640" height="960"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="640" height="1136"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="750" height="1334"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="828" height="1792"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="1125" height="2436"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="1242" height="2208"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="1242" height="2688"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="1536" height="2048"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="1668" height="2224"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="1668" height="2388"/>
-        <splash src="resources/splashscreen/login-background.jpg" width="2048" height="2732"/>
+        <preference name="IOSWindowSplashScreenAnimatedIcon" value="www/img/logo_without_text.png" />
+        <preference name="IOSWindowSplashScreenBackground" value="#000000" />
 
-        <icon src="resources/logo.png"/>
+        <icon src="www/img/logo.png"/>
     </platform>
 
 </widget>
