@@ -1,5 +1,5 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, Event, getGame } from './online_models.js';
-import { onCellClick, next_player, firstOnCellClick } from './online_engine.js';
+import { next_player, firstOnCellClick } from './online_engine.js';
 import { LOG } from './online_main.js';
 import { placeWall } from '../online-game.js';
 

@@ -1,8 +1,7 @@
-import { Game, getGame } from './online_models.js';
-import { init_board } from './online_board.js';
+import { Game } from './online_models.js';
 import { addPlayers } from './online_engine.js';
 
-export const LOG = true;
+export const LOG = false;
 
 function onload() {
     if (LOG) console.log('Loaded');
