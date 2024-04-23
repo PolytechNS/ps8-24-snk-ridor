@@ -22,8 +22,10 @@ function registerHandlers(io, socket) {
         games[room_hash] = games[room_hash] || {
             game_object: {},
             player1: null,
+            player1email: null,
             player1ready: false,
             player2: null,
+            player2email: null,
             player2ready: false,
             io: io,
         };
@@ -53,6 +55,26 @@ function registerHandlers(io, socket) {
             io.to(games[room_hash].player1).emit('game:start', 1);
             logger.info(`Socket response: game:start`);
             io.to(games[room_hash].player2).emit('game:start', 2);
+        }
+
+        logger.info('Socket response: game:rooms');
+        io.emit('game:rooms', getRoomsInfo());
+    });
+
+    socket.on('game:login', (email) => {
+        logger.info('Socket request: game:login');
+        let room_hash = Object.keys(games).find((room) => games[room].player1 === socket.id || games[room].player2 === socket.id);
+        if (!room_hash) {
+            logger.warn(`Could not find room for socket ${socket.id}`);
+            return;
+        }
+
+        if (games[room_hash].player1 === socket.id) {
+            games[room_hash].player1email = email;
+        }
+
+        if (games[room_hash].player2 === socket.id) {
+            games[room_hash].player2email = email;
         }
 
         logger.info('Socket response: game:rooms');
@@ -174,6 +196,7 @@ function registerHandlers(io, socket) {
     });
 
     socket.on('game:ai', () => {
+        logger.info('Socket request: game:ai');
         let room_hash = Object.keys(games).find((room) => games[room].player1 === socket.id);
 
         if (!room_hash) {
