@@ -64,9 +64,9 @@ socket.on('game:updateBoard', (gamestate) => {
      */
     console.log('game:updateBoard ', gamestate);
     let game = getGame();
-    game.setBoard(gamestate.board);
     game.setPlayerWalls('own', gamestate.ownWalls);
     game.setPlayerWalls('other', gamestate.opponentWalls);
+    game.setBoard(gamestate.board);
 });
 
 socket.on('game:endGame', (data) => {

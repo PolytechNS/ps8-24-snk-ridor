@@ -55,8 +55,6 @@ export function newGame() {
 export function next_player(event = null) {
     if (LOG) console.log(`next_player() called, fin du tour ${getGame().turn_count}`);
     let game = getGame();
-    //game.getCurrentPlayer().updateProfile();
-    deleteOverview();
 
     //update board in front
     display_game(game);
@@ -70,7 +68,9 @@ export function next_player(event = null) {
     }
 
     game.nextPlayer();
+    console.log(`C'est au joueur ${game.getCurrentPlayer()} de jouer`);
     if (game.getCurrentPlayer() === game.getOnlinePlayer()) {
+        console.log("C'est à vous de jouer");
         display_message('', 'action_message');
     }
     document.getElementById('turn').textContent = game.turn_count;
@@ -82,45 +82,65 @@ export function getCorridorPossiblePosition(column, line) {
     if (LOG) console.log(`getCorridorPossiblePosition(${column}, ${line}) called`);
     let cells = [];
     if (line > 1) {
+        // s'il n'y a pas de mur
         if (!document.getElementById('h-wall-' + column + '-' + line).classList.contains('placed')) {
+            // s'il n'y a pas de joueur
             if (document.getElementById('cell-' + column + '-' + (line - 1)).childElementCount == 0) {
                 cells.push([column, line - 1]);
             } else {
                 if (line > 2 && !document.getElementById('h-wall-' + column + '-' + (line - 2)).classList.contains('placed')) {
-                    cells.push([column, line - 2]);
+                    // si l'enfant de la cellule n'est pas un overview
+                    if (!document.getElementById('cell-' + column + '-' + (line - 1)).children[0].classList.contains('position_overview')) {
+                        cells.push([column, line - 2]);
+                    }
                 }
             }
         }
     }
     if (line < LINES) {
+        // s'il n'y a pas de mur
         if (!document.getElementById('h-wall-' + column + '-' + (line + 1)).classList.contains('placed')) {
+            // s'il n'y a pas de joueur
             if (document.getElementById('cell-' + column + '-' + (line + 1)).childElementCount == 0) {
                 cells.push([column, line + 1]);
             } else {
                 if (line < LINES - 1 && !document.getElementById('h-wall-' + column + '-' + (line + 1)).classList.contains('placed')) {
-                    cells.push([column, line + 2]);
+                    // si l'enfant de la cellule n'est pas un overview
+                    if (!document.getElementById('cell-' + column + '-' + (line + 1)).children[0].classList.contains('position_overview')) {
+                        cells.push([column, line + 2]);
+                    }
                 }
             }
         }
     }
     if (column > 1) {
+        // s'il n'y a pas de mur
         if (!document.getElementById('v-wall-' + (column - 1) + '-' + line).classList.contains('placed')) {
+            // s'il n'y a pas de joueur
             if (document.getElementById('cell-' + (column - 1) + '-' + line).childElementCount == 0) {
                 cells.push([column - 1, line]);
             } else {
                 if (column > 2 && !document.getElementById('v-wall-' + (column - 2) + '-' + line).classList.contains('placed')) {
-                    cells.push([column - 2, line]);
+                    // si l'enfant de la cellule n'est pas un overview
+                    if (!document.getElementById('cell-' + (column - 1) + '-' + line).children[0].classList.contains('position_overview')) {
+                        cells.push([column - 2, line]);
+                    }
                 }
             }
         }
     }
     if (column < COLUMNS) {
+        // s'il n'y a pas de mur
         if (!document.getElementById('v-wall-' + column + '-' + line).classList.contains('placed')) {
+            // s'il n'y a pas de joueur
             if (document.getElementById('cell-' + (column + 1) + '-' + line).childElementCount == 0) {
                 cells.push([column + 1, line]);
             } else {
                 if (column < COLUMNS - 1 && !document.getElementById('v-wall-' + column + '-' + line).classList.contains('placed')) {
-                    cells.push([column + 2, line]);
+                    // si l'enfant de la cellule n'est pas un overview
+                    if (!document.getElementById('cell-' + (column + 1) + '-' + line).children[0].classList.contains('position_overview')) {
+                        cells.push([column + 2, line]);
+                    }
                 }
             }
         }
@@ -132,6 +152,7 @@ export function getCorridorPossiblePosition(column, line) {
 export function move_player(player, column, line) {
     if (LOG) console.log(`move_player(${player}, ${column}, ${line}) called`);
     move(`${column}${line}`);
+    next_player();
 }
 
 export function display() {
@@ -207,11 +228,11 @@ function getPlayerTurn() {
     return retour;
 }
 
-function deleteOverview() {
+export function deleteOverview() {
     if (LOG) console.log(`deleteOverview() called`);
     let overview = document.querySelectorAll('.position_overview');
     overview.forEach((element) => {
-        element.parentElement.overviewed = false;
+        element.parentElement.overview = false;
         element.remove();
     });
 }
@@ -254,6 +275,9 @@ export function onCellClick(event) {
     // if cell contains a player
     let board = getGame();
     let cells;
+
+    let position = board.getPlayerPosition(board.getCurrentPlayer());
+    console.log(`Current player position: [${position[0]}, ${position[1]}], clicked cell: [${column}, ${line}]`);
     if (board.getPlayerPosition(board.getCurrentPlayer())[0] == column && board.getPlayerPosition(board.getCurrentPlayer())[1] == line) {
         cells = getCorridorPossiblePosition(column, line);
         for (let cell of cells) {
@@ -264,7 +288,7 @@ export function onCellClick(event) {
             overview.column = cell[1];
             overview.id = 'overview-' + cell[0] + '-' + cell[1];
             cellElement.appendChild(overview);
-            cellElement.overviewed = true;
+            cellElement.overview = true;
         }
         return;
     }
@@ -272,7 +296,7 @@ export function onCellClick(event) {
     if (cell.selected) {
         cell.selected = false;
     }
-    if (cell.overviewed) {
+    if (cell.overview) {
         //getPlayerTurn().classList.toggle('border-active');
         move_player(getPlayerTurn(), column, line);
     } else {
@@ -314,7 +338,7 @@ export function onPlayerClick(event) {
         overview.column = cell[1];
         overview.id = 'overview-' + cell[0] + '-' + cell[1];
         cellElement.appendChild(overview);
-        if (isPlayerTurn(player)) cellElement.overviewed = true;
+        if (isPlayerTurn(player)) cellElement.overview = true;
     }
 
     cell.selected = true; // This line seems to set a property 'selected' on the cell. Ensure this is managed as intended based on border toggle.

@@ -192,8 +192,9 @@ export function on_wall_click(event) {
         return;
     }
 
+    let wall = event.target;
     // trigger the socket event
-    let retour = walls[0].id.split('-');
+    let retour = wall.id.split('-');
     placeWall(`${retour[2]}${retour[3]}`, retour[0] === 'v' ? 1 : 0);
 
     // update the remaining walls

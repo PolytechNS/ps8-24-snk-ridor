@@ -1,9 +1,8 @@
-import { newGame, onCellClick } from './online_engine.js';
+import { newGame, onCellClick, deleteOverview } from './online_engine.js';
 import { BOARD_HEIGHT, BOARD_WIDTH } from './online_models.js';
 import { on_wall_click, on_wall_over, on_wall_out } from './online_board.js';
 import { LOG } from './online_main.js';
 import { updateFogOfWarFromBack } from './online_fogwar.js';
-import { move } from '../online-game.js';
 
 let global_board;
 /*
@@ -127,6 +126,7 @@ export function display_game(game) {
     let BOARD_H = board[0].length;
 
     // reset the board
+    deleteOverview();
     let board_div = document.getElementById('board');
     board_div.innerHTML = '';
 

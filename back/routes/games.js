@@ -204,6 +204,7 @@ function nextMove(playerId, room_hash, meta, gamestate, opponentGamestate) {
         games[room_hash].io.to(games[room_hash].player2).emit('game:nextMove', gamestate);
         games[room_hash].io.to(games[room_hash].player1).emit('game:updateBoard', opponentGamestate);
     }
+    logger.info(`Socket response: game:updatedBoard`);
 }
 
 function endGame(losingPlayer, room_hash, meta) {
