@@ -56,9 +56,9 @@ export function next_player(event = null) {
     }
 
     game.nextPlayer();
-    console.log(`C'est au joueur ${game.getCurrentPlayer()} de jouer`);
+    if (LOG) console.log(`C'est au joueur ${game.getCurrentPlayer()} de jouer`);
     if (game.getCurrentPlayer() === game.getOnlinePlayer()) {
-        console.log("C'est à vous de jouer");
+        if (LOG) console.log("C'est à vous de jouer");
         display_message('', 'action_message');
     }
     document.getElementById('turn').textContent = game.turn_count;
@@ -257,18 +257,22 @@ export function onCellClick(event) {
         cell = event.target;
     }
 
+    if (!isMyTurn()) return;
+
     let id = cell.id.split('-');
     let column = parseInt(id[1]); // x
     let line = parseInt(id[2]); // y
-    console.log(`Cell clicked: [${column}, ${line}]`);
+    if (LOG) console.log(`Cell clicked: [${column}, ${line}]`);
 
     // if cell contains a player
     let board = getGame();
     let cells;
 
-    let position = board.getPlayerPosition(board.getCurrentPlayer());
-    console.log(`Current player position: [${position[0]}, ${position[1]}], clicked cell: [${column}, ${line}]`);
-    if (board.getPlayerPosition(board.getCurrentPlayer())[0] == column && board.getPlayerPosition(board.getCurrentPlayer())[1] == line) {
+    let player = board.getCurrentPlayer();
+    player = 1;
+    let position = board.getPlayerPosition(player);
+    if (LOG) console.log(`Current player position: [${position[0]}, ${position[1]}], clicked cell: [${column}, ${line}]`);
+    if (board.getPlayerPosition(player)[0] == column && board.getPlayerPosition(player)[1] == line) {
         cells = getCorridorPossiblePosition(column, line);
         for (let cell of cells) {
             let cellElement = document.getElementById('cell-' + cell[0] + '-' + cell[1]);
@@ -338,7 +342,7 @@ export function onPlayerClick(event) {
 function addPlayer(board_div, board, column) {
     if (LOG) console.log(`addPlayer(${board_div}, ${board}, ${column}) called`);
 
-    console.log(board.getOnlinePlayer());
+    if (LOG) console.log(board.getOnlinePlayer());
     // if there is no player, add the first one
     if (board.getOnlinePlayer() == 1) {
         let player_a = document.createElement('div');

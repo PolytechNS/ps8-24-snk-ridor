@@ -1,5 +1,5 @@
 import { newGame, onCellClick, deleteOverview } from './online_engine.js';
-import { BOARD_HEIGHT, BOARD_WIDTH } from './online_models.js';
+import { BOARD_HEIGHT, BOARD_WIDTH, getGame } from './online_models.js';
 import { on_wall_click, on_wall_over, on_wall_out } from './online_board.js';
 import { LOG } from './online_main.js';
 import { updateFogOfWarFromBack } from './online_fogwar.js';
@@ -368,8 +368,8 @@ export function displayEndGame() {
     let game = getGame();
     if (LOG) console.log('displayEndGame', game);
     let board = game.board;
-    let BOARD_W = board.width();
-    let BOARD_H = board.height();
+    let BOARD_W = board.length;
+    let BOARD_H = board[0].length;
 
     // reset the board
     let board_div = document.getElementById('board');

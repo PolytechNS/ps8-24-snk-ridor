@@ -192,7 +192,7 @@ export function on_wall_click(event) {
         return;
     }
 
-    if (game.getOnlinePlayer() != getGame().getCurrentPlayer()) {
+    if (!isMyTurn()) {
         display_message("Ce n'est pas votre tour !", 'forbidden_message');
         return;
     }
@@ -250,4 +250,10 @@ function get_walls(event) {
 
     if (LOG) console.log('No walls found');
     return [];
+}
+
+function isMyTurn() {
+    if (LOG) console.log(`isMyTurn() called`);
+    let game = getGame();
+    return game.getCurrentPlayer() == game.getOnlinePlayer();
 }
