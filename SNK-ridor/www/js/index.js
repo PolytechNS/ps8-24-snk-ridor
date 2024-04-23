@@ -7,28 +7,40 @@ function onDeviceReady() {
     // Redéfinition de window.open pour toutes les ouvertures futures dans l'application
     window.open = cordova.InAppBrowser.open;
 
-    // Affichage du splash screen
+    //SPLASH SCREEN
     navigator.splashscreen.show();
     window.setTimeout(function () {
         navigator.splashscreen.hide();
     }, 3000); // Le splash screen est affiché pendant 3 secondes
 
+    //NETWORK INFORMATION
     console.log(navigator.connection.type); // Affiche le type de connexion réseau
+
+    // Écouter pour les changements d'état de la connexion réseau
+    document.addEventListener('offline', onOffline, false);
+    document.addEventListener('online', onOnline, false);
+
+    // Vérifiez immédiatement l'état actuel de la connexion et prenez une action
+    checkConnection();
 }
 
 // Ajout de l'écouteur pour l'événement deviceready au niveau global
 document.addEventListener('deviceready', onDeviceReady, false);
 
-//PLUGIN NETWORK INFORMATION
-
-// Écouter pour les changements d'état de la connexion réseau
-document.addEventListener('offline', onOffline, false);
-document.addEventListener('online', onOnline, false);
-
 function onOffline() {
-    // L'application est maintenant hors ligne
+    alert('Vous êtes maintenant hors ligne!');
 }
 
 function onOnline() {
-    // L'application est maintenant en ligne
+    //alert('Vous êtes maintenant en ligne!');
+}
+
+function checkConnection() {
+    var networkState = navigator.connection.type;
+
+    if (networkState === Connection.NONE) {
+        onOffline(); // Appeler la fonction onOffline si l'appareil est hors ligne
+    } else {
+        onOnline(); // Appeler la fonction onOnline si l'appareil est en ligne
+    }
 }
