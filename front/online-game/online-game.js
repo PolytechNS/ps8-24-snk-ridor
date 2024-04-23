@@ -63,6 +63,7 @@ socket.on('game:updateBoard', (gamestate) => {
      * this function is called after the end of the turn to update the board
      */
     console.log('game:updateBoard ', gamestate);
+
     let game = getGame();
     game.setPlayerWalls('own', gamestate.ownWalls);
     game.setPlayerWalls('other', gamestate.opponentWalls);
@@ -76,9 +77,9 @@ socket.on('game:endGame', (data) => {
         return;
     }
     if (data === getGame().getOnlinePlayer()) {
-        display_message('Victoire !', 'action_message', false);
-    } else {
         display_message('Défaite !', 'action_message', false);
+    } else {
+        display_message('Victoire !', 'action_message', false);
     }
 });
 
