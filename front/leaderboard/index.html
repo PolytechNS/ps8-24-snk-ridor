@@ -3,9 +3,9 @@
     <head>
         <meta charset="UTF-8" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <title>Profile Page</title>
-        <link rel="stylesheet" href="/profile/profile.css" />
-        <script src="/profile/profile.js" type="module"></script>
+        <title>Leaderboard</title>
+        <link rel="stylesheet" href="/leaderboard/leaderboard.css" />
+        <script src="/leaderboard/leaderboard.js" type="module"></script>
         <link rel="stylesheet" href="/chat/chat.css" />
         <script src="/chat/chat.js" type="module" defer></script>
         <script src="/util/guard.js" type="module"></script>
@@ -15,23 +15,7 @@
     <body>
         <div class="back-button" id="back-button"></div>
         <div class="container">
-            <div class="profile">
-                <img id="profile-image" src="/resources/persons/humain_mikasa.png" alt="Profile Image" />
-                <div class="profile-info">
-                    <p><strong>Name:</strong> <span id="profile-name"></span></p>
-                    <p><strong>Email:</strong> <span id="profile-email"></span></p>
-                    <p><strong>Elo:</strong> <span id="profile-elo"></span></p>
-                </div>
-            </div>
-            <div id="friends-container" class="friends-list" style="display: none">
-                <h3>Friends:</h3>
-                <ul id="friends-list"></ul>
-            </div>
-            <button id="add-friend-btn" class="add-friend-btn">Add Friend</button>
-            <div id="pending-requests-container" class="pending-requests" style="display: none">
-                <h3>Pending Friend Requests:</h3>
-                <ul id="pending-requests-list"></ul>
-            </div>
+            <div id="leaderboard" class="leaderboard"></div>
         </div>
         <chat-global></chat-global>
         <bottom-bar></bottom-bar>
