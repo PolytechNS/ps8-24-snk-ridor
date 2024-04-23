@@ -686,7 +686,6 @@ function nextMove1(room_hash, data, meta) {
         logger.trace('####################\n');
         logger.trace(`Calling nextMove...`);
         const { nextMove } = require('../routes/games');
-        console.info('meta', meta);
         nextMove(2, room_hash, meta, getGameState(2, meta), getGameState(1, meta));
     }
 }
