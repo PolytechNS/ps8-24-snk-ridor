@@ -41,6 +41,7 @@ function registerHandlers(io, socket) {
             player2ready: false,
             io: io,
             timeout: null,
+            w_timeout: null,
         };
 
         // check if the socket is already in any room (player1 or player2)
@@ -298,6 +299,7 @@ function startTimer(player, room_hash) {
     if (games[room_hash].timeout) {
         logger.debug('Clearing previous timeout');
         clearTimeout(games[room_hash].timeout);
+        clearTimeout(games[room_hash].w_timeout);
     }
 
     logger.debug(`Starting timer for player ${player} of ${TIME_LIMIT_S} seconds`);
@@ -305,12 +307,26 @@ function startTimer(player, room_hash) {
         logger.warn(`Player ${player} took too long to make a move`);
         endGame(player, room_hash, games[room_hash].game_object);
     }, TIME_LIMIT_S * 1000);
+
+    logger.debug(`Starting warning timer for player ${player} of ${TIME_LIMIT_S - 10} seconds`);
+    games[room_hash].w_timeout = setTimeout(
+        () => {
+            logger.warn(`Player ${player} has 10 seconds left to make a move`);
+            if (player === 1) {
+                games[room_hash].io.to(games[room_hash].player1).emit('game:timeout', 10);
+            } else {
+                games[room_hash].io.to(games[room_hash].player2).emit('game:timeout', 10);
+            }
+        },
+        (TIME_LIMIT_S - 10) * 1000
+    );
 }
 
 function clearTimer(room_hash) {
     if (games[room_hash].timeout) {
         logger.debug('Clearing timeout');
         clearTimeout(games[room_hash].timeout);
+        clearTimeout(games[room_hash].w_timeout);
     }
 }
 
