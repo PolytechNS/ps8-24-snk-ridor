@@ -13,117 +13,79 @@ body {
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
     background-size: cover;
     color: #ffffff;
-}
-
-.game-infos {
-    text-align: center;
-}
-
-/* Chat CSS */
-
-#chat {
     display: flex;
-    flex-direction: column;
-    height: 100%;
-    align-items: flex-end;
-
-    box-sizing: border-box;
-    background-color: brown;
-}
-
-#chatbox {
-    margin: 5px;
-    display: flex;
-    width: -webkit-fill-available;
-    flex-direction: column;
-    height: 100%;
-}
-
-#chatbox-content {
-    overflow-y: scroll;
-    height: 80vh;
-}
-
-#chatbox .message {
-    background-color: grey;
-    padding: 5px;
-    box-sizing: border-box;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    width: fit-content;
-}
-
-#chatbox .self {
-    margin-left: auto;
-    background-color: lightblue;
-}
-
-#chatbox-input {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
 }
 
-#chatbox-input-text {
-    height: 100%;
-    background-color: #3a1f0f;
-    color: white;
-    border: none;
-    outline: none;
-    resize: none;
-    font-size: 1.2em;
-    padding: 5px;
-    box-sizing: border-box;
+#aside-left,
+#aside-right {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-#chatbox-input-send {
-    background-color: #3a1f0f;
-    color: white;
-    border: none;
-    outline: none;
-    font-size: 1.2em;
-    font-weight: bold;
-    padding: 5px;
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000;
     box-sizing: border-box;
+    padding: 20px;
+    border-radius: 15px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    background-color: black;
+    border-radius: 50%;
+    margin-bottom: 1vh;
+}
+
+.identity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 1.5vh;
+}
+
+.profile-game-infos {
+    background-color: #3a1f0f;
     border-radius: 5px;
-    margin-left: 5px;
+    margin-top: 1vh;
+    padding: 1vh;
+    text-align: left;
+    width: 100%;
 }
 
-/* width */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey;
-    border-radius: 10px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    border: solid 3px transparent;
-    background: #3a1f0f;
-    border-radius: 10px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #301505;
-}
-
-/* Player CSS */
-
-.player {
+.game {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 80%;
-    width: 80%;
-    background-color: black;
-    border-radius: 40%;
+}
+
+.game-infos {
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+
+.game-infos a.container:not(:first-child) {
+    margin-left: 5vw;
+    vertical-align: middle;
+}
+
+.game-infos br {
+    display: none;
 }
 
 /* Board CSS */
@@ -150,7 +112,7 @@ body {
 }
 
 .finish {
-    background-color: #ff11bb; /*#DB2D2D;*/
+    background-color: #ff11bb;
 }
 
 .v-wall {
@@ -195,94 +157,6 @@ body {
     border: 5px solid rgba(255, 255, 255, 0.7);
     border-radius: 5px;
     margin: auto;
-}
-
-.game-infos {
-    display: flex;
-    flex-direction: row;
-}
-
-.game-infos a.container:not(:first-child) {
-    margin-left: 5vw;
-    vertical-align: middle;
-}
-
-.game-infos br {
-    display: none;
-}
-
-/* profiles */
-
-css Copy code @font-face {
-    font-family: 'OptimusPrinceps';
-    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
-    background-size: cover;
-    color: #ffffff;
-}
-
-/* Rest of the CSS code remains the same */
-
-/* profiles */
-
-.profile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.8);
-    color: #000;
-    box-sizing: border-box;
-    padding: 10px;
-    border-radius: 15px;
-    width: 200px;
-    margin-bottom: 20px;
-}
-
-.avatar {
-    width: 100px;
-    height: 100px;
-    background-color: black;
-    border-radius: 50%;
-    margin-bottom: 1vh;
-}
-
-.identity {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 1.5vh;
-}
-
-.profile-game-infos {
-    background-color: #3a1f0f;
-    border-radius: 5px;
-    margin-top: 1vh;
-    padding: 1vh;
-    text-align: left;
-    width: 90%;
-}
-.profile_adversaire .identity {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-around;
-    vertical-align: middle;
-}
-
-.profile_adversaire .avatar {
-    margin-bottom: 0;
-    width: 100px;
-    height: 100px;
 }
 
 /* board pawn */
@@ -377,6 +251,7 @@ body {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     transform: translateY(1px);
 }
+
 .final_message p {
     margin: 0;
     padding: 0;

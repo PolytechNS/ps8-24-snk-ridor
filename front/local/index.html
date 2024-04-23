@@ -6,50 +6,36 @@
         <link rel="stylesheet" href="/styles/style.css" />
         <link rel="stylesheet" href="/styles/layout.css" />
         <link rel="stylesheet" href="/styles/fogwar.css" />
+        <link rel="stylesheet" href="/chat/chat.css" />
         <script src="/local/js/local_display.js" type="module"></script>
         <script src="/util/guard.js" type="module"></script>
+        <script src="/chat/chat.js" type="module" defer></script>
     </head>
     <body>
         <nav>
             <a href="/home"><img src="/resources/ui/back.png" alt="home" /></a>
-            <p>Shingeki No Korridor • Local 1V1</p>
         </nav>
-
-        <aside id="aside-left">
-            <div id="other_profile" class="profile profile_adversaire">
-                <div class="identity">
-                    <img src="/resources/persons/humain_annie.png" alt="avatar" class="avatar" />
-                    <a id="other_pseudo">Joueur B</a>
-                </div>
-                <!--div>Score : <a id="other_score">54 827</a></div-->
-                <div class="profile-game-infos">walls : <a class="walls" id="other_walls">0</a><br /></div>
-            </div>
-
+        <div id="aside-left">
             <div id="self_profile" class="profile profile_self">
                 <div class="identity">
                     <img src="/resources/persons/titan_eren.png" alt="avatar" class="avatar" />
                     <a id="self_pseudo">Joueur A</a>
                 </div>
-                <!--div>Score : <a id="self_score">72 845</a></div-->
-                <div class="profile-game-infos">walls : <a class="walls" id="self_walls">0</a><br /></div>
+                <div class="profile-game-infos">walls: <span class="walls" id="self_walls">0</span><br /></div>
             </div>
-        </aside>
+        </div>
 
         <main class="game">
-            <!-- Ecran de transition -->
             <div id="transition_screen" class="transition-screen" style="display: none">
                 <div class="final_message">
                     <button id="continue_button">Continuer</button>
                 </div>
             </div>
 
-            <!-- Plateau de jeu -->
             <div id="board" class="board"></div>
-
-            <!-- Informations de jeu -->
             <div id="game-infos" class="game-infos">
-                <a class="container">Au tour du joueur&nbsp;<a id="player">A</a><br /></a>
-                <a class="container">tour&nbsp;<a id="turn">1</a><br /></a>
+                <div class="container">Au tour du joueur <span id="player">A</span><br /></div>
+                <div class="container">tour <span id="turn">1</span><br /></div>
                 <div class="final_blocker" id="final_div">
                     <div class="final_message">
                         <p id="final_message">Victoire du joueur A</p>
@@ -58,6 +44,17 @@
                 </div>
             </div>
         </main>
+
+        <div id="aside-right">
+            <div id="other_profile" class="profile profile_adversaire">
+                <div class="identity">
+                    <img src="/resources/persons/humain_annie.png" alt="avatar" class="avatar" />
+                    <a id="other_pseudo">Joueur B</a>
+                </div>
+                <div class="profile-game-infos">walls: <span class="walls" id="other_walls">0</span><br /></div>
+            </div>
+        </div>
+
         <chat-global></chat-global>
     </body>
 </html>
