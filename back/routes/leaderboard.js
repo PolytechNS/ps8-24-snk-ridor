@@ -30,15 +30,15 @@ function top(request, response) {
 }
 
 function me(request, response) {
-    let email = getCurrentUser(request);
+    let name = getCurrentUser(request);
 
-    if (!email) {
+    if (!name) {
         response.statusCode = 401;
         response.end('Unauthorized');
         return;
     }
 
-    User.getByEmail(email).then((user) => {
+    User.getByName(name).then((user) => {
         response.statusCode = 200;
         response.setHeader('Content-Type', 'application/json');
         response.end(JSON.stringify(user));
