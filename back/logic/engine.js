@@ -573,20 +573,21 @@ function updateState(action, player, meta) {
                 return false;
             }
 
-            if (!isMoveOK(player, newPos)) return false;
+            if (!isMoveOK(player, newPos, meta)) return false;
             if (player === 1) meta['p1Pos'] = newPos;
             else meta['p2Pos'] = newPos;
             break;
         case 'wall':
             let wall = action.value;
             logger.trace('... ... Checking wall position');
-            if (!isWallOK(wall)) return false;
+            if (!isWallOK(wall, meta)) return false;
             logger.trace('... ... Wall OK');
             meta['walls'][player - 1].push(wall);
             break;
         case 'idle':
-            let move = getRandomMove();
-            return move.action === 'idle';
+            return {
+                action: 'idle',
+            };
         default:
             return false;
     }
@@ -609,7 +610,14 @@ function startGame(room_hash, meta) {
 
 function setup1(room_hash, data, meta) {
     logger.trace('... Analysing setup response...');
+    logger.trace(`... ... Received data: ${JSON.stringify(data)}`);
     try {
+        if (data.data.length < 2 || data.data[1] !== '1') {
+            logger.trace(`... ... Bad content: ${data.data}`);
+            playerLost(1, room_hash, meta);
+            meta['keepPlaying'] = false;
+        }
+
         meta['p1Pos'] = data.data.split('').map((e) => e * 1);
     } catch (e) {
         logger.trace(`... ... Bad content: ${data.data}`);
@@ -629,7 +637,14 @@ function setup1(room_hash, data, meta) {
 function setup2(room_hash, data, meta) {
     logger.trace('... Analysing setup response...');
     logger.trace(`... ... Response time OK`);
+    logger.trace(`... ... Received data: ${JSON.stringify(data)}`);
     try {
+        if (data.data.length < 2 || data.data[1] !== '9') {
+            logger.trace(`... ... Bad content: ${data.data}`);
+            playerLost(2, room_hash, meta);
+            meta['keepPlaying'] = false;
+        }
+
         meta['p2Pos'] = data.data.split('').map((e) => e * 1);
     } catch (e) {
         logger.trace(`... ... Bad content: ${data.data}`);
@@ -645,24 +660,24 @@ function setup2(room_hash, data, meta) {
     logger.trace(`Player 1 turn ${meta['nbIter']}.`);
     logger.trace('####################\n');
     logger.trace(`Calling nextMove...`);
-    nextMove(1, room_hash, meta, getGameState(1, meta));
+    nextMove(1, room_hash, meta, getGameState(1, meta), getGameState(2, meta));
 }
 
 function nextMove1(room_hash, data, meta) {
     logger.trace('... Analysing nextMove response...');
     logger.trace(`... ... Received data: ${JSON.stringify(data)}`);
     let action = data.data;
-    if (!updateState(action, 1)) {
+    if (!updateState(action, 1, meta)) {
         logger.trace(`... ... Incorrect Action: ${JSON.stringify(data.data)}`);
-        let randomMove = getRandomMove(1);
-        updateState(randomMove, 1);
+        let randomMove = getRandomMove(1, meta);
+        updateState(randomMove, 1, meta);
         logger.trace(`... ... Replacement action: ${JSON.stringify(randomMove)}`);
     } else {
         logger.trace(`... ... Content received: ${JSON.stringify(data.data)}`);
     }
 
     if (meta['keepPlaying']) {
-        displayState();
+        displayState(meta);
 
         //p2 move
         logger.trace('');
@@ -672,7 +687,7 @@ function nextMove1(room_hash, data, meta) {
         logger.trace(`Calling nextMove...`);
         const { nextMove } = require('../routes/games');
         console.info('meta', meta);
-        nextMove(2, room_hash, meta, getGameState(2, meta));
+        nextMove(2, room_hash, meta, getGameState(2, meta), getGameState(1, meta));
     }
 }
 
@@ -680,16 +695,16 @@ function nextMove2(room_hash, data, meta) {
     logger.trace(`... ... Received data: ${JSON.stringify(data)}`);
     let action = data.data;
 
-    if (!updateState(action, 2)) {
+    if (!updateState(action, 2, meta)) {
         logger.trace(`... ... Incorrect Action: ${JSON.stringify(data.data)}`);
-        let randomMove = getRandomMove(2);
-        updateState(randomMove, 2);
+        let randomMove = getRandomMove(2, meta);
+        updateState(randomMove, 2, meta);
         logger.trace(`... ... Replacement action: ${JSON.stringify(randomMove)}`);
     } else {
         logger.trace(`... ... Content received: ${JSON.stringify(data.data)}`);
     }
 
-    meta['gameStatus'] = gameOverStatus();
+    meta['gameStatus'] = gameOverStatus(meta);
     if (meta['gameStatus']) {
         playerLost(meta['gameStatus'], room_hash, meta);
         meta['keepPlaying'] = false;
@@ -697,7 +712,7 @@ function nextMove2(room_hash, data, meta) {
     }
 
     if (meta['keepPlaying']) {
-        displayState();
+        displayState(meta);
 
         logger.trace('');
         logger.trace('####################');
@@ -705,7 +720,7 @@ function nextMove2(room_hash, data, meta) {
         logger.trace('####################\n');
         logger.trace(`Calling nextMove...`);
         const { nextMove } = require('../routes/games');
-        nextMove(1, room_hash, meta, getGameState(1, meta));
+        nextMove(1, room_hash, meta, getGameState(1, meta), getGameState(2, meta));
     }
 
     if (meta['nbIter'] === 100) playerLost(-1, room_hash, meta);

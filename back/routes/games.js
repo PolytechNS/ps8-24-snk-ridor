@@ -1,5 +1,6 @@
 const { logger } = require('../libs/logging');
 const { startGame, setup1, setup2, nextMove1, nextMove2 } = require('../logic/engine');
+const { joinAI } = require('../logic/ai_player');
 
 games = {};
 
@@ -127,11 +128,24 @@ function registerHandlers(io, socket) {
         let playerId = games[room_hash].player1 === socket.id ? 1 : 2;
 
         logger.trace(`Player ${playerId} setup answer in room ${room_hash}`);
-        logger.trace(msg);
+        logger.trace(JSON.stringify(msg));
+
         if (playerId === 1) {
+            if (games[room_hash].game_object['currentPlayer'] === 2) {
+                logger.warn('Player 2 is not allowed to setup the board before player 1');
+                return;
+            }
             setup1(room_hash, msg, games[room_hash].game_object);
+            logger.trace("Player 2's turn");
+            games[room_hash].game_object['currentPlayer'] = 2;
         } else {
+            if (games[room_hash].game_object['currentPlayer'] === 1 || games[room_hash].game_object['currentPlayer'] === undefined) {
+                logger.warn('Player 1 is not allowed to setup the board before player 2');
+                return;
+            }
             setup2(room_hash, msg, games[room_hash].game_object);
+            logger.trace("Player 1's turn");
+            games[room_hash].game_object['currentPlayer'] = 1;
         }
     });
 
@@ -141,16 +155,48 @@ function registerHandlers(io, socket) {
         let playerId = games[room_hash].player1 === socket.id ? 1 : 2;
 
         if (playerId === 1) {
+            if (games[room_hash].game_object['currentPlayer'] !== 1) {
+                logger.warn('Player 2 is not allowed to make a move before player 1');
+                return;
+            }
             nextMove1(room_hash, msg, games[room_hash].game_object);
+            logger.trace("Player 2's turn");
+            games[room_hash].game_object['currentPlayer'] = 2;
         } else {
+            if (games[room_hash].game_object['currentPlayer'] !== 2) {
+                logger.warn('Player 1 is not allowed to make a move before player 2');
+                return;
+            }
             nextMove2(room_hash, msg, games[room_hash].game_object);
+            logger.trace("Player 1's turn");
+            games[room_hash].game_object['currentPlayer'] = 1;
         }
+    });
+
+    socket.on('game:ai', () => {
+        let room_hash = Object.keys(games).find((room) => games[room].player1 === socket.id);
+
+        if (!room_hash) {
+            logger.warn(`Could not find room for socket ${socket.id}`);
+            return;
+        }
+
+        if (games[room_hash].player2) {
+            logger.warn(`Room ${room_hash} is full`);
+            return;
+        }
+
+        joinAI(room_hash);
     });
 }
 
 function getRoomsInfo() {
     const roomsInfo = {};
     for (let room in games) {
+        if (games[room].player1 && games[room].player2) {
+            continue;
+        }
+
         roomsInfo[room] = {
             player1: games[room].player1,
             player2: games[room].player2,
@@ -173,14 +219,17 @@ function setup(playerId, room_hash, meta) {
     }
 }
 
-function nextMove(playerId, room_hash, meta, gamestate) {
+function nextMove(playerId, room_hash, meta, gameState, opponentGameState) {
     games[room_hash].game_object = meta;
     logger.info(`Socket response: game:nextMove`);
     if (playerId === 1) {
-        games[room_hash].io.to(games[room_hash].player1).emit('game:nextMove', gamestate);
+        games[room_hash].io.to(games[room_hash].player1).emit('game:nextMove', gameState);
+        games[room_hash].io.to(games[room_hash].player2).emit('game:updateBoard', opponentGameState);
     } else {
-        games[room_hash].io.to(games[room_hash].player2).emit('game:nextMove', gamestate);
+        games[room_hash].io.to(games[room_hash].player2).emit('game:nextMove', gameState);
+        games[room_hash].io.to(games[room_hash].player1).emit('game:updateBoard', opponentGameState);
     }
+    logger.info(`Socket response: game:updatedBoard`);
 }
 
 function endGame(losingPlayer, room_hash, meta) {
