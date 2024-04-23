@@ -3,6 +3,8 @@ const { startGame, setup1, setup2, nextMove1, nextMove2 } = require('../logic/en
 const { joinAI } = require('../logic/ai_player');
 const { updateElo } = require('../logic/elo');
 
+const TIME_LIMIT_S = 60; // 1 minute
+
 games = {};
 
 // games = {
@@ -29,6 +31,7 @@ function registerHandlers(io, socket) {
             player2email: null,
             player2ready: false,
             io: io,
+            timeout: null,
         };
 
         // check if the socket is already in any room (player1 or player2)
@@ -141,6 +144,12 @@ function registerHandlers(io, socket) {
         // if both players are ready, start the game
         if (games[room_hash].player1ready && games[room_hash].player2ready) {
             logger.debug(`Starting game in room ${room_hash}`);
+
+            // Start a timer for player 1
+            games[room_hash].timeout = setTimeout(() => {
+                logger.warn('Player 1 took too long to setup the board');
+                endGame(1, room_hash, games[room_hash].game_object);
+            });
             startGame(room_hash, games[room_hash].game_object);
         }
     });
@@ -158,17 +167,28 @@ function registerHandlers(io, socket) {
                 logger.warn('Player 2 is not allowed to setup the board before player 1');
                 return;
             }
+            clearTimeout(games[room_hash].timeout);
             setup1(room_hash, msg, games[room_hash].game_object);
             logger.trace("Player 2's turn");
             games[room_hash].game_object['currentPlayer'] = 2;
+            // start a timer for player 2
+            games[room_hash].timeout = setTimeout(() => {
+                logger.warn('Player 2 took too long to setup the board');
+                endGame(2, room_hash, games[room_hash].game_object);
+            }, TIME_LIMIT_S * 1000);
         } else {
             if (games[room_hash].game_object['currentPlayer'] === 1 || games[room_hash].game_object['currentPlayer'] === undefined) {
                 logger.warn('Player 1 is not allowed to setup the board before player 2');
                 return;
             }
+            clearTimeout(games[room_hash].timeout);
             setup2(room_hash, msg, games[room_hash].game_object);
             logger.trace("Player 1's turn");
             games[room_hash].game_object['currentPlayer'] = 1;
+            games[room_hash].timeout = setTimeout(() => {
+                logger.warn('Player 1 took too long to setup the board');
+                endGame(1, room_hash, games[room_hash].game_object);
+            }, TIME_LIMIT_S * 1000);
         }
     });
 
@@ -182,17 +202,28 @@ function registerHandlers(io, socket) {
                 logger.warn('Player 2 is not allowed to make a move before player 1');
                 return;
             }
+            clearTimeout(games[room_hash].timeout);
             nextMove1(room_hash, msg, games[room_hash].game_object);
             logger.trace("Player 2's turn");
             games[room_hash].game_object['currentPlayer'] = 2;
+            // start a timer for player 2
+            games[room_hash].timeout = setTimeout(() => {
+                logger.warn('Player 2 took too long to make a move');
+                endGame(2, room_hash, games[room_hash].game_object);
+            }, TIME_LIMIT_S * 1000);
         } else {
             if (games[room_hash].game_object['currentPlayer'] !== 2) {
                 logger.warn('Player 1 is not allowed to make a move before player 2');
                 return;
             }
+            clearTimeout(games[room_hash].timeout);
             nextMove2(room_hash, msg, games[room_hash].game_object);
             logger.trace("Player 1's turn");
             games[room_hash].game_object['currentPlayer'] = 1;
+            games[room_hash].timeout = setTimeout(() => {
+                logger.warn('Player 1 took too long to make a move');
+                endGame(1, room_hash, games[room_hash].game_object);
+            }, TIME_LIMIT_S * 1000);
         }
     });
 
@@ -257,6 +288,7 @@ function nextMove(playerId, room_hash, meta, gameState, opponentGameState) {
 }
 
 function endGame(losingPlayer, room_hash, meta) {
+    clearTimeout(games[room_hash].timeout);
     games[room_hash].game_object = meta;
     logger.info(`Socket response: game:endGame`);
     games[room_hash].io.to(games[room_hash].player1).emit('game:endGame', losingPlayer);
