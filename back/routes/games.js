@@ -1,6 +1,7 @@
 const { logger } = require('../libs/logging');
 const { startGame, setup1, setup2, nextMove1, nextMove2 } = require('../logic/engine');
 const { joinAI } = require('../logic/ai_player');
+const { updateElo } = require('../logic/elo');
 
 games = {};
 
@@ -261,6 +262,13 @@ function endGame(losingPlayer, room_hash, meta) {
     games[room_hash].io.to(games[room_hash].player1).emit('game:endGame', losingPlayer);
     logger.info(`Socket response: game:endGame`);
     games[room_hash].io.to(games[room_hash].player2).emit('game:endGame', losingPlayer);
+
+    // If both players are registered
+    if (games[room_hash].player1email && games[room_hash].player2email) {
+        updateElo(games[room_hash].player1email, games[room_hash].player2email, losingPlayer);
+    }
+
+    delete games[room_hash];
 }
 
 module.exports = {
