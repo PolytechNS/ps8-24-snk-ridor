@@ -169,7 +169,6 @@ function registerHandlers(io, socket) {
         }
     });
 
-    // When game:ai is called, an AI player is placed in the game instead of another player
     socket.on('game:ai', () => {
         let room_hash = Object.keys(games).find((room) => games[room].player1 === socket.id);
 
