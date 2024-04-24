@@ -2,6 +2,11 @@ const { getMongoDatabase } = require('./db');
 const { logger } = require('../libs/logging');
 
 const ACHIEVEMENT = {
+    EXPLORER: {
+        name: 'Explorer',
+        description: 'Have created an account on the Shingeki no Kyojin Website',
+        icon: 'explorer.png',
+    },
     FIRST_GAME: {
         name: 'First Game',
         description: 'Have played 1 game',
@@ -37,50 +42,15 @@ const ACHIEVEMENT = {
         description: 'Have lost 10 games',
         icon: 'pro-noob.png',
     },
-    FRIENDLY: {
-        name: 'Friendly',
-        description: 'Have played with a friend',
-        icon: 'friendly.png',
-    },
-    SOCIAL: {
-        name: 'Social',
-        description: 'Have played with 10 friends',
-        icon: 'social.png',
-    },
     VELLA: {
         name: 'Vella',
         description: 'Have xXx_D4rKV3ll4_xXx in friend',
         icon: 'vella.png',
     },
-    ONLINE: {
-        name: 'Online',
-        description: 'Have played an online game',
-        icon: 'online.png',
-    },
-    IA: {
-        name: 'IA',
-        description: 'Have played an IA game',
-        icon: 'ia.png',
-    },
-    IA_WIN: {
-        name: 'IA Win',
-        description: 'Have won an IA game',
-        icon: 'ia-win.png',
-    },
-    LOCAL: {
-        name: 'Local',
-        description: 'Have played a local game',
-        icon: 'local.png',
-    },
     MESSAGE: {
         name: 'Message',
         description: 'Have sent a message to a friend',
         icon: 'message.png',
-    },
-    EMOTE: {
-        name: 'Emote',
-        description: 'Have used an emote',
-        icon: 'emote.png',
     },
     BRONZE: {
         name: 'Bronze',
@@ -121,11 +91,6 @@ const ACHIEVEMENT = {
         name: 'Rick Roller',
         description: 'Have rick rolled someone',
         icon: 'rick-roller.png',
-    },
-    RULES: {
-        name: 'Rules',
-        description: 'Have read the rules',
-        icon: 'rules.png',
     },
 };
 

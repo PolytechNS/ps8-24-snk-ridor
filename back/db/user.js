@@ -1,6 +1,7 @@
 const { getMongoDatabase } = require('./db');
 const crypto = require('crypto');
 const { logger } = require('../libs/logging');
+const { ACHIEVEMENT, Achievement } = require('./achievements');
 
 class User {
     name;
@@ -27,6 +28,9 @@ class User {
             } else {
                 const db = await getMongoDatabase();
                 const users = db.collection('users');
+
+                // === Achievement ===
+                Achievement.create(new Achievement(user.email, ACHIEVEMENT.EXPLORER)).then((_) => {});
 
                 return await users.insertOne(user);
             }
