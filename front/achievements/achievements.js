@@ -1,6 +1,7 @@
 import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, PROFILE_URL } from '../util/path.js';
 // /api/achievements/all
 // /api/achievements/me
+// /api/achievements/completion
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', () => {
@@ -14,8 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
-    const email = localStorage.getItem('email');
-    const elo = localStorage.getItem('elo');
 
     fetchAchievements(token, username);
     fetchMe(token, username);
@@ -59,19 +58,38 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function displayAchievements(data) {
-        console.log(data);
-        let achievementsList = document.getElementById('achievements');
-        let text = '<h1>Achievements</h1><br><ul>';
+        const achievementsList = document.getElementById('achievements');
 
-        for (let i = 0; i < data.length; i++) {
-            let element = data[i];
-            const listItem = document.createElement('li');
-            listItem.textContent = `${i + 1}. ${element.icon} ${element.name} - ${element.description}`;
-            text += listItem.outerHTML;
-        }
+        const title = document.createElement('h1');
+        title.textContent = 'Achievements';
+        title.className = 'achievements-title';
 
-        text += '</ul>';
-        achievementsList.innerHTML = text;
+        const grid = document.createElement('div');
+        grid.className = 'grid';
+
+        Object.values(data).forEach((achievement, index) => {
+            if (index >= 18) return;
+
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const icon = document.createElement('img');
+            icon.src = `../resources/achievements/${achievement.icon}`;
+            icon.alt = `${achievement.name} icon`;
+            icon.className = 'icon';
+
+            const name = document.createElement('p');
+            name.textContent = achievement.name;
+            name.className = 'name';
+
+            card.appendChild(icon);
+            card.appendChild(name);
+            grid.appendChild(card);
+        });
+
+        achievementsList.innerHTML = '';
+        achievementsList.appendChild(title);
+        achievementsList.appendChild(grid);
     }
 
     function displayMe(data) {
