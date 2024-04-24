@@ -162,17 +162,23 @@ body {
     cursor: pointer;
 }
 
-.leaderboard-button {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 2.5rem;
-    height: 2.5rem;
-    background-image: url('../resources/ui/leaderboard.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+.leaderboard-btn {
+    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    padding: 0.4rem 0.8rem;
+    margin-left: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #ff5722;
+    border: none;
+    border-radius: 0;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.leaderboard-btn:hover {
+    background-color: #f4511e;
 }
 
 @media (max-width: 730px), (orientation: landscape) and (max-device-height: 480px) {

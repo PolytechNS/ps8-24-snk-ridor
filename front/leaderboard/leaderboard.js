@@ -1,10 +1,15 @@
-import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, FRIEND_API, FRIEND_URL } from '../util/path.js';
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, FRIEND_API, FRIEND_URL, PROFILE_URL } from '../util/path.js';
 // /api/leaderboard/top
 // /api/leaderboard/me
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', () => {
-        window.location.replace(BASE_URL_PAGE + HOME_URL);
+        if (localStorage.getItem('returnPage') === 'profile') {
+            window.location.replace(BASE_URL_PAGE + PROFILE_URL);
+            localStorage.removeItem('returnPage');
+        } else {
+            window.location.replace(BASE_URL_PAGE + HOME_URL);
+        }
     });
 
     const token = localStorage.getItem('token');
