@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // if orientation portrait, hide arrows
     if (window.innerHeight > window.innerWidth) {
-        document.getElementById('paysage').style.visibility = 'none';
+        document.getElementById('paysage').style.display = 'none';
     } else {
-        document.getElementById('portrait').style.visibility = 'none';
+        document.getElementById('portrait').style.display = 'none';
     }
 });
 
@@ -47,23 +47,31 @@ function loadRule() {
     } catch (error) {
         id--;
     }
-    console.log(document.querySelectorAll('rule').length);
-    console.log(id);
+    // if it is the first rule, hide the left arrow
     if (id === 1) {
-        console.log('oui');
         if (window.innerHeight > window.innerWidth) {
+            // si on est en mode portrait, on cache la fleche de gauche portrait
             document.getElementById('arrow-left-portrait').style.visibility = 'hidden';
+            document.getElementById('arrow-left-portrait').style.cursor = 'default';
         } else {
+            // sinon on cache la fleche de gauche
             document.getElementById('arrow-left').style.visibility = 'hidden';
+            document.getElementById('arrow-left').style.cursor = 'default';
         }
-    } else if (id === document.getElementsByTagName('rule').length) {
-        console.log('non');
+        // if it is the last rule, hide the right arrow
+    } else if (id === rules.querySelectorAll('rule').length) {
+        document.getElementById('arrow-right').style.visibility = 'hidden';
+        document.getElementById('arrow-right').style.cursor = 'default';
+    } else {
+        document.getElementById('arrow-right').style.visibility = 'visible';
+        document.getElementById('arrow-right').style.cursor = 'pointer';
         if (window.innerHeight > window.innerWidth) {
-            document.getElementById('arrow-right-portrait').style.visibility = 'visible';
+            document.getElementById('arrow-left-portrait').style.visibility = 'visible';
+            document.getElementById('arrow-left-portrait').style.cursor = 'pointer';
         } else {
-            document.getElementById('arrow-right').style.visibility = 'visible';
+            document.getElementById('arrow-left').style.visibility = 'visible';
+            document.getElementById('arrow-left').style.cursor = 'pointer';
         }
-        document.getElementById('arrow-left').style.visibility = 'visible';
     }
 }
 
