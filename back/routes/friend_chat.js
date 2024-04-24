@@ -1,6 +1,8 @@
 const { logger } = require('../libs/logging');
 const { PrivateMessage } = require('../db/privateMessages');
 const { Friend } = require('../db/friend');
+const { Achievement, ACHIEVEMENT } = require('../db/achievements');
+const { User } = require('../db/user');
 
 friends = {};
 
@@ -56,6 +58,24 @@ function registerHandlers(io, socket) {
         if (!message.sender) {
             logger.warn('Invalid sender, please use friend:login first');
             return;
+        }
+
+        if (message.message.toLowerCase() === 'rick') {
+            User.getByName(message.sender).then((user) => {
+                if (!user) {
+                    return;
+                }
+
+                Achievement.create(new Achievement(message.sender, ACHIEVEMENT.RICK_ROLLER)).then((_) => {});
+            });
+
+            User.getByName(message.receiver).then((user) => {
+                if (!user) {
+                    return;
+                }
+
+                Achievement.create(new Achievement(message.receiver, ACHIEVEMENT.RICK_ROLL)).then((_) => {});
+            });
         }
 
         PrivateMessage.create(message).then(() => {
