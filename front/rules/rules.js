@@ -46,7 +46,14 @@ function loadRule() {
         document.getElementById('rules').innerHTML = rule;
     } catch (error) {
         id--;
-        loadRule(id);
+    }
+    if (id === 1) {
+        document.getElementById('arrow-left').style.display = 'invisible';
+        document.getElementById('arrow-left-portrait').style.display = 'invisible';
+    } else if (id === document.getElementsByClassName('rule').length) {
+        document.getElementById('arrow-right').style.display = 'visible';
+        document.getElementById('arrow-left-portrait').style.display = 'visible';
+        document.getElementById('arrow-left').style.display = 'visible';
     }
 }
 

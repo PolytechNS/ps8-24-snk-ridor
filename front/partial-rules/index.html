@@ -7,6 +7,42 @@
     </p>
 </rule>
 <rule id="2">
-    <h2>Rule 2</h2>
-    <p>Rule Description</p>
+    <h2>Déplacement</h2>
+    <img src="/resources/rules/deplacement.png" alt="Déplacement" />
+    <p>Un joueur peut se déplacer d'une case dans n'importe quelle direction.</p>
+    <img src="/resources/rules/saut.png" alt="Saut" />
+    <p>Si le joueur adverse est à côté de nous on peut lui sauter par dessus et ainsi se déplacer de deux cases d'un coup.</p>
+    <img src="/resources/rules/mur.png" alt="Mur" />
+    <p>On ne peut pas sauter par dessus un mur.</p>
+</rule>
+<rule id="3">
+    <h2>Murs</h2>
+    <div class="horizontal">
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+    </div>
+    <p>Un joueur a 10 murs au début de la partie. Le nombre de murs disponibles est affiché sur le profile pendant la partie.</p>
+    <img src="/resources/rules/mur.png" alt="Mur" />
+    <p>Les murs ont une longueur de 2 cases et empêchent un joueur de passer.</p>
+    <img src="/resources/rules/nopath.png" alt="Mur impossible" />
+    <p>Il est interdit de poser un mur qui empêche totalement un joueur d'atteindre la ligne opposée. Il doit toujours y avoir un chemin possible, à vous de le rendre le plus long !</p>
+</rule>
+<rule id="4">
+    <h2>Fin de partie</h2>
+    <p>La partie se termine lorsqu'un joueur atteint la ligne opposée.</p>
+    <p>Le joueur qui atteint la ligne opposée gagne la partie.</p>
+</rule>
+<rule id="5">
+    <h2>Brouillard de guerre</h2>
+    <p>Le brouillard de guerre amène une difficulté supplémentaire en masquant le joueur adverse lorsqu'il est à l'intérieur.</p>
+    <div class="horizontal">
+        <img src="/resources/rules/fogA.png" style="width: 45%" alt="Brouillard de guerre" />
+        <a style="width: 10%"></a>
+        <img src="/resources/rules/fogB.png" style="width: 45%" alt="Brouillard de guerre" />
+    </div>
+    <p>Un élément émettant du brouillard pour un joueur le chasse pour le joueur adverse.</p>
 </rule>
