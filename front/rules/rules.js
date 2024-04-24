@@ -31,15 +31,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // if orientation portrait, hide arrows
     if (window.innerHeight > window.innerWidth) {
-        document.getElementById('paysage').style.display = 'none';
+        document.getElementById('paysage').style.visibility = 'none';
     } else {
-        document.getElementById('portrait').style.display = 'none';
+        document.getElementById('portrait').style.visibility = 'none';
     }
 });
 
 function loadRule() {
     if (id < 1) {
-        id = 1;
+        id++;
     }
     try {
         let rule = rules.getElementById(id).innerHTML;
@@ -47,13 +47,23 @@ function loadRule() {
     } catch (error) {
         id--;
     }
+    console.log(document.querySelectorAll('rule').length);
+    console.log(id);
     if (id === 1) {
-        document.getElementById('arrow-left').style.display = 'invisible';
-        document.getElementById('arrow-left-portrait').style.display = 'invisible';
-    } else if (id === document.getElementsByClassName('rule').length) {
-        document.getElementById('arrow-right').style.display = 'visible';
-        document.getElementById('arrow-left-portrait').style.display = 'visible';
-        document.getElementById('arrow-left').style.display = 'visible';
+        console.log('oui');
+        if (window.innerHeight > window.innerWidth) {
+            document.getElementById('arrow-left-portrait').style.visibility = 'hidden';
+        } else {
+            document.getElementById('arrow-left').style.visibility = 'hidden';
+        }
+    } else if (id === document.getElementsByTagName('rule').length) {
+        console.log('non');
+        if (window.innerHeight > window.innerWidth) {
+            document.getElementById('arrow-right-portrait').style.visibility = 'visible';
+        } else {
+            document.getElementById('arrow-right').style.visibility = 'visible';
+        }
+        document.getElementById('arrow-left').style.visibility = 'visible';
     }
 }
 
