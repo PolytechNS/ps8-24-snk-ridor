@@ -66,7 +66,7 @@ function registerHandlers(io, socket) {
                     return;
                 }
 
-                Achievement.create(new Achievement(message.sender, ACHIEVEMENT.RICK_ROLLER)).then((_) => {});
+                Achievement.create(new Achievement(user.email, ACHIEVEMENT.RICK_ROLLER)).then((_) => {});
             });
 
             User.getByName(message.receiver).then((user) => {
@@ -74,7 +74,7 @@ function registerHandlers(io, socket) {
                     return;
                 }
 
-                Achievement.create(new Achievement(message.receiver, ACHIEVEMENT.RICK_ROLL)).then((_) => {});
+                Achievement.create(new Achievement(user.email, ACHIEVEMENT.RICK_ROLL)).then((_) => {});
             });
         }
 

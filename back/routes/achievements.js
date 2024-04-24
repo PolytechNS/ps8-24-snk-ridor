@@ -18,6 +18,10 @@ async function manageRequest(request, response) {
             await all(request, response);
             break;
 
+        case 'completion':
+            await completion(request, response);
+            break;
+
         default:
             notFoundHandler(request, response);
     }
@@ -50,10 +54,40 @@ async function me(request, response) {
     }
 }
 
-function all(request, response) {
+async function all(request, response) {
     // Retrieve all achievements
     response.statusCode = 200;
     response.end(JSON.stringify(ACHIEVEMENT));
+}
+
+async function completion(request, response) {
+    // count the number of users
+    const users = await User.getAll();
+
+    // for each of the achievement, count how much users have it
+    let completion = {};
+
+    for (let achievement in ACHIEVEMENT) {
+        completion[ACHIEVEMENT[achievement].name] = 0;
+    }
+
+    logger.trace(`Users: ${JSON.stringify(users)}`);
+
+    for (let user of users) {
+        const achievements = await Achievement.getAchievementsByEmail(user.email);
+        for (let achievement of achievements) {
+            logger.trace(`Achievement: ${JSON.stringify(achievement)}`);
+            completion[achievement.achievement.name]++;
+        }
+    }
+
+    // For each achievement, calculate the percentage of users that have it and store it as an object alongside the number of users
+    for (let achievement in completion) {
+        completion[achievement] = { count: completion[achievement], percentage: (completion[achievement] / users.length) * 100 };
+    }
+
+    response.statusCode = 200;
+    response.end(JSON.stringify(completion));
 }
 
 module.exports = { manageRequest };
