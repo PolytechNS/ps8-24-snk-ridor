@@ -2,30 +2,38 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
         <title>SNK'ridor</title>
         <link rel="stylesheet" href="/styles/style.css" />
-        <link rel="stylesheet" href="/styles/layout.css" />
         <link rel="stylesheet" href="/styles/fogwar.css" />
         <link rel="stylesheet" href="/chat/chat.css" />
+        <link rel="stylesheet" href="/bottom-bar/bottom-bar.css" />
         <script src="/local/js/local_display.js" type="module"></script>
         <script src="/util/guard.js" type="module"></script>
         <script src="/chat/chat.js" type="module" defer></script>
+        <script src="/bottom-bar/bottom-bar.js" type="module"></script>
+        <script src="/local/js/emote-chat.js" type="module"></script>
     </head>
     <body>
-        <nav>
-            <a href="/home"><img src="/resources/ui/back.png" alt="home" /></a>
-        </nav>
+        <div class="back-button" id="back-button"></div>
         <div id="aside-left">
             <div id="self_profile" class="profile profile_self">
                 <div class="identity">
                     <img src="/resources/persons/titan_eren.png" alt="avatar" class="avatar" />
-                    <a id="self_pseudo">Joueur A</a>
+                    <a id="self_pseudo">joueur A</a>
                 </div>
-                <div class="profile-game-infos">walls: <span class="walls" id="self_walls">0</span><br /></div>
+                <div class="profile-game-infos">
+                    <p>walls: <span class="walls" id="self_walls">0</span></p>
+                    <p>elo: <span class="elo" id="self_elo">1500</span></p>
+                </div>
+                <div class="chat-icon" data-player="self">
+                    <img src="/resources/svg/chat.svg" alt="Chat Icon" />
+                </div>
+                <div class="emote-list" data-player="self"></div>
             </div>
         </div>
 
-        <main class="game">
+        <div class="game">
             <div id="transition_screen" class="transition-screen" style="display: none">
                 <div class="final_message">
                     <button id="continue_button">Continuer</button>
@@ -43,7 +51,7 @@
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
 
         <div id="aside-right">
             <div id="other_profile" class="profile profile_adversaire">
@@ -51,10 +59,17 @@
                     <img src="/resources/persons/humain_annie.png" alt="avatar" class="avatar" />
                     <a id="other_pseudo">Joueur B</a>
                 </div>
-                <div class="profile-game-infos">walls: <span class="walls" id="other_walls">0</span><br /></div>
+                <div class="profile-game-infos">
+                    <p>walls: <span class="walls" id="other_walls">0</span></p>
+                    <p>elo: <span class="elo" id="other_elo">1500</span></p>
+                </div>
+                <div class="chat-icon" data-player="other">
+                    <img src="/resources/svg/chat.svg" alt="Chat Icon" />
+                </div>
+                <div class="emote-list" data-player="other"></div>
             </div>
         </div>
-
         <chat-global></chat-global>
+        <bottom-bar></bottom-bar>
     </body>
 </html>
