@@ -6,6 +6,11 @@ import { next_player } from './js/online_engine.js';
 import { displayEndGame } from './js/online_display.js';
 
 var socket;
+var sound_move = new Audio('/front/resources/sounds/move.mp3');
+var sound_wall = new Audio('/front/resources/sounds/wall.mp3');
+var sound_jump = new Audio('/front/resources/sounds/jump.mp3');
+var sound_win = new Audio('/front/resources/sounds/win.mp3');
+var sound_lose = new Audio('/front/resources/sounds/lose.mp3');
 
 document.addEventListener('DOMContentLoaded', function () {
     if (LOG) console.log('arrived in online-game.js');
@@ -103,6 +108,7 @@ export function move(position) {
             value: position,
         },
     });
+    audio_move.play();
 }
 
 export function placeWall(position, vertical) {
@@ -118,4 +124,5 @@ export function placeWall(position, vertical) {
             value: [position, vertical],
         },
     });
+    audio_wall.play();
 }
