@@ -9,14 +9,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const email = localStorage.getItem('email');
     const elo = localStorage.getItem('elo');
 
-    updateProfileInfo(username, email, elo);
+    fetchMe();
     fetchFriendList(token, username);
     addEventListeners();
 
-    function updateProfileInfo(username, email, elo) {
-        document.getElementById('profile-name').textContent = username;
-        document.getElementById('profile-email').textContent = email;
-        document.getElementById('profile-elo').textContent = elo;
+    function updateProfileInfo(data) {
+        document.getElementById('profile-name').textContent = data.username;
+        document.getElementById('profile-email').textContent = data.email;
+        document.getElementById('profile-elo').textContent = data.elo;
     }
 
     function fetchFriendList(token, username) {
@@ -31,6 +31,28 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch((error) => {
                 console.error('Error during friend list retrieval:', error);
+            });
+    }
+
+    function fetchMe() {
+        let username = '';
+        let email = '';
+        let elo = '';
+
+        fetch(BASE_URL_API + API_URL + 'leaderboard/me', {
+            headers: {
+                Authorization: `${token}`,
+            },
+        })
+            .then(handleResponse)
+            .then((data) => {
+                username = data.name;
+                email = data.email;
+                elo = data.elo;
+                updateProfileInfo({ username, email, elo });
+            })
+            .catch((error) => {
+                console.error('Error during me retrieval:', error);
             });
     }
 
