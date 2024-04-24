@@ -168,12 +168,26 @@ class Chat extends HTMLElement {
     }
 
     addMessage(message, isSender) {
-        let chatMessages = this.shadowRoot.getElementById('chatMessages');
-        let messageElement = document.createElement('p');
-        messageElement.textContent = message;
-        messageElement.className = isSender ? 'sent' : 'received';
-        chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (message.toLowerCase() === 'rick') {
+            let chatMessages = this.shadowRoot.getElementById('chatMessages');
+            // convert string to HTML
+            let messageElement = document.createElement('a');
+            messageElement.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            messageElement.target = '_blank';
+            let imgElement = document.createElement('img');
+            imgElement.src = '/resources/ui/rick.gif';
+            messageElement.appendChild(imgElement);
+            messageElement.className = isSender ? 'sent' : 'received';
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+            let chatMessages = this.shadowRoot.getElementById('chatMessages');
+            let messageElement = document.createElement('p');
+            messageElement.textContent = message;
+            messageElement.className = isSender ? 'sent' : 'received';
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
     }
 
     displayFriendList(friends) {
@@ -203,6 +217,18 @@ class Chat extends HTMLElement {
             const isSender = message.sender === this.userName;
             this.addMessage(message.message, isSender);
         });
+
+        // Rickroll the user if the last message was not sent by the user and the message is 'rick'
+        if (messages[messages.length - 1].message.toLowerCase() === 'rick' && messages[messages.length - 1].sender !== this.userName) {
+            // get currently played audio
+            let audio = document.querySelector('audio');
+            if (audio) {
+                audio.pause();
+            }
+            // Rickroll the user with music
+            let rick_music = new Audio('/resources/sounds/rick.mp3');
+            rick_music.play();
+        }
     }
 
     fetchFriendList() {
