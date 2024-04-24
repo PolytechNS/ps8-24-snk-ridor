@@ -13,11 +13,16 @@ function joinAI(room_hash) {
     });
 
     socket.on('game:setup', (data) => {
-        socket.emit('game:setupAnswer', { data: '99' });
+        // start timeout
+        setTimeout(() => {
+            socket.emit('game:setupAnswer', { data: '99' });
+        }, 1000);
     });
 
     socket.on('game:nextMove', (data) => {
-        socket.emit('game:nextMoveAnswer', { data: '99' });
+        setTimeout(() => {
+            socket.emit('game:nextMoveAnswer', { data: '99' });
+        }, 1000);
     });
 }
 
