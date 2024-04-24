@@ -16,14 +16,19 @@
 
     <body>
         <div class="back-button" id="back-button"></div>
-        <div class="navigation-arrow">
+        <div class="navigation-arrow" id="paysage">
             <img src="/resources/ui/navigation.png" id="arrow-left" />
         </div>
         <div class="container" id="rules">
             <!-- filled by js -->
         </div>
-        <div class="navigation-arrow">
-            <img src="/resources/ui/navigation.png" id="arrow-right" />
+        <div class="horizontal">
+            <div class="navigation-arrow" id="portrait">
+                <img src="/resources/ui/navigation.png" id="arrow-left-portrait" title="portrait" />
+            </div>
+            <div class="navigation-arrow">
+                <img src="/resources/ui/navigation.png" id="arrow-right" />
+            </div>
         </div>
         <chat-global></chat-global>
         <bottom-bar></bottom-bar>

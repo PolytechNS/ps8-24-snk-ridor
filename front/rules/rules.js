@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('arrow-right').addEventListener('click', nextRule);
     document.getElementById('arrow-left').addEventListener('click', previousRule);
+    document.getElementById('arrow-left-portrait').addEventListener('click', previousRule);
 
     // add event listeners for the arrow keys
     document.addEventListener('keydown', function (event) {
@@ -27,6 +28,13 @@ document.addEventListener('DOMContentLoaded', function () {
             previousRule();
         }
     });
+
+    // if orientation portrait, hide arrows
+    if (window.innerHeight > window.innerWidth) {
+        document.getElementById('paysage').style.display = 'none';
+    } else {
+        document.getElementById('portrait').style.display = 'none';
+    }
 });
 
 function loadRule() {
