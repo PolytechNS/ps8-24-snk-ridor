@@ -1,5 +1,6 @@
 const { User } = require('../db/user');
 const { logger } = require('../libs/logging');
+const { Achievement, ACHIEVEMENT } = require('../db/achievements');
 
 function updateElo(player1, player2, loser) {
     logger.debug(`Updating elo for ${player1} and ${player2}`);
@@ -70,12 +71,41 @@ function updateEloForUsers(user1, user2, loser) {
         logger.debug(`Player 1 loses : ${newLoserElo} elo`);
         user1.elo = Math.max(newLoserElo, 0);
 
+        updateAchievements(user2, user2.elo);
+        updateAchievements(user1, user1.elo);
+
         logger.debug(`Player 2 new elo : ${user2.elo} elo`);
         logger.debug(`Player 1 new elo : ${user1.elo} elo`);
         User.update(user1.email, user1).then((_) => {});
         User.update(user2.email, user2).then((_) => {});
     } else {
         logger.debug('Tie, keeping elo');
+    }
+}
+
+function updateAchievements(user, elo) {
+    if (elo >= 1300) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.BRONZE)).then((_) => {});
+    }
+
+    if (elo >= 1600) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.SILVER)).then((_) => {});
+    }
+
+    if (elo >= 1900) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.GOLD)).then((_) => {});
+    }
+
+    if (elo >= 2100) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.PLATINUM)).then((_) => {});
+    }
+
+    if (elo >= 2500) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.DIAMOND)).then((_) => {});
+    }
+
+    if (elo === 0) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.NO_ELO)).then((_) => {});
     }
 }
 
