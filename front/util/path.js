@@ -26,6 +26,8 @@ const MSG_FRIENDS_URL = 'msg_friends';
 const MSG_ROOMS_URL = 'msg_rooms';
 const LOCAL_URL = 'local';
 const ONLINE_GAME_URL = 'online-game';
+const CHAT_URL = 'chat';
+const FRIEND_LIST_URL = 'friend-list';
 
 // API -----------------------------------------------------------------------------------------------------------------
 const API_URL = 'api/';
@@ -34,4 +36,4 @@ const LOGIN_API = 'login/';
 const REGISTER_API = 'register/';
 const FRIEND_API = 'friend/';
 
-export { BASE_URL_PAGE, BASE_URL_API, SIGNUP_URL, LOGIN_URL, PROFILE_URL, FRIEND_URL, ONLINE_URL, HOME_URL, MSG_FRIENDS_URL, MSG_ROOMS_URL, LOCAL_URL, API_URL, ONLINE_GAME_URL, AUTH_API, LOGIN_API, REGISTER_API, FRIEND_API };
+export { BASE_URL_PAGE, BASE_URL_API, SIGNUP_URL, LOGIN_URL, PROFILE_URL, FRIEND_URL, ONLINE_URL, HOME_URL, MSG_FRIENDS_URL, MSG_ROOMS_URL, LOCAL_URL, API_URL, ONLINE_GAME_URL, AUTH_API, LOGIN_API, REGISTER_API, FRIEND_API, CHAT_URL, FRIEND_LIST_URL };

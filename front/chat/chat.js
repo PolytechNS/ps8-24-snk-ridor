@@ -62,8 +62,9 @@ class Chat extends HTMLElement {
                     this.unreadMessages[message.sender] = [];
                 }
                 this.unreadMessages[message.sender].push(message.message);
-                this.updateNotificationIcon();
                 this.markFriendAsUnread(message.sender);
+                this.saveUnreadMessages();
+                this.dispatchUnreadMessagesEvent();
             }
             console.log(`New message from ${message.sender}: ${message.message}`);
         });
@@ -75,6 +76,14 @@ class Chat extends HTMLElement {
         this.socket.on('friend:message_history', (messages) => {
             this.displayMessageHistory(messages);
         });
+    }
+    dispatchUnreadMessagesEvent() {
+        const event = new CustomEvent('unreadMessagesChanged', {
+            detail: this.unreadMessages,
+            bubbles: true,
+            composed: true,
+        });
+        this.dispatchEvent(event);
     }
 
     logElementStyles(elementId) {
@@ -123,6 +132,7 @@ class Chat extends HTMLElement {
             this.unreadMessages[friendName] = [];
             this.markFriendAsRead(friendName);
             this.updateNotificationIcon();
+            this.saveUnreadMessages();
         }
 
         this.logElementStyles('chatWindow');
@@ -233,6 +243,10 @@ class Chat extends HTMLElement {
         }
     }
 
+    saveUnreadMessages() {
+        localStorage.setItem('unreadMessages', JSON.stringify(this.unreadMessages));
+    }
+
     connectedCallback() {
         this.fetchFriendList();
         this.shadowRoot.querySelector('.chat-icon').addEventListener('click', () => this.toggleFriendList());
@@ -241,5 +255,5 @@ class Chat extends HTMLElement {
         this.shadowRoot.getElementById('messageInput').addEventListener('keypress', (event) => this.handleKeyPress(event));
     }
 }
-
+export { Chat };
 window.customElements.define('chat-global', Chat);

@@ -5,6 +5,8 @@
         <title>Test Page</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="https://unpkg.com/chota@latest" />
+        <link rel="manifest" href="/manifest.json" />
+        <script src="/sw/install-sw.js"></script>
         <!-- THIS IS TEMPORARY, DO NOT INCLUDE IN FINAL BUILD TODO -->
         <script type="module">
             import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
@@ -77,7 +79,7 @@
                 socket.emit('friend:send', { receiver: active_friend, message: message });
             }
 
-            function addMessage(message, me) {
+            function addMessage(message, _) {
                 const messages = document.getElementById('messages');
                 const li = document.createElement('li');
                 li.textContent = message;
