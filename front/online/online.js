@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const room = Math.random().toString(36).substring(7);
         console.log('Emitting game:join event with user email:', room);
         socket.emit('game:join', room);
+        socket.emit('game:login', userEmail);
     }
 
     // Log when the connection is established
@@ -108,6 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function joinRoom(roomId) {
         console.log('Emitting room:join event with room ID:', roomId);
         socket.emit('game:join', roomId);
+        socket.emit('game:login', userEmail);
     }
 
     socket.on('game:start', () => {

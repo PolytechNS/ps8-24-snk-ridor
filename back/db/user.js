@@ -6,11 +6,13 @@ class User {
     name;
     email;
     password_hash;
+    elo;
 
     constructor(name, email, password) {
         this.name = name;
         this.email = email;
         this.password_hash = hashPassword(password);
+        this.elo = 1000;
     }
 
     validate_password(password) {
@@ -45,6 +47,7 @@ class User {
             user.name = result.name;
             user.email = result.email;
             user.password_hash = result.password_hash;
+            user.elo = result.elo;
 
             return user;
         });
@@ -63,6 +66,7 @@ class User {
             user.name = result.name;
             user.email = result.email;
             user.password_hash = result.password_hash;
+            user.elo = result.elo;
 
             return user;
         });
@@ -83,6 +87,7 @@ class User {
                     user_obj.name = user.name;
                     user_obj.email = user.email;
                     user_obj.password_hash = user.password_hash;
+                    user_obj.elo = user.elo;
 
                     users_objs.push(user_obj);
                 });
@@ -105,6 +110,31 @@ class User {
         logger.debug(`Updating user: ${email} with ${JSON.stringify(user)}`);
 
         return await users.updateOne({ email: email }, { $set: user });
+    }
+
+    static async getTop() {
+        const db = await getMongoDatabase();
+        const users = db.collection('users');
+
+        return users
+            .find()
+            .sort({ elo: -1 })
+            .limit(100)
+            .toArray()
+            .then((result) => {
+                let users_objs = [];
+
+                result.forEach((user) => {
+                    let user_obj = new User('', '', '');
+                    user_obj.name = user.name;
+                    user_obj.email = user.email;
+                    user_obj.elo = user.elo;
+
+                    users_objs.push(user_obj);
+                });
+
+                return users_objs;
+            });
     }
 }
 

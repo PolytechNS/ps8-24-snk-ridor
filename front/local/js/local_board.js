@@ -1,9 +1,9 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, Event, getGame } from './local_models.js';
-import { onCellClick, next_player, firstOnCellClick } from './local_engine.js';
+import { next_player, firstOnCellClick } from './local_engine.js';
 import { LOG } from './local_main.js';
 import { findPath } from './local_pathFinding.js';
 
-export function init_board(board_div, board) {
+export function init_board(board_div) {
     if (LOG) console.log('Initializing board');
     let BOARD_W = BOARD_WIDTH;
     let BOARD_H = BOARD_HEIGHT;
@@ -208,6 +208,7 @@ export function on_wall_click(event) {
         wall.player = wall_player.id;
     }
     wall_player.placeWall();
+
     display_message(`il reste ${wall_player.remaining_walls} murs`, 'dev_message');
     let wall_event = new Event('wall', wall_player, event.walls);
     next_player(wall_event);

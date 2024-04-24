@@ -368,8 +368,11 @@ export function displayEndGame() {
     let game = getGame();
     if (LOG) console.log('displayEndGame', game);
     let board = game.board;
-    let BOARD_W = board.length;
-    let BOARD_H = board[0].length;
+    let BOARD_W = board.length || 0;
+    let BOARD_H = 0;
+    if (board !== undefined && board.length > 0) {
+        BOARD_H = board[0].length || 0;
+    }
 
     // reset the board
     let board_div = document.getElementById('board');

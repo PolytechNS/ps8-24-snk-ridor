@@ -53,10 +53,13 @@ document.addEventListener('DOMContentLoaded', function () {
         game.setBoard(gamestate.board);
     });
 
+    // quand on reçoit un message de fin de partie
     socket.on('game:endGame', (data) => {
         if (LOG) console.log('game:endGame', data);
         let game = getGame();
-        displayEndGame();
+        if (getGame().getTurnCount() > 0) {
+            displayEndGame();
+        }
         if (data !== 1 && data !== 2) {
             display_message('Match nul !', 'action_message', false);
             return;
@@ -76,7 +79,6 @@ export function setupAnswer(position) {
     if (LOG) console.log('game:setupAnswer');
     socket.emit('game:setupAnswer', { data: position });
 }
-
 
 export function nextMoveAnswer(position) {
     /*
