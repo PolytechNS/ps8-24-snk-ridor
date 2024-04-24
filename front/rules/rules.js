@@ -1,4 +1,4 @@
-// onload we retrieve the partial rules page and insert it into the content div
+import { BASE_URL_PAGE, HOME_URL } from '../util/path.js';
 
 var rules;
 var id = 1;
@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
             rules = new DOMParser().parseFromString(data, 'text/html');
             loadRule(id);
         });
+
+    document.getElementById('back-button').addEventListener('click', () => {
+        window.location.replace(BASE_URL_PAGE + HOME_URL);
+    });
 
     document.getElementById('arrow-right').addEventListener('click', nextRule);
     document.getElementById('arrow-left').addEventListener('click', previousRule);
