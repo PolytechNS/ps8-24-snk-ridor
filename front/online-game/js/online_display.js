@@ -577,5 +577,21 @@ export function display_message(message, { category = 'info_message', timeout = 
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Get the current user's name and ELO from localStorage
+    const username = localStorage.getItem('username');
+    const userElo = localStorage.getItem('elo');
+
+    // Set the current user's name and ELO in the HTML
+    document.getElementById('self_pseudo').textContent = username;
+    document.getElementById('self_elo').textContent = userElo;
+
+    // Get the opponent's name and ELO from localStorage
+    const opponentName = localStorage.getItem('opponentName');
+    const opponentElo = localStorage.getItem('opponentElo');
+
+    // Set the opponent's name and ELO in the HTML
+    document.getElementById('other_pseudo').textContent = opponentName;
+    document.getElementById('other_elo').textContent = opponentElo;
+
     newGame('player1', 'player2', true);
 });

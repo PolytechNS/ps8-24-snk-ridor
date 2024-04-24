@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('vs-bot-play_button').addEventListener('click', () => {
+        localStorage.setItem('opponentName', 'AI');
+        localStorage.setItem('opponentElo', 1000);
         joinAI();
     });
 

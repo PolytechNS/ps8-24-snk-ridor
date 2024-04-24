@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     gameList.parentNode.insertBefore(searchInput, gameList);
 
     // Get the user's email from localStorage
-    const userEmail = localStorage.getItem('email');
+    const userEmail = localStorage.getItem('username');
 
     // utility functions
     function createRoom() {
@@ -81,6 +81,14 @@ document.addEventListener('DOMContentLoaded', function () {
             listItem.appendChild(joinButton);
             gameList.appendChild(listItem);
         }
+    });
+    socket.on('game:info', (data) => {
+        console.log('Received game info:', data);
+        // Extract the player information from the received data
+        const opponentName = data.opponentName;
+        const opponentElo = data.opponentElo;
+        localStorage.setItem('opponentName', opponentName);
+        localStorage.setItem('opponentElo', opponentElo);
     });
 
     // Handle the create room button click event

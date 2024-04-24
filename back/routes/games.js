@@ -2,6 +2,7 @@ const { logger } = require('../libs/logging');
 const { startGame, setup1, setup2, nextMove1, nextMove2 } = require('../logic/engine');
 const { joinAI } = require('../logic/ai_player');
 const { updateElo } = require('../logic/elo');
+const { User } = require('../db/user');
 
 const TIME_LIMIT_S = 60; // 1 minute
 
@@ -94,9 +95,15 @@ function registerHandlers(io, socket) {
         logger.info('Socket response: game:rooms');
         io.emit('game:rooms', getRoomsInfo());
         logger.info('Socket response: game:info');
-        io.to(games[room_hash].player2).emit('game:info', { player1: games[room_hash].player1email, player2: games[room_hash].player2email });
-        logger.info('Socket response: game:info');
-        io.to(games[room_hash].player1).emit('game:info', { player1: games[room_hash].player1email, player2: games[room_hash].player2email });
+        if (games[room_hash].player1email && games[room_hash].player2email) {
+            User.getByName(games[room_hash].player1email).then((user) => {
+                io.to(games[room_hash].player2).emit('game:info', {opponentName: user.name, opponentElo: user.elo});
+            });
+            User.getByName(games[room_hash].player2email).then((user) => {
+                io.to(games[room_hash].player1).emit('game:info', {opponentName: user.name, opponentElo: user.elo});
+            });
+            logger.info('Socket response: game:info');
+        }
     });
 
     socket.on('game:list', () => {
@@ -291,12 +298,23 @@ function endGame(losingPlayer, room_hash, meta) {
     logger.info(`Socket response: game:endGame`);
     games[room_hash].io.to(games[room_hash].player2).emit('game:endGame', losingPlayer);
 
-    logger.debug(`Updating elo for ${games[room_hash].player1email} and ${games[room_hash].player2email}`);
+    Promise.all([
+        User.getByName(games[room_hash].player1email),
+        User.getByName(games[room_hash].player2email)
+    ])
+        .then(([player1, player2]) => {
+            const realPlayer1Email = player1.email;
+            const realPlayer2Email = player2.email;
 
-    // If both players are registered
-    if (games[room_hash].player1email && games[room_hash].player2email) {
-        updateElo(games[room_hash].player1email, games[room_hash].player2email, losingPlayer);
-    }
+            logger.debug(`Updating elo for ${realPlayer1Email} and ${realPlayer2Email}`);
+
+            if (realPlayer1Email && realPlayer2Email) {
+                updateElo(realPlayer1Email, realPlayer2Email, losingPlayer);
+            }
+        })
+        .catch((err) => {
+            logger.error('Error retrieving player emails:', err);
+        });
 }
 
 function startTimer(player, room_hash) {
