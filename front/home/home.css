@@ -186,6 +186,9 @@ header {
     #profile-button {
         display: none;
     }
+    .leaderboard-container{
+        display: none;
+    }
 }
 
 @media (orientation: landscape) and (max-device-height: 480px) {
@@ -207,5 +210,8 @@ header {
         font-size: 1em;
         padding: 12px;
         margin-bottom: 0.8em;
+    }
+    .leaderboard-container{
+        display: none;
     }
 }

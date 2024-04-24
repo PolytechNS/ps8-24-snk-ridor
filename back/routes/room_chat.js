@@ -58,7 +58,7 @@ function registerHandlers(io, socket) {
         io.emit('message:rooms', rooms);
     });
 
-    socket.on('message:send', (message) => {
+    socket.on('message:send', (data) => {
         logger.info('Socket request: message:send');
         // find the room of the sender
         let room = Object.keys(rooms).find((room) => rooms[room].includes(socket.id));
@@ -68,9 +68,12 @@ function registerHandlers(io, socket) {
             return;
         }
 
-        // Send a message to all players in the room
+        // Send a message to all players in the room, including the sender's information
         rooms[room].forEach((player) => {
-            io.to(player).emit('message:receive', message);
+            io.to(player).emit('message:receive', {
+                sender: data.sender,
+                content: data.content,
+            });
         });
     });
 

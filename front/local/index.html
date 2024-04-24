@@ -12,7 +12,6 @@
         <script src="/util/guard.js" type="module"></script>
         <script src="/chat/chat.js" type="module" defer></script>
         <script src="/bottom-bar/bottom-bar.js" type="module"></script>
-        <script src="/local/js/emote-chat.js" type="module"></script>
     </head>
     <body>
         <div class="back-button" id="back-button"></div>
@@ -26,10 +25,6 @@
                     <p>walls: <span class="walls" id="self_walls">0</span></p>
                     <p>elo: <span class="elo" id="self_elo">1500</span></p>
                 </div>
-                <div class="chat-icon" data-player="self">
-                    <img src="/resources/svg/chat.svg" alt="Chat Icon" />
-                </div>
-                <div class="emote-list" data-player="self"></div>
             </div>
         </div>
 
@@ -63,10 +58,6 @@
                     <p>walls: <span class="walls" id="other_walls">0</span></p>
                     <p>elo: <span class="elo" id="other_elo">1500</span></p>
                 </div>
-                <div class="chat-icon" data-player="other">
-                    <img src="/resources/svg/chat.svg" alt="Chat Icon" />
-                </div>
-                <div class="emote-list" data-player="other"></div>
             </div>
         </div>
         <chat-global></chat-global>
