@@ -123,6 +123,12 @@ header {
     height: 100%;
 }
 
+.leaderboard-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+}
+
 @media (max-width: 730px), (orientation: landscape) and (max-device-height: 480px) {
     body {
         min-height: 100vh;
