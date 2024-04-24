@@ -1,12 +1,17 @@
-import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, FRIEND_API, FRIEND_URL, LEADERBOARD_URL } from '../util/path.js';
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, FRIEND_API, FRIEND_URL, LEADERBOARD_URL, ACHIEVEMENTS_URL } from '../util/path.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     // add event listeners to react on user input
     document.getElementById('back-button').addEventListener('click', () => {
         window.location.replace(BASE_URL_PAGE + HOME_URL);
     });
+
     document.getElementById('leaderboard-btn').addEventListener('click', () => {
         leaderboardClick();
+    });
+
+    document.getElementById('achievements-btn').addEventListener('click', () => {
+        achievementsClick();
     });
 
     // get user data from local storage
@@ -194,4 +199,9 @@ document.addEventListener('DOMContentLoaded', function () {
 function leaderboardClick() {
     localStorage.setItem('returnPage', 'profile');
     window.location.replace(BASE_URL_PAGE + LEADERBOARD_URL);
+}
+
+function achievementsClick() {
+    localStorage.setItem('returnPage', 'profile');
+    window.location.replace(BASE_URL_PAGE + ACHIEVEMENTS_URL);
 }
