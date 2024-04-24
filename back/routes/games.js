@@ -93,6 +93,10 @@ function registerHandlers(io, socket) {
 
         logger.info('Socket response: game:rooms');
         io.emit('game:rooms', getRoomsInfo());
+        logger.info('Socket response: game:info');
+        io.to(games[room_hash].player2).emit('game:info', { player1: games[room_hash].player1email, player2: games[room_hash].player2email });
+        logger.info('Socket response: game:info');
+        io.to(games[room_hash].player1).emit('game:info', { player1: games[room_hash].player1email, player2: games[room_hash].player2email });
     });
 
     socket.on('game:list', () => {
