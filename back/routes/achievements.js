@@ -1,4 +1,4 @@
-const { notFoundHandler } = require('./errors');
+const { notFoundHandler, unauthorizedHandler, internalServerErrorHandler } = require('./errors');
 const { getJsonBody, getCurrentUser } = require('../libs/jenkspress');
 const { logger } = require('../libs/logging');
 const { User } = require('../db/user');
@@ -28,9 +28,7 @@ async function me(request, response) {
     let name = getCurrentUser(request);
 
     if (!name) {
-        response.statusCode = 401;
-        response.end('Unauthorized');
-        // TODO replace with proper handler
+        unauthorizedHandler(request, response);
         return;
     }
 
@@ -38,15 +36,13 @@ async function me(request, response) {
         const user = await User.getByName(name);
 
         if (!user) {
-            response.statusCode = 400;
-            response.end('User not found');
+            notFoundHandler(request, response);
             return;
         }
 
         Achievement.getAchievementByUsername(name).then((result) => {
             if (!result) {
-                response.statusCode = 400;
-                response.end('User not found');
+                notFoundHandler(request, response);
                 return;
             }
 
@@ -54,8 +50,7 @@ async function me(request, response) {
         });
     } catch (error) {
         logger.error(error);
-        response.statusCode = 500;
-        response.end('Internal server error');
+        internalServerErrorHandler(request, response);
     }
 }
 

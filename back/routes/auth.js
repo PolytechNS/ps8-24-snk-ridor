@@ -1,7 +1,7 @@
 const { User } = require('../db/user');
 const { sign, verify } = require('../libs/jwt');
 const { getJsonBody } = require('../libs/jenkspress');
-const { methodNotAllowedHandler } = require('./errors');
+const { methodNotAllowedHandler, notFoundHandler } = require('./errors');
 
 function manageRequest(request, response) {
     let url = new URL(request.url, `http://${request.headers.host}`);
@@ -18,8 +18,7 @@ function manageRequest(request, response) {
             break;
 
         default:
-            response.statusCode = 400;
-            response.end('Unknown endpoint');
+            notFoundHandler(request, response);
     }
 }
 
@@ -34,13 +33,7 @@ function register(request, response) {
 
         User.create(user).then((result) => {
             if (!result || result.error) {
-                response.statusCode = 400;
-                if (result) {
-                    response.end(result.error);
-                    return;
-                }
-
-                response.end(JSON.stringify({ error: 'User not created' }));
+                notFoundHandler(request, response);
                 return;
             }
 
@@ -58,8 +51,7 @@ function login(request, response) {
     getJsonBody(request).then((jsonBody) => {
         User.getByEmail(jsonBody.email).then((result) => {
             if (!result || !result.validate_password(jsonBody.password)) {
-                response.statusCode = 400;
-                response.end(JSON.stringify({ error: 'Invalid credentials' }));
+                notFoundHandler(request, response);
                 return;
             }
 
