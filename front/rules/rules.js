@@ -14,6 +14,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('arrow-right').addEventListener('click', nextRule);
     document.getElementById('arrow-left').addEventListener('click', previousRule);
+
+    // add event listeners for the arrow keys
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowRight') {
+            nextRule();
+        } else if (event.key === 'ArrowLeft') {
+            previousRule();
+        }
+    });
 });
 
 function loadRule() {
