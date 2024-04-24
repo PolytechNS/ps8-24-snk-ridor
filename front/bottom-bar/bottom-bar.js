@@ -22,13 +22,11 @@ class BottomBar extends HTMLElement {
     }
 
     connectedCallback() {
-        console.log('BottomBar connected to the DOM');
         this.updateChatIcon();
         document.addEventListener('unreadMessagesChanged', this.updateChatIcon.bind(this));
     }
 
     disconnectedCallback() {
-        console.log('BottomBar disconnected from the DOM');
         document.removeEventListener('unreadMessagesChanged', this.updateChatIcon.bind(this));
     }
 
@@ -37,16 +35,9 @@ class BottomBar extends HTMLElement {
         const hasUnreadMessages = Object.values(unreadMessages).some((messages) => messages.length > 0);
         const chatIcon = this.shadowRoot.querySelector('.chat-icon');
 
-        console.log('updateChatIcon called');
-        console.log('unreadMessages:', unreadMessages);
-        console.log('hasUnreadMessages:', hasUnreadMessages);
-
         if (chatIcon) {
             const iconSrc = hasUnreadMessages ? '/resources/svg/chat-notif.svg' : '/resources/svg/chat.svg';
-            console.log('Setting chat icon src to:', iconSrc);
             chatIcon.src = iconSrc;
-        } else {
-            console.warn('Chat icon element not found');
         }
     }
 }

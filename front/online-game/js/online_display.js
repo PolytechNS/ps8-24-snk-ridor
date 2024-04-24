@@ -94,7 +94,7 @@ export function display_board(board) {
             img.classList.add('pawn-avatar');
             player.appendChild(img);
 
-            console.log('position', position);
+            if (LOG) console.log('position', position);
             let cell = document.getElementById('cell-' + position[0] + '-' + position[1]);
             cell.appendChild(player);
         }
@@ -206,7 +206,7 @@ export function display_game(game) {
 
     // add players walls
     let walls = game.getPlayerWalls('own');
-    console.log('walls', walls);
+    if (LOG) console.log('walls', walls);
     for (let i = 0; i < walls.length; i++) {
         let wall = walls[i];
         // si le mur est vertical
@@ -223,7 +223,7 @@ export function display_game(game) {
     }
 
     walls = game.getPlayerWalls('other');
-    console.log('walls', walls);
+    if (LOG) console.log('walls', walls);
     for (let i = 0; i < walls.length; i++) {
         let wall = walls[i];
         // si le mur est vertical

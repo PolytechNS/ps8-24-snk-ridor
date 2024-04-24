@@ -71,8 +71,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (data === game.getOnlinePlayer()) {
             display_message('Défaite !', 'action_message', false);
+            sound_lose.play();
         } else {
             display_message('Victoire !', 'action_message', false);
+            sound_win.play();
         }
     });
 });
@@ -97,7 +99,7 @@ export function nextMoveAnswer(position) {
 }
 
 /* functional functions, to trigger socket on game events */
-export function move(position) {
+export function move(position, jump = false) {
     /*
      * position is a string representing the position of the player
      */
@@ -108,7 +110,11 @@ export function move(position) {
             value: position,
         },
     });
-    sound_move.play();
+    if (jump) {
+        sound_jump.play();
+    } else {
+        sound_move.play();
+    }
 }
 
 export function placeWall(position, vertical) {
