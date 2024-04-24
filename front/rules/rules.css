@@ -56,7 +56,6 @@ body {
     color: #ffffff;
     background-color: #ff5722;
     border: none;
-    cursor: pointer;
     transition: background-color 0.3s ease;
     font-family: 'OptimusPrinceps', Arial, sans-serif;
 }
@@ -99,7 +98,6 @@ body {
     color: #ffffff;
     background-color: #ff5722;
     border: none;
-    cursor: pointer;
     transition: background-color 0.3s ease;
     font-family: 'OptimusPrinceps', Arial, sans-serif;
 }
@@ -134,7 +132,6 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    cursor: pointer;
     margin: 5px;
 }
 

@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function loadRule() {
     if (id < 1) {
-        id = 1;
+        id++;
     }
     try {
         let rule = rules.getElementById(id).innerHTML;
@@ -47,13 +47,31 @@ function loadRule() {
     } catch (error) {
         id--;
     }
+    // if it is the first rule, hide the left arrow
     if (id === 1) {
-        document.getElementById('arrow-left').style.display = 'invisible';
-        document.getElementById('arrow-left-portrait').style.display = 'invisible';
-    } else if (id === document.getElementsByClassName('rule').length) {
-        document.getElementById('arrow-right').style.display = 'visible';
-        document.getElementById('arrow-left-portrait').style.display = 'visible';
-        document.getElementById('arrow-left').style.display = 'visible';
+        if (window.innerHeight > window.innerWidth) {
+            // si on est en mode portrait, on cache la fleche de gauche portrait
+            document.getElementById('arrow-left-portrait').style.visibility = 'hidden';
+            document.getElementById('arrow-left-portrait').style.cursor = 'default';
+        } else {
+            // sinon on cache la fleche de gauche
+            document.getElementById('arrow-left').style.visibility = 'hidden';
+            document.getElementById('arrow-left').style.cursor = 'default';
+        }
+        // if it is the last rule, hide the right arrow
+    } else if (id === rules.querySelectorAll('rule').length) {
+        document.getElementById('arrow-right').style.visibility = 'hidden';
+        document.getElementById('arrow-right').style.cursor = 'default';
+    } else {
+        document.getElementById('arrow-right').style.visibility = 'visible';
+        document.getElementById('arrow-right').style.cursor = 'pointer';
+        if (window.innerHeight > window.innerWidth) {
+            document.getElementById('arrow-left-portrait').style.visibility = 'visible';
+            document.getElementById('arrow-left-portrait').style.cursor = 'pointer';
+        } else {
+            document.getElementById('arrow-left').style.visibility = 'visible';
+            document.getElementById('arrow-left').style.cursor = 'pointer';
+        }
     }
 }
 
