@@ -474,7 +474,7 @@ body {
         align-items: center;
         width: 90%;
         margin-bottom: 10vh;
-        height: 60vh;
+        height: 70vh;
     }
 
     #aside-left,
@@ -547,7 +547,7 @@ body {
 
     .cell {
         width: calc(88vw / var(--number-of-row));
-        height: calc(88vw / var(--number-of-row));
+        height: calc(82vw / var(--number-of-row));
         margin-right: 0;
         margin-bottom: 0;
     }
@@ -647,7 +647,7 @@ body {
         justify-content: flex-start;
         flex-wrap: wrap;
         align-items: center;
-        min-height: 100vh;
+        height: 100vh;
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -672,7 +672,7 @@ body {
         align-items: center;
         width: 64vw;
         margin-bottom: 10vh;
-        height: 80vh;
+        height: 85vh;
     }
 
     #aside-left,
@@ -682,7 +682,7 @@ body {
         justify-content: space-around;
         align-items: center;
         margin-bottom: 3vh;
-        height: 20vh;
+        height: 15vh;
     }
     .back-button {
         display: none;
