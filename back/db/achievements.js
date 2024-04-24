@@ -1,33 +1,132 @@
 const { getMongoDatabase } = require('./db');
 const { logger } = require('../libs/logging');
 
-// Achievement ENUM
 const ACHIEVEMENT = {
-    FIRST_GAME: 0, // Have played 1 game // Needs Games Counter
-    PRO_GAMER: 1, // Have played 10 games // Needs Games Counter
-    MASTER_GAMER: 2, // Have played 100 games // Needs Won Games Counter
-    WINNER: 3, // Have won 1 game // Needs Games Counter
-    PRO_WINNER: 4, // Have won 10 games // Needs Games Counter
-    NOOB: 5, // Have lost 1 game // Needs Games Counter
-    PRO_NOOB: 6, // Have lost 10 games // Needs Games Counter
-    FRIENDLY: 7, // Have played with a friend // Needs Games Counter
-    SOCIAL: 8, // Have played with 10 friends // Needs Games Counter
-    VELLA: 9, // Have xXx_D4rKV3ll4_xXx in friend
-    ONLINE: 10, // Have played an online game
-    IA: 11, // Have played an IA game
-    IA_WIN: 12, // Have won an IA game // IA Games needs Auth now
-    LOCAL: 13, // Have played a local game // #Front Only
-    MESSAGE: 14, // Have sent a message to a friend
-    EMOTE: 15, // Have used an emote
-    BRONZE: 16, // Have 1300 elo
-    SILVER: 17, // Have 1600 elo
-    GOLD: 18, // Have 1900 elo
-    PLATINUM: 19, // Have 2100 elo
-    DIAMOND: 20, // Have 2500 elo
-    NO_ELO: 21, // Have 0 elo
-    RICK_ROLL: 22, // Have been rick rolled // Needs Modifications on messages
-    RICK_ROLLER: 23, // Have rick rolled someone // Needs Modifications on messages
-    RULES: 24, // Have read the rules // #Front Only
+    FIRST_GAME: {
+        name: 'First Game',
+        description: 'Have played 1 game',
+        icon: 'gamepad.png',
+    },
+    PRO_GAMER: {
+        name: 'Pro Gamer',
+        description: 'Have played 10 games',
+        icon: 'pro-gamer.png',
+    },
+    MASTER_GAMER: {
+        name: 'Master Gamer',
+        description: 'Have played 100 games',
+        icon: 'master-gamer.png',
+    },
+    WINNER: {
+        name: 'Winner',
+        description: 'Have won 1 game',
+        icon: 'winner.png',
+    },
+    PRO_WINNER: {
+        name: 'Pro Winner',
+        description: 'Have won 10 games',
+        icon: 'pro-winner.png',
+    },
+    NOOB: {
+        name: 'Noob',
+        description: 'Have lost 1 game',
+        icon: 'noob.png',
+    },
+    PRO_NOOB: {
+        name: 'Pro Noob',
+        description: 'Have lost 10 games',
+        icon: 'pro-noob.png',
+    },
+    FRIENDLY: {
+        name: 'Friendly',
+        description: 'Have played with a friend',
+        icon: 'friendly.png',
+    },
+    SOCIAL: {
+        name: 'Social',
+        description: 'Have played with 10 friends',
+        icon: 'social.png',
+    },
+    VELLA: {
+        name: 'Vella',
+        description: 'Have xXx_D4rKV3ll4_xXx in friend',
+        icon: 'vella.png',
+    },
+    ONLINE: {
+        name: 'Online',
+        description: 'Have played an online game',
+        icon: 'online.png',
+    },
+    IA: {
+        name: 'IA',
+        description: 'Have played an IA game',
+        icon: 'ia.png',
+    },
+    IA_WIN: {
+        name: 'IA Win',
+        description: 'Have won an IA game',
+        icon: 'ia-win.png',
+    },
+    LOCAL: {
+        name: 'Local',
+        description: 'Have played a local game',
+        icon: 'local.png',
+    },
+    MESSAGE: {
+        name: 'Message',
+        description: 'Have sent a message to a friend',
+        icon: 'message.png',
+    },
+    EMOTE: {
+        name: 'Emote',
+        description: 'Have used an emote',
+        icon: 'emote.png',
+    },
+    BRONZE: {
+        name: 'Bronze',
+        description: 'Have 1300 elo',
+        icon: 'bronze.png',
+    },
+    SILVER: {
+        name: 'Silver',
+        description: 'Have 1600 elo',
+        icon: 'silver.png',
+    },
+    GOLD: {
+        name: 'Gold',
+        description: 'Have 1900 elo',
+        icon: 'gold.png',
+    },
+    PLATINUM: {
+        name: 'Platinum',
+        description: 'Have 2100 elo',
+        icon: 'platinum.png',
+    },
+    DIAMOND: {
+        name: 'Diamond',
+        description: 'Have 2500 elo',
+        icon: 'diamond.png',
+    },
+    NO_ELO: {
+        name: 'No Elo',
+        description: 'Have 0 elo',
+        icon: 'no-elo.png',
+    },
+    RICK_ROLL: {
+        name: 'Rick Roll',
+        description: 'Have been rick rolled',
+        icon: 'rick-roll.png',
+    },
+    RICK_ROLLER: {
+        name: 'Rick Roller',
+        description: 'Have rick rolled someone',
+        icon: 'rick-roller.png',
+    },
+    RULES: {
+        name: 'Rules',
+        description: 'Have read the rules',
+        icon: 'rules.png',
+    },
 };
 
 class Achievement {
