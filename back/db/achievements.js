@@ -42,7 +42,7 @@ class Achievement {
     // DB CRUD operations
     static async create(achievement) {
         // if the achievement already exists, return an error
-        return Achievement.getAll(achievement.email).then((acs) => {
+        return Achievement.getAchievementsByEmail(achievement.email).then((acs) => {
             if (acs.find((a) => a.achievement === achievement.achievement)) {
                 return { error: 'Achievement already exists' };
             }
