@@ -21,8 +21,10 @@ function getCurrentUser(request) {
         return null;
     }
 
+    let data;
+
     try {
-        let data = verify(token);
+        data = verify(token);
     } catch (error) {
         logger.error(`Error in getCurrentUser: ${error.message}`);
         return null;
