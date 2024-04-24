@@ -1,4 +1,4 @@
-import { BASE_URL_PAGE, HOME_URL } from '../util/path.js';
+import { BASE_URL_PAGE, HOME_URL, ONLINE_URL } from '../util/path.js';
 
 var rules;
 var id = 1;
@@ -13,7 +13,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
     document.getElementById('back-button').addEventListener('click', () => {
-        window.location.replace(BASE_URL_PAGE + HOME_URL);
+        let back = localStorage.getItem('returnPage');
+        if (back === 'online') {
+            localStorage.removeItem('returnPage');
+            window.location.replace(BASE_URL_PAGE + ONLINE_URL);
+        } else {
+            window.location.replace(BASE_URL_PAGE + HOME_URL);
+        }
     });
 
     document.getElementById('arrow-right').addEventListener('click', nextRule);

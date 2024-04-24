@@ -97,6 +97,34 @@ body {
     transform: translateY(4px);
 }
 
+#rules-button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    color: #ffffff;
+    margin-top: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ff5722;
+    box-shadow: 0 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 2px;
+    border-radius: 4px;
+}
+
+#rules-button:hover {
+    background-color: #f4511e;
+}
+
+#rules-button:active {
+    box-shadow: 0 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(4px);
+}
+
 header {
     position: absolute;
     top: 0;

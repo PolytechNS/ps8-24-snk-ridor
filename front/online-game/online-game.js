@@ -67,9 +67,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (data !== 1 && data !== 2) {
             display_message('Match nul !', 'action_message', false);
-            return;
-        }
-        if (data === game.getOnlinePlayer()) {
+            sound_lose.play();
+        } else if (data === game.getOnlinePlayer()) {
             display_message('Défaite !', 'action_message', false);
             sound_lose.play();
         } else {
