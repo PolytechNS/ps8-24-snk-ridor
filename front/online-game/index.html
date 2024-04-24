@@ -18,61 +18,61 @@
         <script src="/online-game/js/emote-chat.js" type="module"></script>
     </head>
     <body>
-    <div class="back-button" id="back-button"></div>
-    <div id="aside-left">
-        <div id="self_profile" class="profile profile_self">
-            <div class="identity">
-                <img src="/resources/persons/titan_eren.png" alt="avatar" class="avatar" />
-                <a id="self_pseudo">joueur A</a>
-            </div>
-            <div class="profile-game-infos">
-                <p>walls: <span class="walls" id="self_walls">0</span></p>
-                <p>elo: <span class="elo" id="self_elo">1500</span></p>
-            </div>
-            <div class="chat-icon" data-player="self">
-                <img src="/resources/svg/chat.svg" alt="Chat Icon" />
-            </div>
-            <div class="emote-list" data-player="self"></div>
-        </div>
-    </div>
-
-    <div class="game">
-        <div id="transition_screen" class="transition-screen" style="display: none">
-            <div class="final_message">
-                <button id="continue_button">Continuer</button>
+        <div class="back-button" id="back-button"></div>
+        <div id="aside-left">
+            <div id="self_profile" class="profile profile_self">
+                <div class="identity">
+                    <img src="/resources/persons/titan_eren.png" alt="avatar" class="avatar" />
+                    <a id="self_pseudo">joueur A</a>
+                </div>
+                <div class="profile-game-infos">
+                    <p>murs : <span class="walls" id="self_walls">0</span></p>
+                    <p>points : <span class="elo" id="self_elo">1500</span></p>
+                </div>
+                <div class="chat-icon" data-player="self">
+                    <img src="/resources/svg/chat.svg" alt="Chat Icon" />
+                </div>
+                <div class="emote-list" data-player="self"></div>
             </div>
         </div>
 
-        <div id="board" class="board"></div>
-        <div id="game-infos" class="game-infos">
-            <div class="container">Au tour du joueur <span id="player">A</span><br /></div>
-            <div class="container">tour <span id="turn">1</span><br /></div>
-            <div class="final_blocker" id="final_div">
+        <div class="game">
+            <div id="transition_screen" class="transition-screen" style="display: none">
                 <div class="final_message">
-                    <p id="final_message">Victoire du joueur A</p>
-                    <button id="reload">Rejouer</button>
+                    <button id="continue_button">Continuer</button>
+                </div>
+            </div>
+
+            <div id="board" class="board"></div>
+            <div id="game-infos" class="game-infos">
+                <div class="container">Au tour du joueur <span id="player">A</span><br /></div>
+                <div class="container">tour <span id="turn">1</span><br /></div>
+                <div class="final_blocker" id="final_div">
+                    <div class="final_message">
+                        <p id="final_message">Victoire du joueur A</p>
+                        <button id="reload">Rejouer</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="aside-right">
-        <div id="other_profile" class="profile profile_adversaire">
-            <div class="identity">
-                <img src="/resources/persons/humain_annie.png" alt="avatar" class="avatar" />
-                <a id="other_pseudo">Joueur B</a>
+        <div id="aside-right">
+            <div id="other_profile" class="profile profile_adversaire">
+                <div class="identity">
+                    <img src="/resources/persons/humain_annie.png" alt="avatar" class="avatar" />
+                    <a id="other_pseudo">Joueur B</a>
+                </div>
+                <div class="profile-game-infos">
+                    <p>murs : <span class="walls" id="other_walls">0</span></p>
+                    <p>points : <span class="elo" id="other_elo">1500</span></p>
+                </div>
+                <div class="chat-icon" data-player="other">
+                    <img src="/resources/svg/chat.svg" alt="Chat Icon" />
+                </div>
+                <div class="emote-list" data-player="other"></div>
             </div>
-            <div class="profile-game-infos">
-                <p>walls: <span class="walls" id="other_walls">0</span></p>
-                <p>elo: <span class="elo" id="other_elo">1500</span></p>
-            </div>
-            <div class="chat-icon" data-player="other">
-                <img src="/resources/svg/chat.svg" alt="Chat Icon" />
-            </div>
-            <div class="emote-list" data-player="other"></div>
         </div>
-    </div>
-    <chat-global></chat-global>
-    <bottom-bar></bottom-bar>
+        <chat-global></chat-global>
+        <bottom-bar></bottom-bar>
     </body>
 </html>
