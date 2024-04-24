@@ -1,4 +1,4 @@
-import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, FRIEND_API, FRIEND_URL, PROFILE_URL } from '../util/path.js';
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, PROFILE_URL } from '../util/path.js';
 // /api/achievements/all
 // /api/achievements/me
 
@@ -17,18 +17,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const email = localStorage.getItem('email');
     const elo = localStorage.getItem('elo');
 
-    fetchLeaderboard(token, username);
+    fetchAchievements(token, username);
     fetchMe(token, username);
 
-    function fetchLeaderboard() {
-        fetch(BASE_URL_API + API_URL + 'leaderboard/top', {
+    function fetchAchievements() {
+        fetch(BASE_URL_API + API_URL + 'achievements/all', {
             headers: {
                 Authorization: `${token}`,
             },
         })
             .then(handleResponse)
             .then((data) => {
-                displayLeaderboard(data);
+                displayAchievements(data);
             })
             .catch((error) => {
                 console.error('Error during leaderboard retrieval:', error);
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fetchMe() {
-        fetch(BASE_URL_API + API_URL + 'leaderboard/me', {
+        fetch(BASE_URL_API + API_URL + 'achievements/me', {
             headers: {
                 Authorization: `${token}`,
             },
@@ -54,24 +54,24 @@ document.addEventListener('DOMContentLoaded', function () {
         if (response.ok) {
             return response.json();
         } else {
-            throw new Error(`Leaderboard retriever error: ${response.status}`);
+            throw new Error(`Achievements retriever error: ${response.status}`);
         }
     }
 
-    function displayLeaderboard(data) {
+    function displayAchievements(data) {
         console.log(data);
-        let leaderboardList = document.getElementById('leaderboard');
-        let text = '<h1>Leaderboard</h1><br><ul>';
+        let achievementsList = document.getElementById('achievements');
+        let text = '<h1>Achievements</h1><br><ul>';
 
         for (let i = 0; i < data.length; i++) {
             let element = data[i];
             const listItem = document.createElement('li');
-            listItem.textContent = `${i + 1}. ${element.name} - ${element.elo}`;
+            listItem.textContent = `${i + 1}. ${element.icon} ${element.name} - ${element.description}`;
             text += listItem.outerHTML;
         }
 
         text += '</ul>';
-        leaderboardList.innerHTML = text;
+        achievementsList.innerHTML = text;
     }
 
     function displayMe(data) {
