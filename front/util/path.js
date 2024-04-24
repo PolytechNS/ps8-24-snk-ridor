@@ -28,6 +28,7 @@ const LOCAL_URL = 'local';
 const ONLINE_GAME_URL = 'online-game';
 const CHAT_URL = 'chat';
 const FRIEND_LIST_URL = 'friend-list';
+const LEADERBOARD_URL = 'leaderboard';
 
 // API -----------------------------------------------------------------------------------------------------------------
 const API_URL = 'api/';
