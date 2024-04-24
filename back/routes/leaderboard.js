@@ -1,5 +1,6 @@
 const { User } = require('../db/user');
 const { getCurrentUser, getJsonBody } = require('../libs/jenkspress');
+const { notFoundHandler, unauthorizedHandler } = require('./errors');
 
 function manageRequest(request, response) {
     let url = new URL(request.url, `http://${request.headers.host}`);
@@ -16,8 +17,7 @@ function manageRequest(request, response) {
             break;
 
         default:
-            response.statusCode = 400;
-            response.end('Unknown endpoint');
+            notFoundHandler(request, response);
     }
 }
 
@@ -33,8 +33,7 @@ function me(request, response) {
     let name = getCurrentUser(request);
 
     if (!name) {
-        response.statusCode = 401;
-        response.end('Unauthorized');
+        unauthorizedHandler(request, response);
         return;
     }
 

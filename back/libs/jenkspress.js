@@ -1,5 +1,6 @@
 const { verify } = require('./jwt');
 const { logger } = require('./logging');
+const { notFoundHandler } = require('../routes/errors');
 
 function getJsonBody(request) {
     return new Promise((resolve) => {
@@ -20,7 +21,12 @@ function getCurrentUser(request) {
         return null;
     }
 
-    let data = verify(token);
+    try {
+        let data = verify(token);
+    } catch (error) {
+        logger.error(`Error in getCurrentUser: ${error.message}`);
+        return null;
+    }
 
     if (!data) {
         return null;

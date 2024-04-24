@@ -3,6 +3,7 @@ const path = require('path');
 
 const { logger } = require('../../libs/logging');
 const { mimeTypes } = require('./mimeTypes');
+const { notFoundHandler, internalServerErrorHandler } = require('../errors');
 
 const FRONT_PATH = path.join(__dirname, '/../../../front');
 
@@ -32,8 +33,7 @@ function manageRequest(request, response) {
 
     fs.exists(filePath, async function (exist) {
         if (!exist) {
-            response.statusCode = 404;
-            response.end(`File ${filePath} not found!`);
+            notFoundHandler(request, response);
             return;
         }
 
@@ -46,8 +46,7 @@ function manageRequest(request, response) {
         fs.readFile(filePath, (err, data) => {
             if (err) {
                 logger.error(`Error reading file: ${filePath}`);
-                response.statusCode = 500;
-                response.end();
+                internalServerErrorHandler(request, response);
             } else {
                 response.setHeader('Content-type', mimeTypes[path.extname(filePath)] || mimeTypes.default);
                 response.end(data);
