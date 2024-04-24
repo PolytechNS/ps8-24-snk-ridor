@@ -19,7 +19,8 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    width: 80vw;
+    height: 60vh;
     padding: 30px;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 8px;
@@ -193,6 +194,7 @@ body {
     .back-button {
         display: none;
     }
+
     chat-global {
         display: none;
     }
