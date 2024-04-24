@@ -15,6 +15,11 @@ var sound_lose = new Audio('/resources/sounds/lose.mp3');
 document.addEventListener('DOMContentLoaded', function () {
     if (LOG) console.log('arrived in online-game.js');
 
+    // add event to return button
+    document.getElementById('back-button').addEventListener('click', () => {
+        window.location.replace('/home');
+    });
+
     socket = io();
 
     // retrieve socket id
