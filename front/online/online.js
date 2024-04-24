@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const room = Math.random().toString(36).substring(7);
         socket.emit('game:join', room);
         socket.emit('game:login', userEmail);
+        // Create the chat room ID based on the game room ID
+        const chatRoomId = `chat_${room}`;
+        localStorage.setItem('chat_room_id', chatRoomId);
     }
 
     function searchRooms() {
@@ -105,6 +108,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function joinRoom(roomId) {
         socket.emit('game:join', roomId);
         socket.emit('game:login', userEmail);
+        // join chat room
+        const chatRoomId = `chat_${roomId}`;
+        localStorage.setItem('chat_room_id', chatRoomId);
     }
 
     // Handle the 'game:start' event to redirect to the game page

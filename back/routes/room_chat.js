@@ -20,7 +20,7 @@ function registerHandlers(io, socket) {
     });
 
     socket.on('message:join', (room_hash) => {
-        logger.info('Socket request: message:join');
+        logger.debug(`Socket ${socket.id} just joined the room ${room_hash}`);
 
         // check if the socket is already in any room
         if (Object.keys(rooms).find((room) => rooms[room].includes(socket.id))) {
