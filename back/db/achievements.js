@@ -1,6 +1,5 @@
 const { getMongoDatabase } = require('./db');
 const { logger } = require('../libs/logging');
-const { User } = require('./user');
 
 // Achievement ENUM
 const ACHIEVEMENT = {
@@ -72,6 +71,7 @@ class Achievement {
     }
 
     static async getAchievementByUsername(username) {
+        const { User } = require('./user');
         User.getByName(username).then((user) => {
             if (!user) {
                 return null;
