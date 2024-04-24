@@ -51,7 +51,12 @@ async function add(request, response) {
         // === Achievement ===
         if (jsonBody.friend_name === 'xXx_D4rKV3ll4_xXx') {
             logger.info(`Achievement for ${name}: VELLA`);
-            Achievement.create(new Achievement(name, ACHIEVEMENT.VELLA)).then((_) => {});
+            User.getByName(name).then((user) => {
+                if (!user) {
+                    return;
+                }
+                Achievement.create(new Achievement(user.email, ACHIEVEMENT.VELLA)).then((_) => {});
+            });
             return;
         }
         // === Achievement ===

@@ -1,4 +1,4 @@
-const { notFoundHandler, unauthorizedHandler, internalServerErrorHandler } = require('./errors');
+const { notFoundHandler, unauthorizedHandler, internalServerErrorHandler, invalidRequestHandler } = require('./errors');
 const { getJsonBody, getCurrentUser } = require('../libs/jenkspress');
 const { logger } = require('../libs/logging');
 const { User } = require('../db/user');
@@ -40,14 +40,10 @@ async function me(request, response) {
             return;
         }
 
-        Achievement.getAchievementByUsername(name).then((result) => {
-            if (!result) {
-                notFoundHandler(request, response);
-                return;
-            }
+        const achievements = await Achievement.getAchievementsByEmail(user.email);
 
-            response.end(JSON.stringify(result));
-        });
+        response.statusCode = 200;
+        response.end(JSON.stringify(achievements));
     } catch (error) {
         logger.error(error);
         internalServerErrorHandler(request, response);

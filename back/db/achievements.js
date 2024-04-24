@@ -156,21 +156,26 @@ class Achievement {
         const db = await getMongoDatabase();
         const achievements = db.collection('achievement');
 
-        try {
-            return await achievements
-                .find({
-                    email: email,
-                })
-                .toArray();
-        } catch (error) {
-            logger.error(`Error in getAll function: ${error.message}`);
-            return null;
-        }
+        logger.trace(`Getting achievements for email ${email}`);
+
+        let acvs = [];
+
+        return achievements
+            .find({ email: email })
+            .forEach((acv) => {
+                acvs.push(acv);
+            })
+            .then(() => {
+                return acvs;
+            });
     }
 
     static async getAchievementByUsername(username) {
+        logger.trace(`Getting achievements for username ${username}`);
         const { User } = require('./user');
         User.getByName(username).then((user) => {
+            logger.trace(`Found user: ${JSON.stringify(user)}`);
+
             if (!user) {
                 return null;
             }
