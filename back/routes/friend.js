@@ -3,6 +3,7 @@ const { getJsonBody, getCurrentUser } = require('../libs/jenkspress');
 const { Friend, FRIEND_STATUS } = require('../db/friend');
 const { logger } = require('../libs/logging');
 const { User } = require('../db/user');
+const { Achievement, ACHIEVEMENT } = require('../db/achievements');
 
 async function manageRequest(request, response) {
     let url = new URL(request.url, `http://${request.headers.host}`);
@@ -46,6 +47,14 @@ async function add(request, response) {
     try {
         const jsonBody = await getJsonBody(request);
         logger.debug(`Adding friend: ${name} -> ${jsonBody.friend_name}`);
+
+        // === Achievement ===
+        if (jsonBody.friend_name === 'xXx_D4rKV3ll4_xXx') {
+            logger.info(`Achievement for ${name}: VELLA`);
+            Achievement.create(new Achievement(name, ACHIEVEMENT.VELLA)).then((_) => {});
+            return;
+        }
+        // === Achievement ===
 
         const user = await User.getByName(name);
         const friend = await User.getByName(jsonBody.friend_name);
@@ -195,6 +204,13 @@ async function find(request, response) {
             notFoundHandler(request, response);
             return;
         }
+
+        // === Achievement ===
+        const vella = {
+            name: 'xXx_D4rKV3ll4_xXx',
+        };
+        result.push(vella);
+        // === Achievement ===
 
         response.end(JSON.stringify(result));
     } catch (error) {

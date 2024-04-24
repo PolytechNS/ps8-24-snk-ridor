@@ -26,6 +26,8 @@ const MSG_FRIENDS_URL = 'msg_friends';
 const MSG_ROOMS_URL = 'msg_rooms';
 const LOCAL_URL = 'local';
 const ONLINE_GAME_URL = 'online-game';
+const CHAT_URL = 'chat';
+const FRIEND_LIST_URL = 'friend-list';
 const LEADERBOARD_URL = 'leaderboard';
 const ACHIEVEMENTS_URL = 'achievements';
 
