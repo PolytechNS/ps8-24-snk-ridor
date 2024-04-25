@@ -1,6 +1,8 @@
 document.addEventListener('deviceready', onDeviceReady, false);
 
 var offlineActionsCompleted = false;
+// Ajoutez une variable pour suivre l'état de la connexion
+var wasOffline = false;
 
 function onDeviceReady() {
     // Ouverture de l'URL dans InAppBrowser avec des options spécifiques
@@ -46,6 +48,8 @@ function onDeviceReady() {
 }
 
 function onOffline() {
+    // Indiquez que l'appareil est hors ligne
+    wasOffline = true;
     if (!offlineActionsCompleted) {
         // Effectuer les actions spécifiques à hors ligne
         navigator.notification.beep(1); // Émet un bip une fois
@@ -68,6 +72,7 @@ function onOffline() {
         // Marquer les actions comme effectuées
         offlineActionsCompleted = true;
     }
+    attemptReload(); // Recharger la page périodiquement
 }
 
 function onConfirmWifi(buttonIndex) {
@@ -124,17 +129,29 @@ function confirmNetworkActivation(callback) {
 }
 
 function onOnline() {
-    //alert('Vous êtes maintenant en ligne!');
+    if (wasOffline) {
+        // Si l'appareil était hors ligne avant, rechargez la page
+        alert('Connexion rétablie, la page va maintenant se recharger.');
+        location.reload();
+    }
+    // Réinitialisez la variable une fois que l'application est en ligne
+    wasOffline = false;
 }
 
+// Ajustez le checkConnection pour définir correctement l'état de wasOffline
 function checkConnection() {
     var networkState = navigator.connection.type;
 
-    if (networkState === Connection.NONE || networkState === Connection) {
-        onOffline(); // Appeler la fonction onOffline si l'appareil est hors ligne
-        checkConnection(); // Vérifier à nouveau la connexion
+    if (networkState === Connection.NONE) {
+        // Si l'appareil est hors ligne, définissez wasOffline sur true
+        if (!wasOffline) {
+            onOffline();
+        }
     } else {
-        onOnline(); // Appeler la fonction onOnline si l'appareil est en ligne
+        // Si l'appareil est en ligne et était hors ligne précédemment, appelez onOnline
+        if (wasOffline) {
+            onOnline();
+        }
     }
 }
 
@@ -145,4 +162,15 @@ function checkConnectionAndReload() {
             location.reload();
         }
     });
+}
+
+// Fonction de rechargement automatique avec tentative périodique
+function attemptReload() {
+    var networkState = navigator.connection.type;
+    if (networkState !== Connection.NONE) {
+        location.reload();
+    } else {
+        // Tentative de rechargement après un délai
+        setTimeout(attemptReload, 5000); // Re-essayer après 5 secondes
+    }
 }
