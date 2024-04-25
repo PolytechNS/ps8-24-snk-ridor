@@ -14,8 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
-    const email = localStorage.getItem('email');
-    const elo = localStorage.getItem('elo');
 
     fetchLeaderboard(token, username);
     fetchMe(token, username);

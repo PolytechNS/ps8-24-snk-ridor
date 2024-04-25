@@ -79,14 +79,44 @@ body {
     margin-bottom: 20px;
 }
 
+.achievement-modal {
+    display: none;
+    position: absolute;
+    background-color: #262626;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    text-align: center;
+    font:
+        1.2em 'OptimusPrinceps',
+        Arial,
+        sans-serif;
+}
+
+.modal-title {
+    margin-bottom: 10px;
+}
+
+.modal-icon {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.modal-desc {
+    font-size: 0.9em;
+}
+
 @media (max-width: 800px) {
     .grid {
-        grid-template-columns: repeat(3, 1fr); /* 3 columns for smaller screens */
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 500px) {
     .grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns for very small screens */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
