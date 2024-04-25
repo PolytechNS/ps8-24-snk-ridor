@@ -60,10 +60,17 @@ export function next_player(event = null) {
     if (game.getCurrentPlayer() === game.getOnlinePlayer()) {
         if (LOG) console.log("C'est à vous de jouer");
         display_message('', 'action_message');
+        display_message("C'est à vous de jouer", 'info_message', 1500);
     }
     document.getElementById('turn').textContent = game.turn_count;
 
-    document.getElementById('player').textContent = ['', 'A', 'B'][game.getCurrentPlayer()];
+    // if it is the turn of the other player
+    if (game.getCurrentPlayer() != game.getOnlinePlayer()) {
+        document.getElementById('player').textContent = "Au tour de l'adversaire";
+    } else {
+        document.getElementById('player').textContent = 'À vous de jouer';
+    }
+    //document.getElementById('player').textContent = ['', 'A', 'B'][game.getCurrentPlayer()];
 }
 
 export function getCorridorPossiblePosition(column, line) {

@@ -11,6 +11,7 @@ var sound_wall = new Audio('/resources/sounds/wall.mp3');
 var sound_jump = new Audio('/resources/sounds/jump.mp3');
 var sound_win = new Audio('/resources/sounds/win.mp3');
 var sound_lose = new Audio('/resources/sounds/lose.mp3');
+var sound_dring = new Audio('/resources/sounds/dring.mp3');
 
 document.addEventListener('DOMContentLoaded', function () {
     if (LOG) console.log('arrived in online-game.js');
@@ -74,12 +75,23 @@ document.addEventListener('DOMContentLoaded', function () {
             display_message('Match nul !', 'action_message', false);
             sound_lose.play();
         } else if (data === game.getOnlinePlayer()) {
-            display_message('Défaite !', 'action_message', false);
+            display_message('Perdu !', 'action_message', false);
             sound_lose.play();
         } else {
             display_message('Victoire !', 'action_message', false);
             sound_win.play();
         }
+    });
+
+    // Log any error that occurs
+    socket.on('connect_error', (error) => {
+        console.error('Socket.IO connection error:', error);
+    });
+
+    // on timeout
+    socket.on('game:timeout', (time) => {
+        display_message(`⏰ Plus que ${time} secondes !`, 'info_message');
+        sound_dring.play();
     });
 });
 
