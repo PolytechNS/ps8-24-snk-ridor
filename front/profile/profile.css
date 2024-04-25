@@ -1,12 +1,11 @@
 @font-face {
-    font-family: 'OptimusPrinceps';
-    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-family: 'Cinzel', serif;
     font-weight: normal;
     font-style: normal;
 }
 
 body {
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
     background-size: cover;
     color: #ffffff;
@@ -118,7 +117,7 @@ body {
 
 .pending-requests li button,
 .friends-list li button {
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     padding: 0.8rem 1.5rem;
     font-size: 1rem;
     font-weight: bold;
@@ -136,7 +135,7 @@ body {
 }
 
 .add-friend-btn {
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     padding: 1rem 2rem;
     font-size: 1.2rem;
     font-weight: bold;
@@ -166,7 +165,7 @@ body {
 }
 
 .leaderboard-btn {
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     padding: 0.4rem 0.8rem;
     margin-left: 1rem;
     font-size: 1.2rem;
@@ -185,7 +184,7 @@ body {
 }
 
 .achievements-btn {
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     padding: 0.4rem 0.8rem;
     margin-left: 1rem;
     font-size: 1.2rem;

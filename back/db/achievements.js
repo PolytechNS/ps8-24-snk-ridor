@@ -44,7 +44,7 @@ const ACHIEVEMENT = {
     },
     VELLA: {
         name: 'Vella',
-        description: 'Have xXxD4rKV3ll4xXx as a friend',
+        description: 'Have xXx_D4rKV3ll4_xXx as a friend',
         icon: 'redbull.png',
     },
     MESSAGE: {

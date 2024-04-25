@@ -1,12 +1,11 @@
 @font-face {
-    font-family: 'OptimusPrinceps';
-    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-family: 'Cinzel', serif;
     font-weight: normal;
     font-style: normal;
 }
 
 body {
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
     background-size: cover;
     color: #ffffff;
@@ -63,7 +62,7 @@ body {
 }
 
 .icon {
-    width: 80px;
+    width: auto;
     height: 80px;
 }
 
@@ -113,10 +112,17 @@ body {
     .grid {
         grid-template-columns: repeat(3, 1fr);
     }
+    .achievements {
+        overflow-y: auto;
+    }
 }
 
 @media (max-width: 500px) {
     .grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+    .achievements {
+        height: 90vh;
+        overflow-y: auto;
     }
 }
