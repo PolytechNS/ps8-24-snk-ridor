@@ -12,7 +12,8 @@ chatTemplate.innerHTML = `
 </head>
 <body>
     <div class="chat-container">
-        <img src="../resources/ui/chat.png" alt="Chat Icon" class="chat-icon">
+        <img src="../resources/svg/chat.svg" alt="Chat Icon" class="chat-icon regular">
+        <img src="../resources/svg/chat-notif.svg" alt="Chat Notification Icon" class="chat-icon notif">
         <div class="friend-list" id="friendList">
             <ul></ul>
         </div>
@@ -54,7 +55,6 @@ class Chat extends HTMLElement {
         });
 
         this.socket.on('friend:receive', (message) => {
-            console.log('Received message:', message);
             if (this.activeFriendName === message.sender && this.chatWindowVisible) {
                 this.addMessage(message.message, false);
             } else {
@@ -62,6 +62,7 @@ class Chat extends HTMLElement {
                     this.unreadMessages[message.sender] = [];
                 }
                 this.unreadMessages[message.sender].push(message.message);
+                this.updateNotificationIcon();
                 this.markFriendAsUnread(message.sender);
                 this.saveUnreadMessages();
                 this.dispatchUnreadMessagesEvent();
@@ -89,7 +90,6 @@ class Chat extends HTMLElement {
     logElementStyles(elementId) {
         const elem = this.shadowRoot.getElementById(elementId);
         const style = window.getComputedStyle(elem);
-        console.log(`Styles for ${elementId}: display = ${style.display}, visibility = ${style.visibility}`);
     }
 
     toggleFriendList() {
@@ -237,6 +237,7 @@ class Chat extends HTMLElement {
 
     updateNotificationIcon() {
         const hasUnreadMessages = Object.values(this.unreadMessages).some((messages) => messages.length > 0);
+        console.log('Has unread messages:', hasUnreadMessages)
         if (hasUnreadMessages) {
             this.showNotificationIcon();
         } else {
@@ -245,11 +246,15 @@ class Chat extends HTMLElement {
     }
 
     showNotificationIcon() {
-        this.shadowRoot.querySelector('.chat-icon').classList.add('notif');
+        console.log('Showing notification icon');
+        this.shadowRoot.querySelector('.chat-icon.regular').style.display = 'none';
+        this.shadowRoot.querySelector('.chat-icon.notif').style.display = 'inline-block';
     }
 
     hideNotificationIcon() {
-        this.shadowRoot.querySelector('.chat-icon').classList.remove('notif');
+        console.log('Hiding notification icon');
+        this.shadowRoot.querySelector('.chat-icon.regular').style.display = 'inline-block';
+        this.shadowRoot.querySelector('.chat-icon.notif').style.display = 'none';
     }
 
     markFriendAsUnread(friendName) {
@@ -275,7 +280,8 @@ class Chat extends HTMLElement {
 
     connectedCallback() {
         this.fetchFriendList();
-        this.shadowRoot.querySelector('.chat-icon').addEventListener('click', () => this.toggleFriendList());
+        this.shadowRoot.querySelector('.chat-icon.regular').addEventListener('click', () => this.toggleFriendList());
+        this.shadowRoot.querySelector('.chat-icon.notif').addEventListener('click', () => this.toggleFriendList());
         this.shadowRoot.querySelector('.close-button').addEventListener('click', () => this.closeChatWindow());
         this.shadowRoot.querySelector('button').addEventListener('click', () => this.sendMessage());
         this.shadowRoot.getElementById('messageInput').addEventListener('keypress', (event) => this.handleKeyPress(event));

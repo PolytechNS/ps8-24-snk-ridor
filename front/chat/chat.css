@@ -30,7 +30,7 @@ body {
 }
 
 .chat-icon.notif img {
-    content: url('../resources/ui/chat-notif.png');
+    content: url('../resources/svg/chat-notif.svg');
     width: 35px;
     height: 35px;
     margin: 2.5px;
@@ -161,4 +161,20 @@ body {
     background-color: red;
     border-radius: 50%;
     margin-left: 5px;
+}
+.chat-icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.chat-icon.regular {
+    display: inline-block;
+}
+
+.chat-icon.notif {
+    display: none;
+    width: 45px;
+    height: 45px;
+    margin: 2.5px;
 }
