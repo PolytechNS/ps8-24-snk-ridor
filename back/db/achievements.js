@@ -110,7 +110,7 @@ class Achievement {
 
         // if the achievement already exists, return an error
         return Achievement.getAchievementsByEmail(achievement.email).then((acs) => {
-            if (acs.find((a) => a.achievement === achievement.achievement)) {
+            if (acs.find((a) => a.achievement.name === achievement.achievement.name)) {
                 return { error: 'Achievement already exists' };
             }
             return achievements.insertOne(achievement);
