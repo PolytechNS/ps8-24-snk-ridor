@@ -72,13 +72,13 @@ document.addEventListener('DOMContentLoaded', function () {
             displayEndGame();
         }
         if (data !== 1 && data !== 2) {
-            display_message('Match nul !', 'action_message', false);
+            display_message('Match nul !', 'final_message', false);
             sound_lose.play();
         } else if (data === game.getOnlinePlayer()) {
-            display_message('Perdu !', 'action_message', false);
+            display_message('Perdu !', 'final_message', false);
             sound_lose.play();
         } else {
-            display_message('Victoire !', 'action_message', false);
+            display_message('Victoire !', 'final_message', false);
             sound_win.play();
         }
     });
