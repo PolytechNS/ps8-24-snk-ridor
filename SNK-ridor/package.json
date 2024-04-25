@@ -17,6 +17,7 @@
         "cordova-ios": "^7.1.0",
         "cordova-plugin-dialogs": "^2.0.2",
         "cordova-plugin-inappbrowser": "^6.0.0",
+        "cordova-plugin-local-notifications": "^1.0.0",
         "cordova-plugin-network-information": "^3.0.0",
         "cordova-plugin-screen-orientation": "^3.0.4",
         "cordova-plugin-splashscreen": "^6.0.1",

@@ -22,6 +22,26 @@ function onDeviceReady() {
 
     // Vérifiez immédiatement l'état actuel de la connexion et prenez une action
     checkConnection();
+
+    //NOTIFICATIONS
+    var push = PushNotification.init({
+        android: {},
+        ios: {
+            alert: 'true',
+            badge: 'true',
+            sound: 'true',
+        },
+    });
+
+    push.on('registration', function (data) {});
+
+    push.on('notification', function (data) {
+        alert(data.message);
+    });
+
+    push.on('error', function (e) {
+        console.error(e.message);
+    });
 }
 
 // Ajout de l'écouteur pour l'événement deviceready au niveau global
