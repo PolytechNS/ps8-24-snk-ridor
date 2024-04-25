@@ -494,7 +494,7 @@ body {
         justify-content: center;
         align-items: center;
         width: 90%;
-        margin-bottom: -5vh;
+        margin-bottom: 5vh;
         height: 70vh;
         position: relative;
     }
@@ -731,6 +731,9 @@ body {
     .back-button {
         display: none;
     }
+    .countdown{
+        display: none;
+    }
 }
 
 @media (orientation: landscape) and (max-width: 1280px) {
@@ -744,7 +747,9 @@ body {
         background-repeat: no-repeat;
         background-size: cover;
     }
-
+    .alert{
+        display:none;
+    }
     #aside-left {
         order: 0;
     }
