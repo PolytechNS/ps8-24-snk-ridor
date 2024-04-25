@@ -67,6 +67,7 @@ class Chat extends HTMLElement {
         this.socket.on('friend:receive', (message) => {
             if (this.activeFriendName === message.sender && this.chatWindowVisible) {
                 this.addMessage(message.message, false);
+                this.checkRickRoll(message);
             } else {
                 if (!this.unreadMessages[message.sender]) {
                     this.unreadMessages[message.sender] = [];
@@ -256,6 +257,19 @@ class Chat extends HTMLElement {
 
         // Rickroll the user if the last message was not sent by the user and the message is 'rick'
         if (messages[messages.length - 1].message.toLowerCase() === 'rick' && messages[messages.length - 1].sender !== this.userName) {
+            // get currently played audio
+            let audio = document.querySelector('audio');
+            if (audio) {
+                audio.pause();
+            }
+            // Rickroll the user with music
+            let rick_music = new Audio('/resources/sounds/rick.mp3');
+            rick_music.play();
+        }
+    }
+
+    checkRickRoll(message) {
+        if (message.message.toLowerCase() === 'rick' && message.sender !== this.userName) {
             // get currently played audio
             let audio = document.querySelector('audio');
             if (audio) {

@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chat.socket.on('friend:receive', (message) => {
             if (activeFriendName === message.sender) {
                 addMessage(message.message, false);
+                checkRickRoll(message.message);
             }
         });
 
@@ -96,6 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
             messageElement.className = isSender ? 'sent' : 'received';
             chatMessages.appendChild(messageElement);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+
+    function checkRickRoll(message) {
+        if (message.toLowerCase() === 'rick') {
+            let rick_sound = new Audio('/resources/sounds/rick.mp3');
+            rick_sound.play();
         }
     }
 
