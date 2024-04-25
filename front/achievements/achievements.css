@@ -113,6 +113,9 @@ body {
     .grid {
         grid-template-columns: repeat(3, 1fr);
     }
+    .achievements {
+        overflow-y: auto;
+    }
 }
 
 @media (max-width: 500px) {
