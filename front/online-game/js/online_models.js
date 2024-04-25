@@ -72,6 +72,14 @@ export class Game {
         return [-1, -1];
     }
 
+    getMyPosition() {
+        return this.getPlayerPosition(1);
+    }
+
+    getOpponentPosition() {
+        return this.getPlayerPosition(2);
+    }
+
     remainingWalls(player) {
         if (player == this.online_player) {
             return 10 - this.own_walls.length;

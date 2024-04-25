@@ -1,16 +1,9 @@
-@font-face {
-    font-family: 'OptimusPrinceps';
-    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
 body {
     margin: 0;
     background:
         linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
         url('../resources/background.jpg') center/cover no-repeat;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     color: #ffffff;
 }
 
@@ -48,7 +41,7 @@ main {
     background-color: rgba(255, 255, 255, 0.8);
     color: #333;
     font-size: 1.1rem;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
 }
 
 .button-style {
@@ -61,7 +54,7 @@ main {
     cursor: pointer;
     font-weight: bold;
     font-size: 20px;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     transition: background-color 0.3s ease;
 }
 
@@ -121,8 +114,35 @@ main {
     }
 }
 
-@media (orientation: landscape) and (height < 480px) {
+@media (orientation: landscape) and (max-height: 480px) {
+    main {
+        padding: 1rem;
+    }
+
+    .form-container {
+        padding: 1rem;
+        width: 80%;
+        max-width: 400px;
+    }
+
     .login-form {
-        margin-top: 25px;
+        gap: 1rem;
+    }
+
+    .input-field {
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .button-style {
+        padding: 10px 20px;
+        margin: 5px 0;
+        font-size: 18px;
+    }
+
+    .form-container p {
+        margin-top: 1rem;
+        font-size: 1rem;
     }
 }

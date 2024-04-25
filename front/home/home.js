@@ -1,4 +1,4 @@
-import { BASE_URL_PAGE, LOGIN_URL, ONLINE_GAME_URL } from '/util/path.js';
+import { BASE_URL_PAGE, LOGIN_URL, ONLINE_GAME_URL, LEADERBOARD_URL, ACHIEVEMENTS_URL } from '/util/path.js';
 import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -8,7 +8,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('vs-bot-play_button').addEventListener('click', () => {
+        localStorage.setItem('opponentName', 'AI');
+        localStorage.setItem('opponentElo', 1000);
         joinAI();
+    });
+
+    document.getElementById('leaderboard-btn').addEventListener('click', () => {
+        document.location.href = BASE_URL_PAGE + LEADERBOARD_URL;
+    });
+
+    document.getElementById('achievements-btn').addEventListener('click', () => {
+        document.location.href = BASE_URL_PAGE + ACHIEVEMENTS_URL;
     });
 });
 

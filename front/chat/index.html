@@ -13,13 +13,15 @@
     <body>
         <div class="chat-container">
             <div class="chat-header">
-                <button class="back-button">&lt; Back</button>
+                <button class="back-button">
+                    <img src="/resources/ui/back.png" alt="Back" style="width: 10vw; height: auto;">
+                </button>
                 <span id="chatHeader"></span>
             </div>
             <div class="chat-messages" id="chatMessages"></div>
             <div class="chat-input">
                 <input type="text" id="messageInput" placeholder="Type your message..." />
-                <button id="sendButton">Send</button>
+                <button id="sendButton">Envoyer</button>
             </div>
         </div>
         <chat-global></chat-global>

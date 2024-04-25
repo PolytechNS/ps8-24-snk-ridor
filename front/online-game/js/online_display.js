@@ -94,7 +94,7 @@ export function display_board(board) {
             img.classList.add('pawn-avatar');
             player.appendChild(img);
 
-            console.log('position', position);
+            if (LOG) console.log('position', position);
             let cell = document.getElementById('cell-' + position[0] + '-' + position[1]);
             cell.appendChild(player);
         }
@@ -206,7 +206,7 @@ export function display_game(game) {
 
     // add players walls
     let walls = game.getPlayerWalls('own');
-    console.log('walls', walls);
+    if (LOG) console.log('walls', walls);
     for (let i = 0; i < walls.length; i++) {
         let wall = walls[i];
         // si le mur est vertical
@@ -223,7 +223,7 @@ export function display_game(game) {
     }
 
     walls = game.getPlayerWalls('other');
-    console.log('walls', walls);
+    if (LOG) console.log('walls', walls);
     for (let i = 0; i < walls.length; i++) {
         let wall = walls[i];
         // si le mur est vertical
@@ -577,5 +577,21 @@ export function display_message(message, { category = 'info_message', timeout = 
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Get the current user's name and ELO from localStorage
+    const username = localStorage.getItem('username');
+    const userElo = localStorage.getItem('elo');
+
+    // Set the current user's name and ELO in the HTML
+    document.getElementById('self_pseudo').textContent = username;
+    document.getElementById('self_elo').textContent = userElo;
+
+    // Get the opponent's name and ELO from localStorage
+    const opponentName = localStorage.getItem('opponentName');
+    const opponentElo = localStorage.getItem('opponentElo');
+
+    // Set the opponent's name and ELO in the HTML
+    document.getElementById('other_pseudo').textContent = opponentName;
+    document.getElementById('other_elo').textContent = opponentElo;
+
     newGame('player1', 'player2', true);
 });

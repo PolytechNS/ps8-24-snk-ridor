@@ -1,5 +1,6 @@
 const { User, hashPassword } = require('../db/user');
 const { getCurrentUser, getJsonBody } = require('../libs/jenkspress');
+const { notFoundHandler, unauthorizedHandler } = require('./errors');
 
 function manageRequest(request, response) {
     let url = new URL(request.url, `http://${request.headers.host}`);
@@ -16,8 +17,7 @@ function manageRequest(request, response) {
             break;
 
         default:
-            response.statusCode = 400;
-            response.end('Unknown endpoint');
+            notFoundHandler(request, response);
     }
 }
 
@@ -25,15 +25,13 @@ function updatePassword(request, response) {
     let email = getCurrentUser(request);
 
     if (!email) {
-        response.statusCode = 401;
-        response.end('Unauthorized');
+        unauthorizedHandler(request, response);
         return;
     }
 
     getJsonBody(request).then((jsonBody) => {
         if (!jsonBody.password) {
-            response.statusCode = 400;
-            response.end('Password is required');
+            notFoundHandler(request, response);
             return;
         }
 
@@ -41,20 +39,12 @@ function updatePassword(request, response) {
 
         User.update(email, { password_hash: hashedPassword }).then((result) => {
             if (!result || result.error) {
-                response.statusCode = 400;
-
-                if (result) {
-                    response.end(result.error);
-                    return;
-                }
-
-                response.end('Password not updated');
+                notFoundHandler(request, response);
                 return;
             }
 
             if (result.modifiedCount === 0) {
-                response.statusCode = 400;
-                response.end('Password not updated');
+                notFoundHandler(request, response);
                 return;
             }
 

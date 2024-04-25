@@ -1,8 +1,9 @@
-const { notFoundHandler } = require('./errors');
+const { notFoundHandler, internalServerErrorHandler, unauthorizedHandler } = require('./errors');
 const { getJsonBody, getCurrentUser } = require('../libs/jenkspress');
 const { Friend, FRIEND_STATUS } = require('../db/friend');
 const { logger } = require('../libs/logging');
 const { User } = require('../db/user');
+const { Achievement, ACHIEVEMENT } = require('../db/achievements');
 
 async function manageRequest(request, response) {
     let url = new URL(request.url, `http://${request.headers.host}`);
@@ -39,8 +40,7 @@ async function add(request, response) {
     let name = getCurrentUser(request);
 
     if (!name) {
-        response.statusCode = 401;
-        response.end('Unauthorized');
+        unauthorizedHandler(request, response);
         return;
     }
 
@@ -48,12 +48,24 @@ async function add(request, response) {
         const jsonBody = await getJsonBody(request);
         logger.debug(`Adding friend: ${name} -> ${jsonBody.friend_name}`);
 
+        // === Achievement ===
+        if (jsonBody.friend_name === 'xXx_D4rKV3ll4_xXx') {
+            logger.info(`Achievement for ${name}: VELLA`);
+            User.getByName(name).then((user) => {
+                if (!user) {
+                    return;
+                }
+                Achievement.create(new Achievement(user.email, ACHIEVEMENT.VELLA)).then((_) => {});
+            });
+            return;
+        }
+        // === Achievement ===
+
         const user = await User.getByName(name);
         const friend = await User.getByName(jsonBody.friend_name);
 
         if (!user || !friend) {
-            response.statusCode = 400;
-            response.end('User or friend not found');
+            notFoundHandler(request, response);
             return;
         }
 
@@ -61,21 +73,14 @@ async function add(request, response) {
 
         const result = await Friend.create(friendObj);
         if (!result || result.error) {
-            response.statusCode = 400;
-            if (result) {
-                response.end(result.error);
-                return;
-            }
-
-            response.end('Friend not created');
+            notFoundHandler(request, response);
             return;
         }
 
         response.end('Friend created');
     } catch (error) {
         logger.error(`Error in add function: ${error.message}`);
-        response.statusCode = 500;
-        response.end('Internal Server Error');
+        internalServerErrorHandler(request, response);
     }
 }
 
@@ -83,8 +88,7 @@ async function accept(request, response) {
     let name = getCurrentUser(request);
 
     if (!name) {
-        response.statusCode = 401;
-        response.end('Unauthorized');
+        unauthorizedHandler(request, response);
         return;
     }
 
@@ -94,43 +98,37 @@ async function accept(request, response) {
         const friend = await User.getByName(jsonBody.friend_name);
 
         if (!user || !friend) {
-            response.statusCode = 400;
-            response.end('User or friend not found');
+            notFoundHandler(request, response);
             return;
         }
 
         const result = await Friend.get(user.name, friend.name);
         logger.info('Accepting friend request    =     ' + jsonBody);
         if (!result) {
-            response.statusCode = 400;
-            response.end('Friend not found');
+            notFoundHandler(request, response);
             return;
         }
 
         if (result.friend_name !== user.name) {
-            response.statusCode = 400;
-            response.end('You are not the friend recipient');
+            notFoundHandler(request, response);
             return;
         }
 
         const updateResult = await Friend.updateStatus(friend.name, user.name, FRIEND_STATUS.ACCEPTED);
         if (!updateResult) {
-            response.statusCode = 400;
-            response.end('Friend not accepted');
+            notFoundHandler(request, response);
             return;
         }
 
         if (updateResult.modifiedCount === 0) {
-            response.statusCode = 400;
-            response.end('Friend not accepted');
+            notFoundHandler(request, response);
             return;
         }
         console.log('friend add request accepted');
         response.end('Friend accepted');
     } catch (error) {
         logger.error(`Error in accept function: ${error.message}`);
-        response.statusCode = 500;
-        response.end('Internal Server Error');
+        internalServerErrorHandler(request, response);
     }
 }
 
@@ -138,8 +136,7 @@ async function remove(request, response) {
     let name = getCurrentUser(request);
 
     if (!name) {
-        response.statusCode = 401;
-        response.end('Unauthorized');
+        unauthorizedHandler(request, response);
         return;
     }
 
@@ -149,37 +146,32 @@ async function remove(request, response) {
         const friend = await User.getByName(jsonBody.friend_name);
 
         if (!user || !friend) {
-            response.statusCode = 400;
-            response.end('User or friend not found');
+            notFoundHandler(request, response);
             return;
         }
 
         const result = await Friend.delete(user.name, friend.name);
         if (!result) {
-            response.statusCode = 400;
-            response.end('Friend not removed');
+            notFoundHandler(request, response);
             return;
         }
 
         if (result.deletedCount === 0) {
-            response.statusCode = 400;
-            response.end('Friend not removed');
+            notFoundHandler(request, response);
             return;
         }
 
         response.end('Friend removed');
     } catch (error) {
         logger.error(`Error in remove function: ${error.message}`);
-        response.statusCode = 500;
-        response.end('Internal Server Error');
+        internalServerErrorHandler(request, response);
     }
 }
 
 async function list(request, response) {
     let name = getCurrentUser(request);
     if (!name) {
-        response.statusCode = 401;
-        response.end('Unauthorized');
+        unauthorizedHandler(request, response);
         return;
     }
 
@@ -187,8 +179,7 @@ async function list(request, response) {
         const user = await User.getByName(name);
 
         if (!user) {
-            response.statusCode = 400;
-            response.end('User not found');
+            notFoundHandler(request, response);
             return;
         }
 
@@ -200,8 +191,7 @@ async function list(request, response) {
         response.end(JSON.stringify(result));
     } catch (error) {
         logger.error(`Error in list function: ${error.message}`);
-        response.statusCode = 500;
-        response.end('Internal Server Error');
+        internalServerErrorHandler(request, response);
     }
 }
 
@@ -209,24 +199,28 @@ async function find(request, response) {
     let name = getCurrentUser(request);
 
     if (!name) {
-        response.statusCode = 401;
-        response.end('Unauthorized');
+        unauthorizedHandler(request, response);
         return;
     }
 
     try {
         const result = await User.getAll();
         if (!result || result.length === 0) {
-            response.statusCode = 400;
-            response.end('No users found');
+            notFoundHandler(request, response);
             return;
         }
+
+        // === Achievement ===
+        const vella = {
+            name: 'xXx_D4rKV3ll4_xXx',
+        };
+        result.push(vella);
+        // === Achievement ===
 
         response.end(JSON.stringify(result));
     } catch (error) {
         logger.error(`Error in find function: ${error.message}`);
-        response.statusCode = 500;
-        response.end('Internal Server Error');
+        internalServerErrorHandler(request, response);
     }
 }
 

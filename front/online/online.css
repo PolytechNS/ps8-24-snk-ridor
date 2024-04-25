@@ -1,6 +1,5 @@
 @font-face {
-    font-family: 'OptimusPrinceps';
-    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-family: 'Cinzel', serif;
     font-weight: normal;
     font-style: normal;
 }
@@ -9,12 +8,15 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     display: flex;
     justify-content: center;
     align-items: center;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
     background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .container {
@@ -93,6 +95,34 @@ body {
 }
 
 #create-room-button:active {
+    box-shadow: 0 2px rgba(0, 0, 0, 0.3);
+    transform: translateY(4px);
+}
+
+#rules-button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    color: #ffffff;
+    margin-top: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #ff5722;
+    box-shadow: 0 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 2px;
+    border-radius: 4px;
+}
+
+#rules-button:hover {
+    background-color: #f4511e;
+}
+
+#rules-button:active {
     box-shadow: 0 2px rgba(0, 0, 0, 0.3);
     transform: translateY(4px);
 }
@@ -185,7 +215,7 @@ header {
     border: none;
     border-radius: 4px;
     font-size: 1em;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     background-color: rgba(255, 255, 255, 0.8);
     transition: background-color 0.3s;
     box-sizing: border-box;

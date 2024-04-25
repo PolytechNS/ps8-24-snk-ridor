@@ -1,16 +1,19 @@
-import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, FRIEND_API, FRIEND_URL } from '../util/path.js';
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, FRIEND_API, FRIEND_URL, PROFILE_URL } from '../util/path.js';
 // /api/leaderboard/top
 // /api/leaderboard/me
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('back-button').addEventListener('click', () => {
-        window.location.replace(BASE_URL_PAGE + HOME_URL);
+        if (localStorage.getItem('returnPage') === 'profile') {
+            window.location.replace(BASE_URL_PAGE + PROFILE_URL);
+            localStorage.removeItem('returnPage');
+        } else {
+            window.location.replace(BASE_URL_PAGE + HOME_URL);
+        }
     });
 
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
-    const email = localStorage.getItem('email');
-    const elo = localStorage.getItem('elo');
 
     fetchLeaderboard(token, username);
     fetchMe(token, username);
@@ -58,11 +61,13 @@ document.addEventListener('DOMContentLoaded', function () {
         let leaderboardList = document.getElementById('leaderboard');
         let text = '<h1>Leaderboard</h1><br><ul>';
 
-        for (let i = 0; i < data.length; i++) {
-            let element = data[i];
-            const listItem = document.createElement('li');
-            listItem.textContent = `${i + 1}. ${element.name} - ${element.elo}`;
-            text += listItem.outerHTML;
+        for (let j = 0; j < 1; j++) {
+            for (let i = 0; i < data.length; i++) {
+                let element = data[i];
+                const listItem = document.createElement('li');
+                listItem.textContent = `${3 * j + i + 1}. ${element.name} - ${element.elo}`;
+                text += listItem.outerHTML;
+            }
         }
 
         text += '</ul>';

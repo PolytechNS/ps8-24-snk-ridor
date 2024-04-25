@@ -16,6 +16,7 @@
         <script src="/chat/chat.js" type="module" defer></script>
         <script src="/bottom-bar/bottom-bar.js" type="module"></script>
         <link rel="stylesheet" href="/bottom-bar/bottom-bar.css" />
+        <script src="/util/dataValidation.js" type="module"></script>
     </head>
     <body>
         <header>
@@ -24,6 +25,10 @@
                 <a class="top-button" id="logout-button">Logout</a>
             </div>
         </header>
+        <div class="icons-container" id="icons-container">
+            <img src="../resources/ui/leaderboard.png" alt="Leaderboard Icon" class="leaderboard-icon" id="leaderboard-btn" />
+            <img src="../resources/ui/achievements.png" alt="Achievements Icon" class="achievements-icon" id="achievements-btn" />
+        </div>
         <main>
             <a href="./" class="logo-link">
                 <img src="/resources/ui/logo.png" alt="SNK'ridor Logo" class="logo" />
@@ -32,6 +37,7 @@
                 <a class="play_button" id="online-play_button" href="/online">Jouer</a>
                 <a class="play_button" id="vs-bot-play_button">Jouer contre l'IA</a>
                 <a class="play_button" id="local-play_button" href="/local">Multijoueur local</a>
+                <a class="rules_button" id="rules_button" href="/rules">Voir les règles</a>
             </div>
         </main>
         <chat-global></chat-global>

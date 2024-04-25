@@ -1,18 +1,31 @@
-import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, FRIEND_API, FRIEND_URL } from '../util/path.js';
+import { BASE_URL_API, BASE_URL_PAGE, API_URL, HOME_URL, FRIEND_API, FRIEND_URL, LEADERBOARD_URL, ACHIEVEMENTS_URL } from '../util/path.js';
 
 document.addEventListener('DOMContentLoaded', function () {
+    // add event listeners to react on user input
     document.getElementById('back-button').addEventListener('click', () => {
         window.location.replace(BASE_URL_PAGE + HOME_URL);
     });
+
+    document.getElementById('leaderboard-btn').addEventListener('click', () => {
+        leaderboardClick();
+    });
+
+    document.getElementById('achievements-btn').addEventListener('click', () => {
+        achievementsClick();
+    });
+
+    // get user data from local storage
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
     const email = localStorage.getItem('email');
     const elo = localStorage.getItem('elo');
 
+    // update profile info
     fetchMe();
     fetchFriendList(token, username);
     addEventListeners();
 
+    // utility functions
     function updateProfileInfo(data) {
         document.getElementById('profile-name').textContent = data.username;
         document.getElementById('profile-email').textContent = data.email;
@@ -115,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createAcceptButton(friend_name) {
         const acceptButton = document.createElement('button');
-        acceptButton.textContent = 'Accept';
+        acceptButton.textContent = 'Accepter';
         acceptButton.addEventListener('click', function () {
             acceptFriendRequest(friend_name);
         });
@@ -124,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createRemoveButton(friend_name) {
         const removeButton = document.createElement('button');
-        removeButton.textContent = 'Remove';
+        removeButton.textContent = 'Supprimer';
         removeButton.addEventListener('click', function () {
             removeFriend(friend_name);
         });
@@ -182,3 +195,13 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 });
+
+function leaderboardClick() {
+    localStorage.setItem('returnPage', 'profile');
+    window.location.replace(BASE_URL_PAGE + LEADERBOARD_URL);
+}
+
+function achievementsClick() {
+    localStorage.setItem('returnPage', 'profile');
+    window.location.replace(BASE_URL_PAGE + ACHIEVEMENTS_URL);
+}

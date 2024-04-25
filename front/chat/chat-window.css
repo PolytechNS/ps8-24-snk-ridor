@@ -1,6 +1,5 @@
 @font-face {
-    font-family: 'OptimusPrinceps';
-    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-family: 'Cinzel', serif;
     font-weight: normal;
     font-style: normal;
 }
@@ -9,13 +8,15 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../resources/background.jpg'); /* Increased opacity from 0.5 to 0.7 */
     background-size: cover;
     background-position: center;
     color: #ffffff;
     display: flex;
     flex-direction: column;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .chat-container {
@@ -89,7 +90,7 @@ body {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 3px;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
 }
 
 .chat-input button {
@@ -101,7 +102,7 @@ body {
     font-weight: bold;
     border-radius: 3px;
     cursor: pointer;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
 }
 
 chat-global {

@@ -1,0 +1,128 @@
+@font-face {
+    font-family: 'Cinzel', serif;
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Cinzel', serif;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
+    background-size: cover;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.back-button {
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-image: url('../resources/ui/back.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 columns */
+    grid-template-rows: repeat(3, 1fr); /* 3 rows */
+    gap: 10px; /* Space between items */
+    padding: 20px;
+    overflow: hidden; /* Optional: Hides anything outside the third row */
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.icon {
+    width: auto;
+    height: 80px;
+}
+
+.name {
+    color: white;
+    margin-top: 8px;
+}
+
+.achievements-title {
+    font-size: 2rem;
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.achievement-modal {
+    display: none;
+    position: absolute;
+    background-color: #262626;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    text-align: center;
+    font:
+        1.2em 'OptimusPrinceps',
+        Arial,
+        sans-serif;
+}
+
+.modal-title {
+    margin-bottom: 10px;
+}
+
+.modal-icon {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.modal-desc {
+    font-size: 0.9em;
+}
+
+@media (max-width: 800px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .achievements {
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 500px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .achievements {
+        height: 90vh;
+        overflow-y: auto;
+    }
+}

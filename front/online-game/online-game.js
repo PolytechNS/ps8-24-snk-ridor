@@ -6,14 +6,29 @@ import { next_player } from './js/online_engine.js';
 import { displayEndGame } from './js/online_display.js';
 
 var socket;
+var sound_move = new Audio('/resources/sounds/move.mp3');
+var sound_wall = new Audio('/resources/sounds/wall.mp3');
+var sound_jump = new Audio('/resources/sounds/jump.mp3');
+var sound_win = new Audio('/resources/sounds/win.mp3');
+var sound_lose = new Audio('/resources/sounds/lose.mp3');
+var sound_dring = new Audio('/resources/sounds/dring.mp3');
 
 document.addEventListener('DOMContentLoaded', function () {
     if (LOG) console.log('arrived in online-game.js');
+
+    // add event to return button
+    document.getElementById('back-button').addEventListener('click', () => {
+        window.location.replace('/home');
+    });
 
     socket = io();
 
     // retrieve socket id
     var old_socket_id = localStorage.getItem('socket_id');
+
+    // prepare clock animation
+    let timer = document.getElementById('countdown');
+    timer.style.animation = 'none';
 
     socket.on('connect', () => {
         socket.emit('game:ready', old_socket_id);
@@ -34,6 +49,11 @@ document.addEventListener('DOMContentLoaded', function () {
         game.setPlayerWalls('own', gamestate.ownWalls);
         game.setPlayerWalls('other', gamestate.opponentWalls);
         next_player();
+
+        // enable timer
+        let timer = document.getElementById('countdown');
+        timer.style.visibility = 'visible';
+        timer.style.animation = null;
     });
 
     socket.on('game:updateBoard', (gamestate) => {
@@ -51,6 +71,11 @@ document.addEventListener('DOMContentLoaded', function () {
         game.setPlayerWalls('own', gamestate.ownWalls);
         game.setPlayerWalls('other', gamestate.opponentWalls);
         game.setBoard(gamestate.board);
+
+        // disable timer
+        let timer = document.getElementById('countdown');
+        timer.style.animation = 'none';
+        timer.style.visibility = 'hidden';
     });
 
     // quand on reçoit un message de fin de partie
@@ -61,14 +86,26 @@ document.addEventListener('DOMContentLoaded', function () {
             displayEndGame();
         }
         if (data !== 1 && data !== 2) {
-            display_message('Match nul !', 'action_message', false);
-            return;
-        }
-        if (data === game.getOnlinePlayer()) {
-            display_message('Défaite !', 'action_message', false);
+            display_message('Match nul !', 'final_message', false);
+            sound_lose.play();
+        } else if (data === game.getOnlinePlayer()) {
+            display_message('Perdu !', 'final_message', false);
+            sound_lose.play();
         } else {
-            display_message('Victoire !', 'action_message', false);
+            display_message('Victoire !', 'final_message', false);
+            sound_win.play();
         }
+    });
+
+    // Log any error that occurs
+    socket.on('connect_error', (error) => {
+        console.error('Socket.IO connection error:', error);
+    });
+
+    // on timeout
+    socket.on('game:timeout', (time) => {
+        display_message(`⏰ Plus que ${time} secondes !`, 'info_message');
+        sound_dring.play();
     });
 });
 
@@ -92,7 +129,7 @@ export function nextMoveAnswer(position) {
 }
 
 /* functional functions, to trigger socket on game events */
-export function move(position) {
+export function move(position, jump = false) {
     /*
      * position is a string representing the position of the player
      */
@@ -103,6 +140,11 @@ export function move(position) {
             value: position,
         },
     });
+    if (jump) {
+        sound_jump.play();
+    } else {
+        sound_move.play();
+    }
 }
 
 export function placeWall(position, vertical) {
@@ -118,4 +160,5 @@ export function placeWall(position, vertical) {
             value: [position, vertical],
         },
     });
+    sound_wall.play();
 }
