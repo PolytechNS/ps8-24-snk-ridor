@@ -61,11 +61,13 @@ document.addEventListener('DOMContentLoaded', function () {
         let leaderboardList = document.getElementById('leaderboard');
         let text = '<h1>Leaderboard</h1><br><ul>';
 
-        for (let i = 0; i < data.length; i++) {
-            let element = data[i];
-            const listItem = document.createElement('li');
-            listItem.textContent = `${i + 1}. ${element.name} - ${element.elo}`;
-            text += listItem.outerHTML;
+        for (let j = 0; j < 1; j++) {
+            for (let i = 0; i < data.length; i++) {
+                let element = data[i];
+                const listItem = document.createElement('li');
+                listItem.textContent = `${3 * j + i + 1}. ${element.name} - ${element.elo}`;
+                text += listItem.outerHTML;
+            }
         }
 
         text += '</ul>';

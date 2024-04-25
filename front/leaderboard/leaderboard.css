@@ -31,6 +31,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 60vw;
 }
 
 .back-button {
@@ -52,7 +53,7 @@ ul {
     padding: 0;
     margin: 0;
     max-height: 70vh;
-    overflow-y: scroll;
+    overflow-y: overlay;
 }
 
 ol {
@@ -61,13 +62,14 @@ ol {
     padding: 0;
     margin: 0;
     max-height: 70vh;
-    overflow-y: scroll;
+    overflow-y: overlay;
 }
 
 .leaderboard {
     margin: 0 auto;
     padding: 0;
     text-align: center;
+    width: 100%;
 }
 
 .leaderboard li {
@@ -80,6 +82,7 @@ ol {
     background: rgba(0, 0, 0, 0.5);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 @media (max-width: 730px), (orientation: landscape) and (max-device-height: 480px) {
