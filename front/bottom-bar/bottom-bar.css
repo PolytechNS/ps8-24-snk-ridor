@@ -85,7 +85,7 @@
 
 @media (orientation: landscape) and (max-device-height: 480px) {
     .bottom-bar {
-        height: 12vh;
+        height: 8vh;
     }
 
     .icon-link img {
