@@ -13,6 +13,7 @@ function updateElo(player1, player2, loser) {
             }
 
             updateEloForUsers(user1, user2, loser);
+            updateGames(user1, user2, loser);
         });
     });
 }
@@ -71,8 +72,8 @@ function updateEloForUsers(user1, user2, loser) {
         logger.debug(`Player 1 loses : ${newLoserElo} elo`);
         user1.elo = Math.max(newLoserElo, 0);
 
-        updateAchievements(user2, user2.elo);
-        updateAchievements(user1, user1.elo);
+        updateEloAchievements(user2, user2.elo);
+        updateEloAchievements(user1, user1.elo);
 
         logger.debug(`Player 2 new elo : ${user2.elo} elo`);
         logger.debug(`Player 1 new elo : ${user1.elo} elo`);
@@ -83,7 +84,7 @@ function updateEloForUsers(user1, user2, loser) {
     }
 }
 
-function updateAchievements(user, elo) {
+function updateEloAchievements(user, elo) {
     if (elo >= 1300) {
         Achievement.create(new Achievement(user.email, ACHIEVEMENT.BRONZE)).then((_) => {});
     }
@@ -107,6 +108,53 @@ function updateAchievements(user, elo) {
     if (elo === 0) {
         Achievement.create(new Achievement(user.email, ACHIEVEMENT.NO_ELO)).then((_) => {});
     }
+}
+
+function updateGamesAchievements(user) {
+    if (user.games_won >= 1) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.WINNER)).then((_) => {});
+    }
+
+    if (user.games_won >= 10) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.PRO_WINNER)).then((_) => {});
+    }
+
+    if (user.games_lost >= 1) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.NOOB)).then((_) => {});
+    }
+
+    if (user.games_lost >= 10) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.PRO_NOOB)).then((_) => {});
+    }
+
+    if (user.games_won + user.games_lost >= 1) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.FIRST_GAME)).then((_) => {});
+    }
+
+    if (user.games_won + user.games_lost >= 10) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.PRO_GAMER)).then((_) => {});
+    }
+
+    if (user.games_won + user.games_lost >= 100) {
+        Achievement.create(new Achievement(user.email, ACHIEVEMENT.MASTER_GAMER)).then((_) => {});
+    }
+}
+
+function updateGames(user1, user2, loser) {
+    logger.trace(`Updating games for ${user1.email} and ${user2.email}`);
+    if (loser === 1) {
+        user1.games_won++;
+        user2.games_lost++;
+    } else {
+        user2.games_won++;
+        user1.games_lost++;
+    }
+
+    updateGamesAchievements(user1);
+    updateGamesAchievements(user2);
+
+    User.update(user1.email, user1).then((_) => {});
+    User.update(user2.email, user2).then((_) => {});
 }
 
 module.exports = { updateElo };

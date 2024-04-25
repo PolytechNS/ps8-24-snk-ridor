@@ -110,7 +110,9 @@ class Achievement {
 
         // if the achievement already exists, return an error
         return Achievement.getAchievementsByEmail(achievement.email).then((acs) => {
-            if (acs.find((a) => a.achievement === achievement.achievement)) {
+            logger.trace(`Checking if achievement already exists: ${JSON.stringify(achievement)}`);
+            if (acs.find((a) => a.achievement.name === achievement.achievement.name)) {
+                logger.warn(`Achievement already exists: ${JSON.stringify(achievement)}`);
                 return { error: 'Achievement already exists' };
             }
             return achievements.insertOne(achievement);
@@ -120,6 +122,8 @@ class Achievement {
     static async getAchievementsByEmail(email) {
         const db = await getMongoDatabase();
         const achievements = db.collection('achievement');
+
+        await Achievement.dedupeAchievements();
 
         logger.trace(`Getting achievements for email ${email}`);
 
@@ -149,11 +153,37 @@ class Achievement {
         });
     }
 
-    static async createMockData() {
+    static async dedupeAchievements() {
         const db = await getMongoDatabase();
         const achievements = db.collection('achievement');
 
-        return await achievements.insertMany([new Achievement('a@a.a', ACHIEVEMENT.FIRST_GAME), new Achievement('a@a.a', ACHIEVEMENT.PRO_GAMER), new Achievement('b@b.b', ACHIEVEMENT.MASTER_GAMER), new Achievement('b@b.b', ACHIEVEMENT.WINNER)]);
+        let acvs = [];
+
+        return achievements
+            .find({})
+            .forEach((acv) => {
+                acvs.push(acv);
+            })
+            .then(() => {
+                let emails = {};
+                let toDelete = [];
+
+                for (let acv of acvs) {
+                    if (emails[acv.email] && emails[acv.email].find((a) => a.name === acv.achievement.name)) {
+                        toDelete.push(acv._id);
+                    } else {
+                        if (!emails[acv.email]) {
+                            emails[acv.email] = [];
+                        }
+                        emails[acv.email].push(acv.achievement);
+                    }
+                }
+
+                for (let id of toDelete) {
+                    achievements.deleteOne({ _id: id });
+                    logger.trace(`Deleted duplicate achievement with id ${id}`);
+                }
+            });
     }
 }
 

@@ -16,6 +16,8 @@ body {
     color: #ffffff;
     display: flex;
     flex-direction: column;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 main {

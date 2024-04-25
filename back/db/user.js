@@ -8,12 +8,16 @@ class User {
     email;
     password_hash;
     elo;
+    games_won;
+    games_lost;
 
     constructor(name, email, password) {
         this.name = name;
         this.email = email;
         this.password_hash = hashPassword(password);
         this.elo = 1000;
+        this.games_won = 0;
+        this.games_lost = 0;
     }
 
     validate_password(password) {
@@ -52,10 +56,13 @@ class User {
             user.email = result.email;
             user.password_hash = result.password_hash;
             user.elo = result.elo;
+            user.games_won = result.games_won;
+            user.games_lost = result.games_lost;
 
             return user;
         });
     }
+
     static async getByName(name) {
         const db = await getMongoDatabase();
         const users = db.collection('users');
@@ -71,6 +78,8 @@ class User {
             user.email = result.email;
             user.password_hash = result.password_hash;
             user.elo = result.elo;
+            user.games_won = result.games_won;
+            user.games_lost = result.games_lost;
 
             return user;
         });
@@ -92,6 +101,8 @@ class User {
                     user_obj.email = user.email;
                     user_obj.password_hash = user.password_hash;
                     user_obj.elo = user.elo;
+                    user_obj.games_won = user.games_won;
+                    user_obj.games_lost = user.games_lost;
 
                     users_objs.push(user_obj);
                 });
@@ -133,6 +144,8 @@ class User {
                     user_obj.name = user.name;
                     user_obj.email = user.email;
                     user_obj.elo = user.elo;
+                    user_obj.games_won = user.games_won;
+                    user_obj.games_lost = user.games_lost;
 
                     users_objs.push(user_obj);
                 });
