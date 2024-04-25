@@ -145,9 +145,10 @@ export function getCorridorPossiblePosition(column, line) {
 }
 
 export function move_player(player, column, line) {
-    if (LOG) console.log(`move_player(${player}, ${column}, ${line}) called`);
+    console.log(`move_player(${player}, ${column}, ${line}) called`);
     let game = getGame();
-    let player_position = game.getPlayerPosition(player);
+    let player_position = game.getMyPosition(player);
+    console.log(`Player ${player} is at [${player_position[0]}, ${player_position[1]}]`);
     let distance = Math.abs(player_position[0] - column) + Math.abs(player_position[1] - line);
     if (distance != 1) {
         // if the player is not moving to an adjacent cell (jumping over the other player)
