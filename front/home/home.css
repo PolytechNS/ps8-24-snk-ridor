@@ -1,6 +1,5 @@
 @font-face {
-    font-family: 'OptimusPrinceps';
-    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
+    font-family: 'Cinzel', serif;
     font-weight: normal;
     font-style: normal;
 }
@@ -9,7 +8,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -244,7 +243,7 @@ header {
     .logo {
         width: 100px;
     }
-    .play-buttons{
+    .play-buttons {
         height: 80vh;
     }
 
@@ -256,7 +255,7 @@ header {
     .leaderboard-container {
         display: none;
     }
-    .logo-link{
+    .logo-link {
         display: none;
     }
 }
