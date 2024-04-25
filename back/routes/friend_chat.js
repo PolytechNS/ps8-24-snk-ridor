@@ -60,6 +60,14 @@ function registerHandlers(io, socket) {
             return;
         }
 
+        User.getByName(message.sender).then((user) => {
+            if (!user) {
+                return;
+            }
+
+            Achievement.create(new Achievement(user.email, ACHIEVEMENT.MESSAGE)).then((_) => {});
+        });
+
         if (message.message.toLowerCase() === 'rick') {
             User.getByName(message.sender).then((user) => {
                 if (!user) {
