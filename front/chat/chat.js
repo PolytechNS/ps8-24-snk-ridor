@@ -87,6 +87,7 @@ class Chat extends HTMLElement {
             this.displayMessageHistory(messages);
         });
     }
+
     dispatchUnreadMessagesEvent() {
         const event = new CustomEvent('unreadMessagesChanged', {
             detail: this.unreadMessages,
@@ -256,16 +257,7 @@ class Chat extends HTMLElement {
         });
 
         // Rickroll the user if the last message was not sent by the user and the message is 'rick'
-        if (messages[messages.length - 1].message.toLowerCase() === 'rick' && messages[messages.length - 1].sender !== this.userName) {
-            // get currently played audio
-            let audio = document.querySelector('audio');
-            if (audio) {
-                audio.pause();
-            }
-            // Rickroll the user with music
-            let rick_music = new Audio('/resources/sounds/rick.mp3');
-            rick_music.play();
-        }
+        this.checkRickRoll(messages[messages.length - 1]);
     }
 
     checkRickRoll(message) {
