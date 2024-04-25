@@ -119,4 +119,8 @@ body {
     .grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    .achievements {
+        height: 90vh;
+        overflow-y: auto;
+    }
 }
