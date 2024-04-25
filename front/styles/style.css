@@ -1,10 +1,3 @@
-@font-face {
-    font-family: 'OptimusPrinceps';
-    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
 :root {
     --number-of-row: 9;
 }
@@ -13,7 +6,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../resources/background.jpg');
     background-size: cover;
     background-position: center;
@@ -49,8 +42,8 @@ body {
     margin-bottom: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition:
-            transform 0.3s ease,
-            box-shadow 0.3s ease;
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
     position: relative;
 }
 
@@ -440,7 +433,7 @@ body {
 }
 
 .transition-screen {
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
     display: none;
     position: absolute;
     top: 0;
@@ -568,7 +561,7 @@ body {
 
     .cell {
         width: calc(88vw / var(--number-of-row));
-        height: calc(82vw/ var(--number-of-row));
+        height: calc(82vw / var(--number-of-row));
         margin-right: 0;
         margin-bottom: 0;
     }
@@ -718,10 +711,10 @@ body {
         background-repeat: no-repeat;
         background-size: cover;
     }
-    #aside-left{
+    #aside-left {
         order: 0;
     }
-    #aside-right{
+    #aside-right {
         order: 1;
     }
     #aside-left,
