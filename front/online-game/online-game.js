@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // retrieve socket id
     var old_socket_id = localStorage.getItem('socket_id');
 
+    // prepare clock animation
+    let timer = document.getElementById('countdown');
+    timer.style.animation = 'none';
+
     socket.on('connect', () => {
         socket.emit('game:ready', old_socket_id);
     });
@@ -45,6 +49,11 @@ document.addEventListener('DOMContentLoaded', function () {
         game.setPlayerWalls('own', gamestate.ownWalls);
         game.setPlayerWalls('other', gamestate.opponentWalls);
         next_player();
+
+        // enable timer
+        let timer = document.getElementById('countdown');
+        timer.style.visibility = 'visible';
+        timer.style.animation = null;
     });
 
     socket.on('game:updateBoard', (gamestate) => {
@@ -62,6 +71,11 @@ document.addEventListener('DOMContentLoaded', function () {
         game.setPlayerWalls('own', gamestate.ownWalls);
         game.setPlayerWalls('other', gamestate.opponentWalls);
         game.setBoard(gamestate.board);
+
+        // disable timer
+        let timer = document.getElementById('countdown');
+        timer.style.animation = 'none';
+        timer.style.visibility = 'hidden';
     });
 
     // quand on reçoit un message de fin de partie

@@ -177,6 +177,13 @@ body {
     text-align: center;
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-infos .container {
+    margin: 0 5vw;
+    width: 14em;
 }
 
 .game-infos a.container:not(:first-child) {

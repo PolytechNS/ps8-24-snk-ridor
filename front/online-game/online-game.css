@@ -1,0 +1,63 @@
+@property --t {
+    syntax: '<number>';
+    initial-value: 59;
+    inherits: true;
+}
+
+/* won't be needed once Chrome supports round() */
+@property --s {
+    syntax: '<integer>';
+    initial-value: 0;
+    inherits: true;
+}
+
+.countdown {
+    /* when Chrome supports round(), this can be simplified */
+    /* more on this rounding trick
+     * https://css-tricks.com/using-absolute-value-sign-rounding-and-modulo-in-css-today/ */
+    --s: calc(var(--t) / 1);
+    display: grid;
+    margin: 1em auto;
+    width: 3em;
+    height: 3em;
+    animation: t 60s linear;
+    visibility: hidden;
+    animation-fill-mode: forwards;
+}
+
+.countdown::after {
+    grid-column: 1;
+    grid-row: 1;
+    place-self: center;
+    font:
+        0.75em/ 2 ubuntu mono,
+        consolas,
+        monaco,
+        monospace;
+    counter-reset: s var(--s);
+    content: '0:' counter(s, decimal-leading-zero);
+}
+
+@keyframes t {
+    to {
+        --t: 0;
+    }
+}
+
+svg {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+[r] {
+    fill: none;
+    stroke: silver;
+}
+
+[r] + [r] {
+    --k: calc(var(--t) / 60);
+    transform: rotate(-90deg);
+    stroke-linecap: round;
+    stroke: color-mix(in hsl shorter hue, #8a9b0f calc(var(--k) * 100%), #940a3d);
+    stroke-dasharray: var(--k) 1;
+}
