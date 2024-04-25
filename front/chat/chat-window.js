@@ -10,6 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const backButton = document.querySelector('.back-button');
     const activeFriendName = localStorage.getItem('activeFriendName');
 
+    var badwords = [];
+    fetch('/resources/bad-words.txt')
+        .then((response) => response.text())
+        .then((data) => data.split('\n').forEach((line) => badwords.push(line.trim())));
+
     chatHeader.textContent = activeFriendName;
 
     // Initialize socket connections and event listeners
@@ -27,13 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initializeSocketListeners() {
         chat.socket.on('connect', () => {
-            console.log('Socket.IO Connected');
             chat.socket.emit('friend:login', chat.userName);
             fetchMessageHistory(); // Fetch history only after confirming connection
         });
 
         chat.socket.on('friend:receive', (message) => {
-            console.log('Received message:', message);
             if (activeFriendName === message.sender) {
                 addMessage(message.message, false);
             }
@@ -58,11 +61,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addMessage(message, isSender) {
-        const messageElement = document.createElement('p');
-        messageElement.textContent = message;
-        messageElement.className = isSender ? 'sent' : 'received';
-        chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        let insultes = containsBadWord(message);
+        if (message.toLowerCase() === 'rick') {
+            let chatMessages = document.getElementById('chatMessages');
+            // convert string to HTML
+            let messageElement = document.createElement('p');
+            messageElement.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            messageElement.target = '_blank';
+            let imgElement = document.createElement('img');
+            imgElement.src = '/resources/ui/rick.gif';
+            imgElement.alt = 'Rick Astley - Never Gonna Give You Up';
+            imgElement.style.width = 'auto';
+            imgElement.style.height = '100%';
+            messageElement.appendChild(imgElement);
+            messageElement.className = isSender ? 'sent' : 'received';
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else if (insultes.length > 0) {
+            // replace letters with asterisks (except first letter)
+            for (let badword of insultes) {
+                let badword_replaced = badword[0] + badword.slice(1).replace(/./g, '*');
+                message = message.replace(badword, badword_replaced);
+            }
+            let chatMessages = document.getElementById('chatMessages');
+            let messageElement = document.createElement('p');
+            messageElement.textContent = message;
+            messageElement.className = isSender ? 'sent' : 'received';
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+            let chatMessages = document.getElementById('chatMessages');
+            let messageElement = document.createElement('p');
+            messageElement.textContent = message;
+            messageElement.className = isSender ? 'sent' : 'received';
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+
+    // return the list of bad words in the message
+    function containsBadWord(message) {
+        let bwr = [];
+        let message_list = message.toLowerCase().split(' ');
+        for (let badword of badwords) {
+            if (message_list.includes(badword)) {
+                bwr.push(badword);
+            }
+        }
+        return bwr;
     }
 
     function fetchMessageHistory() {

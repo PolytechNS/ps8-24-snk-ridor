@@ -1,7 +1,6 @@
 import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
 
 const chatTemplate = document.createElement('template');
-
 chatTemplate.innerHTML = `
 <link rel="stylesheet" href="../chat/chat.css">
 <!DOCTYPE html>
@@ -31,6 +30,12 @@ chatTemplate.innerHTML = `
 </body>
 </html>
 `;
+/*
+const badwords = await fetch('/resources/bad-words.txt')
+    .then((response) => response.text())
+    .then((text) => text.split('\n').map((word) => word.replace('\r', '')));
+
+*/
 
 class Chat extends HTMLElement {
     constructor() {
@@ -44,17 +49,22 @@ class Chat extends HTMLElement {
         this.socket = io();
         this.unreadMessages = {};
         this.initializeSocketListeners();
+        this.badwords = [];
+        fetch('/resources/bad-words.txt')
+            .then((response) => response.text())
+            .then((text) => text.split('\n').map((word) => word.replace('\r', '')))
+            .then((badwords) => {
+                this.badwords = badwords;
+            });
     }
 
     initializeSocketListeners() {
         this.socket.on('connect', () => {
-            console.log('Socket.IO Connected');
             this.socket.emit('friend:login', this.userName);
             this.fetchFriendList();
         });
 
         this.socket.on('friend:receive', (message) => {
-            console.log('Received message:', message);
             if (this.activeFriendName === message.sender && this.chatWindowVisible) {
                 this.addMessage(message.message, false);
             } else {
@@ -66,7 +76,6 @@ class Chat extends HTMLElement {
                 this.saveUnreadMessages();
                 this.dispatchUnreadMessagesEvent();
             }
-            console.log(`New message from ${message.sender}: ${message.message}`);
         });
 
         this.socket.on('friend:friends', (friends) => {
@@ -89,7 +98,6 @@ class Chat extends HTMLElement {
     logElementStyles(elementId) {
         const elem = this.shadowRoot.getElementById(elementId);
         const style = window.getComputedStyle(elem);
-        console.log(`Styles for ${elementId}: display = ${style.display}, visibility = ${style.visibility}`);
     }
 
     toggleFriendList() {
@@ -168,12 +176,54 @@ class Chat extends HTMLElement {
     }
 
     addMessage(message, isSender) {
-        let chatMessages = this.shadowRoot.getElementById('chatMessages');
-        let messageElement = document.createElement('p');
-        messageElement.textContent = message;
-        messageElement.className = isSender ? 'sent' : 'received';
-        chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        let insultes = this.containsBadWord(message);
+        if (message.toLowerCase() === 'rick') {
+            let chatMessages = this.shadowRoot.getElementById('chatMessages');
+            // convert string to HTML
+            let messageElement = document.createElement('p');
+            messageElement.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+            messageElement.target = '_blank';
+            let imgElement = document.createElement('img');
+            imgElement.src = '/resources/ui/rick.gif';
+            imgElement.alt = 'Rick Astley - Never Gonna Give You Up';
+            imgElement.style.width = 'auto';
+            imgElement.style.height = '100%';
+            messageElement.appendChild(imgElement);
+            messageElement.className = isSender ? 'sent' : 'received';
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else if (insultes.length > 0) {
+            // replace letters with asterisks (except first letter)
+            for (let badword of insultes) {
+                let badword_replaced = badword[0] + badword.slice(1).replace(/./g, '*');
+                message = message.replace(badword, badword_replaced);
+            }
+            let chatMessages = this.shadowRoot.getElementById('chatMessages');
+            let messageElement = document.createElement('p');
+            messageElement.textContent = message;
+            messageElement.className = isSender ? 'sent' : 'received';
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+            let chatMessages = this.shadowRoot.getElementById('chatMessages');
+            let messageElement = document.createElement('p');
+            messageElement.textContent = message;
+            messageElement.className = isSender ? 'sent' : 'received';
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+
+    // return the list of bad words in the message
+    containsBadWord(message) {
+        let bwr = [];
+        let message_list = message.toLowerCase().split(' ');
+        for (let badword of this.badwords) {
+            if (message_list.includes(badword)) {
+                bwr.push(badword);
+            }
+        }
+        return bwr;
     }
 
     displayFriendList(friends) {
@@ -203,6 +253,18 @@ class Chat extends HTMLElement {
             const isSender = message.sender === this.userName;
             this.addMessage(message.message, isSender);
         });
+
+        // Rickroll the user if the last message was not sent by the user and the message is 'rick'
+        if (messages[messages.length - 1].message.toLowerCase() === 'rick' && messages[messages.length - 1].sender !== this.userName) {
+            // get currently played audio
+            let audio = document.querySelector('audio');
+            if (audio) {
+                audio.pause();
+            }
+            // Rickroll the user with music
+            let rick_music = new Audio('/resources/sounds/rick.mp3');
+            rick_music.play();
+        }
     }
 
     fetchFriendList() {
@@ -255,5 +317,6 @@ class Chat extends HTMLElement {
         this.shadowRoot.getElementById('messageInput').addEventListener('keypress', (event) => this.handleKeyPress(event));
     }
 }
+
 export { Chat };
 window.customElements.define('chat-global', Chat);
