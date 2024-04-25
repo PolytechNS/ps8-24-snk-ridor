@@ -1,11 +1,6 @@
 import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
 
 const chatTemplate = document.createElement('template');
-// Retrieve bad words from the bad-words.txt file and convert it to a list
-const badwords = await fetch('/resources/bad-words.txt')
-    .then((response) => response.text())
-    .then((text) => text.split('\n').map((word) => word.replace('\r', '')));
-
 chatTemplate.innerHTML = `
 <link rel="stylesheet" href="../chat/chat.css">
 <!DOCTYPE html>
@@ -16,8 +11,7 @@ chatTemplate.innerHTML = `
 </head>
 <body>
     <div class="chat-container">
-        <img src="../resources/svg/chat.svg" alt="Chat Icon" class="chat-icon regular">
-        <img src="../resources/svg/chat-notif.svg" alt="Chat Notification Icon" class="chat-icon notif">
+        <img src="../resources/svg/chat.svg" alt="Chat Icon" class="chat-icon">
         <div class="friend-list" id="friendList">
             <ul></ul>
         </div>
@@ -36,6 +30,12 @@ chatTemplate.innerHTML = `
 </body>
 </html>
 `;
+/*
+const badwords = await fetch('/resources/bad-words.txt')
+    .then((response) => response.text())
+    .then((text) => text.split('\n').map((word) => word.replace('\r', '')));
+
+*/
 
 class Chat extends HTMLElement {
     constructor() {
@@ -49,11 +49,17 @@ class Chat extends HTMLElement {
         this.socket = io();
         this.unreadMessages = {};
         this.initializeSocketListeners();
+        this.badwords = [];
+        fetch('/resources/bad-words.txt')
+            .then((response) => response.text())
+            .then((text) => text.split('\n').map((word) => word.replace('\r', '')))
+            .then((badwords) => {
+                this.badwords = badwords;
+            });
     }
 
     initializeSocketListeners() {
         this.socket.on('connect', () => {
-            console.log('Socket.IO Connected');
             this.socket.emit('friend:login', this.userName);
             this.fetchFriendList();
         });
@@ -61,17 +67,16 @@ class Chat extends HTMLElement {
         this.socket.on('friend:receive', (message) => {
             if (this.activeFriendName === message.sender && this.chatWindowVisible) {
                 this.addMessage(message.message, false);
+                this.checkRickRoll(message);
             } else {
                 if (!this.unreadMessages[message.sender]) {
                     this.unreadMessages[message.sender] = [];
                 }
                 this.unreadMessages[message.sender].push(message.message);
-                this.updateNotificationIcon();
                 this.markFriendAsUnread(message.sender);
                 this.saveUnreadMessages();
                 this.dispatchUnreadMessagesEvent();
             }
-            console.log(`New message from ${message.sender}: ${message.message}`);
         });
 
         this.socket.on('friend:friends', (friends) => {
@@ -82,6 +87,7 @@ class Chat extends HTMLElement {
             this.displayMessageHistory(messages);
         });
     }
+
     dispatchUnreadMessagesEvent() {
         const event = new CustomEvent('unreadMessagesChanged', {
             detail: this.unreadMessages,
@@ -188,7 +194,7 @@ class Chat extends HTMLElement {
             messageElement.className = isSender ? 'sent' : 'received';
             chatMessages.appendChild(messageElement);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-        } else if (insultes) {
+        } else if (insultes.length > 0) {
             // replace letters with asterisks (except first letter)
             for (let badword of insultes) {
                 let badword_replaced = badword[0] + badword.slice(1).replace(/./g, '*');
@@ -214,12 +220,12 @@ class Chat extends HTMLElement {
     containsBadWord(message) {
         let bwr = [];
         let message_list = message.toLowerCase().split(' ');
-        for (let badword of badwords) {
+        for (let badword of this.badwords) {
             if (message_list.includes(badword)) {
                 bwr.push(badword);
             }
         }
-        return bwr.length > 0 ? bwr : false;
+        return bwr;
     }
 
     displayFriendList(friends) {
@@ -251,7 +257,11 @@ class Chat extends HTMLElement {
         });
 
         // Rickroll the user if the last message was not sent by the user and the message is 'rick'
-        if (messages[messages.length - 1].message.toLowerCase() === 'rick' && messages[messages.length - 1].sender !== this.userName) {
+        this.checkRickRoll(messages[messages.length - 1]);
+    }
+
+    checkRickRoll(message) {
+        if (message.message.toLowerCase() === 'rick' && message.sender !== this.userName) {
             // get currently played audio
             let audio = document.querySelector('audio');
             if (audio) {
@@ -269,7 +279,6 @@ class Chat extends HTMLElement {
 
     updateNotificationIcon() {
         const hasUnreadMessages = Object.values(this.unreadMessages).some((messages) => messages.length > 0);
-        console.log('Has unread messages:', hasUnreadMessages);
         if (hasUnreadMessages) {
             this.showNotificationIcon();
         } else {
@@ -278,15 +287,11 @@ class Chat extends HTMLElement {
     }
 
     showNotificationIcon() {
-        console.log('Showing notification icon');
-        this.shadowRoot.querySelector('.chat-icon.regular').style.display = 'none';
-        this.shadowRoot.querySelector('.chat-icon.notif').style.display = 'inline-block';
+        this.shadowRoot.querySelector('.chat-icon').classList.add('notif');
     }
 
     hideNotificationIcon() {
-        console.log('Hiding notification icon');
-        this.shadowRoot.querySelector('.chat-icon.regular').style.display = 'inline-block';
-        this.shadowRoot.querySelector('.chat-icon.notif').style.display = 'none';
+        this.shadowRoot.querySelector('.chat-icon').classList.remove('notif');
     }
 
     markFriendAsUnread(friendName) {
@@ -312,12 +317,12 @@ class Chat extends HTMLElement {
 
     connectedCallback() {
         this.fetchFriendList();
-        this.shadowRoot.querySelector('.chat-icon.regular').addEventListener('click', () => this.toggleFriendList());
-        this.shadowRoot.querySelector('.chat-icon.notif').addEventListener('click', () => this.toggleFriendList());
+        this.shadowRoot.querySelector('.chat-icon').addEventListener('click', () => this.toggleFriendList());
         this.shadowRoot.querySelector('.close-button').addEventListener('click', () => this.closeChatWindow());
         this.shadowRoot.querySelector('button').addEventListener('click', () => this.sendMessage());
         this.shadowRoot.getElementById('messageInput').addEventListener('keypress', (event) => this.handleKeyPress(event));
     }
 }
+
 export { Chat };
 window.customElements.define('chat-global', Chat);
