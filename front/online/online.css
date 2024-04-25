@@ -127,34 +127,6 @@ body {
     transform: translateY(4px);
 }
 
-#saved-rooms-button {
-    display: block;
-    width: 100%;
-    padding: 20px;
-    border: none;
-    color: #ffffff;
-    font-size: 1.5em;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    background-color: #ff5722;
-    box-shadow: 0 5px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 2px;
-    margin-top: 20px;
-    border-radius: 4px;
-}
-
-#saved-rooms-button:hover {
-    background-color: #f4511e;
-}
-
-#saved-rooms-button:active {
-    box-shadow: 0 2px rgba(0, 0, 0, 0.3);
-    transform: translateY(4px);
-}
-
 header {
     position: absolute;
     top: 0;

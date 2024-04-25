@@ -1,20 +1,14 @@
 import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
-import { BASE_URL_PAGE, HOME_URL, LOGIN_URL, ONLINE_GAME_URL, RULES_URL, RESTART_GAMES_URL } from '../util/path.js';
+import { BASE_URL_PAGE, HOME_URL, LOGIN_URL, ONLINE_GAME_URL, RULES_URL } from '../util/path.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     // add event listeners to react on user input
     document.getElementById('back-button').addEventListener('click', () => {
         window.location.replace(BASE_URL_PAGE + HOME_URL);
     });
-
     document.getElementById('rules-button').addEventListener('click', () => {
         localStorage.setItem('returnPage', 'online');
         window.location.replace(BASE_URL_PAGE + RULES_URL);
-    });
-
-    document.getElementById('saved-rooms-button').addEventListener('click', () => {
-        localStorage.setItem('returnPage', 'online');
-        window.location.replace(BASE_URL_PAGE + RESTART_GAMES_URL);
     });
 
     // initialize socket.io
