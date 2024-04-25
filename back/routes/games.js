@@ -21,7 +21,10 @@ function registerHandlers(io, socket) {
         }
 
         let playerId = games[room_hash].player1 === socket.id ? 1 : 2;
-        endGame(playerId, room_hash, games[room_hash].game_object);
+        logger.warn(`Player ${playerId} disconnected`);
+        if (games[room_hash].status === 'running' && games[room_hash].player1ready && games[room_hash].player2ready) {
+            endGame(playerId, room_hash, games[room_hash].game_object);
+        }
     });
 
     socket.on('game:join', (room_hash) => {
@@ -43,6 +46,7 @@ function registerHandlers(io, socket) {
             io: io,
             timeout: null,
             w_timeout: null,
+            status: 'pending',
         };
 
         // check if the socket is already in any room (player1 or player2)
@@ -97,10 +101,10 @@ function registerHandlers(io, socket) {
         logger.info('Socket response: game:info');
         if (games[room_hash].player1email && games[room_hash].player2email) {
             User.getByName(games[room_hash].player1email).then((user) => {
-                io.to(games[room_hash].player2).emit('game:info', {opponentName: user.name, opponentElo: user.elo});
+                io.to(games[room_hash].player2).emit('game:info', { opponentName: user.name, opponentElo: user.elo });
             });
             User.getByName(games[room_hash].player2email).then((user) => {
-                io.to(games[room_hash].player1).emit('game:info', {opponentName: user.name, opponentElo: user.elo});
+                io.to(games[room_hash].player1).emit('game:info', { opponentName: user.name, opponentElo: user.elo });
             });
             logger.info('Socket response: game:info');
         }
@@ -291,17 +295,16 @@ function nextMove(playerId, room_hash, meta, gameState, opponentGameState) {
 }
 
 function endGame(losingPlayer, room_hash, meta) {
+    logger.trace(`Ending game in room ${room_hash}`);
     clearTimer(room_hash);
+    games[room_hash].status = 'ended';
     games[room_hash].game_object = meta;
     logger.info(`Socket response: game:endGame`);
     games[room_hash].io.to(games[room_hash].player1).emit('game:endGame', losingPlayer);
     logger.info(`Socket response: game:endGame`);
     games[room_hash].io.to(games[room_hash].player2).emit('game:endGame', losingPlayer);
 
-    Promise.all([
-        User.getByName(games[room_hash].player1email),
-        User.getByName(games[room_hash].player2email)
-    ])
+    Promise.all([User.getByName(games[room_hash].player1email), User.getByName(games[room_hash].player2email)])
         .then(([player1, player2]) => {
             const realPlayer1Email = player1.email;
             const realPlayer2Email = player2.email;

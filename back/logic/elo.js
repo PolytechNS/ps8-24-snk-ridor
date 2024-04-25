@@ -141,6 +141,7 @@ function updateGamesAchievements(user) {
 }
 
 function updateGames(user1, user2, loser) {
+    logger.trace(`Updating games for ${user1.email} and ${user2.email}`);
     if (loser === 1) {
         user1.games_won++;
         user2.games_lost++;
@@ -150,6 +151,7 @@ function updateGames(user1, user2, loser) {
     }
 
     updateGamesAchievements(user1);
+    updateGamesAchievements(user2);
 
     User.update(user1.email, user1).then((_) => {});
     User.update(user2.email, user2).then((_) => {});
