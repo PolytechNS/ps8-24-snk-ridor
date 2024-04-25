@@ -61,3 +61,8 @@ svg {
     stroke: color-mix(in hsl shorter hue, #8a9b0f calc(var(--k) * 100%), #940a3d);
     stroke-dasharray: var(--k) 1;
 }
+@media (max-width: 767px) and (orientation: portrait){
+    .countdown{
+        display: none;
+    }
+}

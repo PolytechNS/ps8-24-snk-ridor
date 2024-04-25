@@ -35,5 +35,8 @@
             "cordova-plugin-network-information": {},
             "cordova-plugin-dialogs": {}
         }
+    },
+    "dependencies": {
+        "gradle": "^1.2.4"
     }
 }
