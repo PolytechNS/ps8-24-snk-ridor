@@ -1,10 +1,10 @@
 import { io } from 'https://cdn.socket.io/4.7.4/socket.io.esm.min.js';
-import { BASE_URL_PAGE, HOME_URL, LOGIN_URL, ONLINE_GAME_URL, RULES_URL, RESTART_GAMES_URL } from '../util/path.js';
+import { BASE_URL_PAGE, ONLINE_URL, LOGIN_URL, ONLINE_GAME_URL, RULES_URL, BASE_URL_API } from '../util/path.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     // add event listeners to react on user input
     document.getElementById('back-button').addEventListener('click', () => {
-        window.location.replace(BASE_URL_PAGE + HOME_URL);
+        window.location.replace(BASE_URL_PAGE + ONLINE_URL);
     });
 
     document.getElementById('rules-button').addEventListener('click', () => {
@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.replace(BASE_URL_PAGE + RULES_URL);
     });
 
-    document.getElementById('saved-rooms-button').addEventListener('click', () => {
+    document.getElementById('retour-button').addEventListener('click', () => {
         localStorage.setItem('returnPage', 'online');
-        window.location.replace(BASE_URL_PAGE + RESTART_GAMES_URL);
+        window.location.replace(BASE_URL_PAGE + ONLINE_URL);
     });
 
     // initialize socket.io
@@ -100,9 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('opponentElo', opponentElo);
     });
 
-    // Handle the create room button click event
-    createRoomButton.addEventListener('click', createRoom);
-
     // Handle the logout button click event
     logoutButton.addEventListener('click', () => {
         // Clear the stored email and redirect to the login page
@@ -125,4 +122,36 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('socket_id', socket.id);
         document.location.href = BASE_URL_PAGE + ONLINE_GAME_URL;
     });
+
+    // retrieve the saved games
+    // /api/games_storage/list
+    function fetchGames() {
+        fetch(BASE_URL_API + 'games_storage/list', {
+            method: 'GET',
+            headers: {
+                Authorization: `${token}`,
+            },
+        })
+            .then(handleResponse)
+            .then((data) => {
+                console.log(data);
+                displayGames(data);
+            })
+            .catch((error) => {
+                console.error('Error during game list retrieval:', error);
+            });
+    }
+
+    function displayGames(data) {
+        const gamesList = document.getElementById('games-list');
+        gamesList.innerHTML = '';
+
+        for (const game of data) {
+            const listItem = document.createElement('li');
+            listItem.textContent = game.name;
+            gamesList.appendChild(listItem);
+        }
+    }
+
+    fetchGames();
 });

@@ -21,6 +21,12 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.replace('/home');
     });
 
+    // add event to save button
+    document.getElementById('save-button').addEventListener('click', () => {
+        socket.emit('game:save');
+        window.location.replace('/home');
+    });
+
     socket = io();
 
     // retrieve socket id
