@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createAcceptButton(friend_name) {
         const acceptButton = document.createElement('button');
-        acceptButton.textContent = 'Accept';
+        acceptButton.textContent = 'Accepter';
         acceptButton.addEventListener('click', function () {
             acceptFriendRequest(friend_name);
         });
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createRemoveButton(friend_name) {
         const removeButton = document.createElement('button');
-        removeButton.textContent = 'Remove';
+        removeButton.textContent = 'Supprimer';
         removeButton.addEventListener('click', function () {
             removeFriend(friend_name);
         });
