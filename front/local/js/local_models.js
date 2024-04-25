@@ -51,6 +51,7 @@ export class Game {
 
     nextPlayer() {
         this.turn_count++;
+        console.log(`next player, Player ${this.current_player}'s turn`);
         this.current_player = ((this.turn_count + 1) % 2) + 1;
         if (LOG) console.log(`next player, Player ${this.current_player}'s turn`);
     }

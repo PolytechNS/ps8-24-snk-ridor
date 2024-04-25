@@ -1,15 +1,10 @@
-@font-face {
-    font-family: 'OptimusPrinceps';
-    src: url('../resources/font/OptimusPrinceps.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&display=swap');
 
 body {
     margin: 0;
     padding: 0;
     height: 100vh;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
 }
 
 .chat-container {
@@ -30,7 +25,7 @@ body {
 }
 
 .chat-icon.notif img {
-    content: url('../resources/ui/chat-notif.png');
+    content: url('../resources/svg/chat-notif.svg');
     width: 35px;
     height: 35px;
     margin: 2.5px;
@@ -139,7 +134,7 @@ body {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 3px;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
 }
 
 .chat-input button {
@@ -151,7 +146,7 @@ body {
     font-weight: bold;
     border-radius: 3px;
     cursor: pointer;
-    font-family: 'OptimusPrinceps', Arial, sans-serif;
+    font-family: 'Cinzel', serif;
 }
 
 .friend-list li .unread-dot {
@@ -161,4 +156,20 @@ body {
     background-color: red;
     border-radius: 50%;
     margin-left: 5px;
+}
+.chat-icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.chat-icon.regular {
+    display: inline-block;
+}
+
+.chat-icon.notif {
+    display: none;
+    width: 45px;
+    height: 45px;
+    margin: 2.5px;
 }

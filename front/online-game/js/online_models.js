@@ -1,4 +1,4 @@
-import { display_message } from './online_board.js';
+import { display_game } from './online_display.js';
 import { LOG } from './online_main.js';
 
 export let BOARD_HEIGHT = 9;
@@ -72,6 +72,14 @@ export class Game {
         return [-1, -1];
     }
 
+    getMyPosition() {
+        return this.getPlayerPosition(1);
+    }
+
+    getOpponentPosition() {
+        return this.getPlayerPosition(2);
+    }
+
     remainingWalls(player) {
         if (player == this.online_player) {
             return 10 - this.own_walls.length;
@@ -96,12 +104,29 @@ export class Game {
         return this.online_player;
     }
 
-    updateBoard(new_board) {
+    setBoard(new_board) {
         this.board = new_board;
+        display_game(this);
     }
 
     getBoard() {
         return this.board;
+    }
+
+    setPlayerWalls(player, walls) {
+        if (player == 'own') {
+            this.own_walls = walls;
+        } else {
+            this.other_walls = walls;
+        }
+    }
+
+    getPlayerWalls(player) {
+        if (player == 'own') {
+            return this.own_walls;
+        } else {
+            return this.other_walls;
+        }
     }
 }
 

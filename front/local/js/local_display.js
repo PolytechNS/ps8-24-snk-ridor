@@ -5,6 +5,9 @@ import { LOG } from './local_main.js';
 import { updateFogOfWar } from './local_fogwar.js';
 
 let global_board;
+let isWallHeld = false;
+let currentWall = null;
+
 /*
  * Uses the board to display the game board
  * @param {Board} the board to display
@@ -328,6 +331,40 @@ export function display_action_message(message, timeout = 0, buttons = [], cance
 
     return message_div;
 }
+
+function onWallTouchStart(event) {
+    isWallHeld = true;
+}
+
+function onWallTouchMove(event) {
+    if (isWallHeld) {
+        let touchLocation = event.changedTouches[0];
+        let hoveredElement = document.elementFromPoint(touchLocation.clientX, touchLocation.clientY);
+        if (hoveredElement !== currentWall) {
+            if (currentWall && currentWall.classList.contains('wall')) {
+                on_wall_out({ target: currentWall });
+            }
+            currentWall = hoveredElement;
+            if (currentWall && currentWall.classList.contains('wall')) {
+                on_wall_over({ target: currentWall });
+            }
+        }
+    }
+}
+
+function onWallTouchEnd(event) {
+    if (isWallHeld) {
+        isWallHeld = false;
+        if (currentWall && currentWall.classList.contains('wall')) {
+            on_wall_click({ target: currentWall });
+        }
+        currentWall = null;
+    }
+}
+
+document.addEventListener('touchstart', onWallTouchStart);
+document.addEventListener('touchmove', onWallTouchMove);
+document.addEventListener('touchend', onWallTouchEnd);
 
 document.addEventListener('DOMContentLoaded', function () {
     newGame('player1', 'player2', true);

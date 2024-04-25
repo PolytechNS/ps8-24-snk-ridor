@@ -1,0 +1,65 @@
+<rule id="1">
+    <h2>Principe du jeu</h2>
+    <p>
+        Quoridor est un jeu à 2 joueurs. Chaque joueur commence sur sa ligne et doit atteindre la ligne opposée.
+        <br />
+        À chaque tour le joueur peut se déplacer d'une case ou poser un mur.
+    </p>
+</rule>
+<rule id="2">
+    <h2>Mouvements</h2>
+    <p>Un joueur peut se déplacer d'une case dans n'importe quelle direction.</p>
+    <img src="/resources/rules/deplacement.png" alt="Déplacement" />
+    <p>Si le joueur adverse est à côté de nous on peut lui sauter par dessus et ainsi se déplacer de deux cases d'un coup.</p>
+    <img src="/resources/rules/saut.png" alt="Saut" />
+    <p>On ne peut pas sauter par dessus un mur.</p>
+    <img src="/resources/rules/mur.png" alt="Mur" />
+</rule>
+<rule id="3">
+    <h2>Murs</h2>
+    <div class="horizontal">
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+        <img src="/resources/svg/h-wall.svg" alt="Mur" />
+    </div>
+    <p>Un joueur a 10 murs au début de la partie. Le nombre de murs disponibles est affiché sur le profile pendant la partie.</p>
+    <p>Les murs ont une longueur de 2 cases et empêchent un joueur de passer.</p>
+    <img src="/resources/rules/mur.png" alt="Mur" />
+    <p>Il est interdit de poser un mur qui empêche totalement un joueur d'atteindre la ligne opposée. Il doit toujours y avoir un chemin possible, à vous de le rendre le plus long !</p>
+    <img src="/resources/rules/nopath.png" alt="Mur impossible" />
+</rule>
+<rule id="4">
+    <h2>Fin de partie</h2>
+    <p>La partie se termine lorsqu'un joueur atteint la ligne opposée.</p>
+    <p>Si le joueur ayant commencé arrive en premier sur la ligne opposée, le joueur 2 dispose d'un tour pour tenter de faire égalité.</p>
+</rule>
+<rule id="5">
+    <h2>Brouillard de guerre</h2>
+    <p>Le brouillard de guerre amène une difficulté supplémentaire en masquant le joueur adverse lorsqu'il est à l'intérieur.</p>
+    <p>Un élément émettant du brouillard pour un joueur le chasse pour le joueur adverse.</p>
+    <div class="horizontal">
+        <img src="/resources/rules/fogA.png" style="width: 45%" alt="Brouillard de guerre" />
+        <a style="width: 10%"></a>
+        <img src="/resources/rules/fogB.png" style="width: 45%" alt="Brouillard de guerre" />
+    </div>
+</rule>
+<rule id="6">
+    <h2>Partie en ligne</h2>
+    <p>La partie en ligne permet de jouer contre un autre joueur à distance. Il y a quelques règles à respecter pour cela :</p>
+    <ul>
+        <li>Chaque joueur a 1 minute pour jouer son tour, sinon il perd la partie.</li>
+        <li>Si un coup invalide est joué cela déclanche une action aléatoire pour le remplacer.</li>
+        <li>Si un joueur quitte la page de jeu il perd la partie.</li>
+    </ul>
+</rule>
+<rule id="7">
+    <h2>Classement Elo</h2>
+    <p>
+        Le classement Elo est un système de classement des joueurs basé sur le résultat des parties jouées. Il est mis à jour à la fin de chaque partie, en prenant en compte le résultat de la partie et la différence de points entre les deux joueurs.
+        <br />
+        Le leaderboard permet de regarder les 100 meilleurs joueurs du jeu.
+    </p>
+</rule>

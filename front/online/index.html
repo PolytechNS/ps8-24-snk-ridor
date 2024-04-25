@@ -3,20 +3,22 @@
     <head>
         <meta charset="UTF-8" />
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <title>Title</title>
+        <title>Rooms</title>
         <link rel="stylesheet" href="/online/online.css" />
         <script src="/online/online.js" type="module"></script>
         <link rel="stylesheet" href="/chat/chat.css" />
         <script src="/chat/chat.js" type="module" defer></script>
         <script src="/util/guard.js" type="module"></script>
         <script src="/bottom-bar/bottom-bar.js" type="module"></script>
+        <link rel="manifest" href="/manifest.json" />
+        <script src="/sw/install-sw.js"></script>
         <link rel="stylesheet" href="/bottom-bar/bottom-bar.css" />
     </head>
     <body>
         <header>
             <div class="top-buttons">
-                <a class="top-button" id="profile-button" href="profile/">Profile</a>
-                <a class="top-button" id="logout-button">Logout</a>
+                <a class="top-button" id="profile-button" href="profile/">Profil</a>
+                <a class="top-button" id="logout-button">Déconnexion</a>
             </div>
         </header>
         <div class="back-button" id="back-button"></div>
@@ -26,8 +28,9 @@
                 <ul id="room-list"></ul>
             </div>
             <div class="create-room">
-                <h2>Create Room</h2>
-                <button id="create-room-button">Create Room</button>
+                <h2>Nouvelle Room</h2>
+                <button id="create-room-button">Créer une Room</button>
+                <button id="rules-button">Lire les règles</button>
             </div>
         </div>
         <chat-global></chat-global>

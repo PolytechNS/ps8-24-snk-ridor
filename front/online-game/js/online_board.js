@@ -1,10 +1,19 @@
 import { BOARD_WIDTH, BOARD_HEIGHT, Event, getGame } from './online_models.js';
-import { onCellClick, next_player, firstOnCellClick } from './online_engine.js';
+import { next_player, firstOnCellClick } from './online_engine.js';
 import { LOG } from './online_main.js';
-import { findPath } from './online_pathFinding.js';
+import { placeWall } from '../online-game.js';
+import { HOME_URL, BASE_URL_PAGE } from '/util/path.js';
 
 export function init_board(board_div, board) {
     if (LOG) console.log('Initializing board');
+    let game = getGame();
+    if (board == null) {
+        board = game.board;
+    }
+    if (board_div == undefined) {
+        board_div = document.getElementById('board');
+    }
+
     let BOARD_W = BOARD_WIDTH;
     let BOARD_H = BOARD_HEIGHT;
 
@@ -18,10 +27,10 @@ export function init_board(board_div, board) {
             cell.className = 'cell';
             cell.id = `cell-${x}-${y}`;
             if (LOG) cell.textContent = `[${x}, ${y}]`;
-            if ((y == 1 || y == BOARD_H) && !LOG) {
+            if ((y == 1 && game.getOnlinePlayer() == 1) || (y == BOARD_H && game.getOnlinePlayer() == 2 && !LOG)) {
                 cell.classList.add('finish');
             }
-            if (y == 1) {
+            if ((y == 1 && game.getOnlinePlayer() == 1) || (y == BOARD_H && game.getOnlinePlayer() == 2)) {
                 cell.addEventListener('click', firstOnCellClick);
             }
 
@@ -107,7 +116,7 @@ export function display_board_one_player(board_div, board) {
     }
 }
 
-// display message and dismiss it after 3 seconds
+// display message and dismiss it after 4 seconds
 export function display_message(message, category = 'dev_message', timeout = 4000) {
     if (LOG) {
         console.log(message);
@@ -117,7 +126,8 @@ export function display_message(message, category = 'dev_message', timeout = 400
     if (category == 'final_message') {
         // si la partie est terminée, on ajoute event et on affiche le message de fin
         document.getElementById('reload').addEventListener('click', () => {
-            window.location.reload();
+            // retourne à la page d'accueil
+            window.location.href = BASE_URL_PAGE + HOME_URL;
         });
         document.getElementById('final_message').textContent = message;
         document.getElementById('final_div').style.display = 'block';
@@ -130,17 +140,19 @@ export function display_message(message, category = 'dev_message', timeout = 400
             action_message.remove();
         }
     }
+    if (message == '') return;
     let message_div = document.createElement('div');
     message_div.classList.add('alert');
     message_div.classList.add(category); // category can be "dev_message", "forbidden_message", "info_message" or "final_message"
     message_div.textContent = message;
     document.getElementById('game-infos').appendChild(message_div);
 
+    // display message for number of miliseconds
     if (timeout === parseInt(timeout)) {
         setTimeout(() => {
             message_div.remove();
         }, timeout);
-    } // display message for number of miliseconds
+    }
 }
 
 // Callback functions for visuals only
@@ -174,38 +186,25 @@ export function on_wall_out(event) {
 }
 
 export function on_wall_click(event) {
+    if (LOG) console.log('Wall clicked', event);
+    let game = getGame();
     let wall_player = getGame().getCurrentPlayer();
     if (game.remainingWalls(wall_player) == 0) {
         display_message("Vous n'avez plus de murs !", 'forbidden_message');
         return;
     }
-    let walls = get_walls(event);
 
-    // If any of the walls is black, we do nothing
-    if (walls.some((wall) => wall.classList.contains('placed'))) {
+    if (!isMyTurn()) {
+        display_message("Ce n'est pas votre tour !", 'forbidden_message');
         return;
     }
 
-    // TODO : gérer le cas où le joueur n'a plus de murs
+    let wall = event.target;
+    // trigger the socket event
+    let retour = wall.id.split('-');
+    placeWall(`${retour[2]}${retour[3]}`, retour[0] === 'v' ? 1 : 0);
 
-    // gérer qu'un chemin doit toujours exister
-    for (let p of getGame().players) {
-        if (findPath(p) == null) {
-            if (LOG) {
-                console.log('No path found from ' + getGame().getCurrentPlayer().position + ' to ' + getGame().getCurrentPlayer().goal);
-            }
-            display_message('Impossible de bloquer le chemin avec un mur !', 'forbidden_message');
-            return;
-        }
-    }
-    for (let wall of walls) {
-        wall.classList.remove('wall-hover');
-        wall.classList.add('placed');
-        wall.classList.add(`wall-p${wall_player}`);
-        wall.classList.add(`wall-p${wall_player}`);
-        wall.player = wall_player;
-    }
-    wall_player.placeWall();
+    // update the remaining walls
     display_message(`il reste ${game.remainingWalls(wall_player)} murs`, 'dev_message');
     let wall_event = new Event('wall', wall_player, event.walls);
     next_player(wall_event);
@@ -253,4 +252,10 @@ function get_walls(event) {
 
     if (LOG) console.log('No walls found');
     return [];
+}
+
+function isMyTurn() {
+    if (LOG) console.log(`isMyTurn() called`);
+    let game = getGame();
+    return game.getCurrentPlayer() == game.getOnlinePlayer();
 }

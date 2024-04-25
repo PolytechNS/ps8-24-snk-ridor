@@ -10,6 +10,7 @@ const roomChat = require('./routes/room_chat');
 const friendChat = require('./routes/friend_chat');
 const games = require('./routes/games');
 const room = require('./routes/room');
+const { notFoundHandler } = require('./routes/errors');
 const PORT = process.env.PORT || 8000;
 
 const server = http.createServer(function (request, response) {
@@ -32,8 +33,7 @@ const server = http.createServer(function (request, response) {
         }
     } catch (error) {
         console.log(`error while processing ${request.url}: ${error}`);
-        response.statusCode = 400;
-        response.end(`Something in your request (${request.url}) is strange...`);
+        notFoundHandler(request, response);
     }
 });
 

@@ -3,64 +3,86 @@
     <head>
         <meta charset="UTF-8" />
         <title>SNK'ridor</title>
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
         <link rel="stylesheet" href="/styles/style.css" />
-        <link rel="stylesheet" href="/styles/layout.css" />
         <link rel="stylesheet" href="/styles/fogwar.css" />
+        <link rel="stylesheet" href="/bottom-bar/bottom-bar.css" />
         <script type="module" src="online-game/js/online_display.js"></script>
         <script type="module" src="online-game/online-game.js"></script>
         <link rel="stylesheet" href="/chat/chat.css" />
+        <link rel="stylesheet" href="/online-game/online-game.css" />
+        <link rel="manifest" href="/manifest.json" />
+        <script src="/sw/install-sw.js"></script>
         <script src="/chat/chat.js" type="module" defer></script>
         <script src="/util/guard.js" type="module"></script>
+        <script src="/bottom-bar/bottom-bar.js" type="module"></script>
+        <script src="/online-game/js/emote-chat.js" type="module"></script>
+        <script src="/util/dataValidation.js" type="module"></script>
     </head>
+
     <body>
-        <nav>
-            <a href="/home"><img src="/resources/ui/back.png" alt="home" /></a>
-            <p>Shingeki No Korridor • Online 1V1</p>
-        </nav>
-
-        <aside id="aside-left">
-            <div id="other_profile" class="profile profile_adversaire">
-                <div class="identity">
-                    <img src="/resources/persons/humain_eren.png" alt="avatar" class="avatar" />
-                    <a id="other_pseudo"></a>
-                </div>
-                <!--div>Score : <a id="other_score">54 827</a></div-->
-                <div class="profile-game-infos txt-white">walls : <a class="walls" id="other_walls">0</a><br /></div>
-            </div>
-
+        <div class="back-button" id="back-button"></div>
+        <div id="aside-left">
             <div id="self_profile" class="profile profile_self">
                 <div class="identity">
                     <img src="/resources/persons/titan_eren.png" alt="avatar" class="avatar" />
                     <a id="self_pseudo"></a>
                 </div>
-                <!--div>Score : <a id="self_score">72 845</a></div-->
-                <div class="profile-game-infos txt-white">walls : <a class="walls" id="self_walls">0</a><br /></div>
+                <div class="profile-game-infos">
+                    <p>murs : <span class="walls" id="self_walls">0</span></p>
+                    <p>points : <span class="elo" id="self_elo"></span></p>
+                </div>
+                <div class="chat-icon" data-player="self">
+                    <img src="/resources/svg/chat.svg" alt="Chat Icon" />
+                </div>
+                <div class="emote-list" data-player="self"></div>
             </div>
-        </aside>
+        </div>
 
-        <main class="game">
-            <!-- Ecran de transition -->
+        <div class="game">
             <div id="transition_screen" class="transition-screen" style="display: none">
                 <div class="final_message">
                     <button id="continue_button">Continuer</button>
                 </div>
             </div>
 
-            <!-- Plateau de jeu -->
             <div id="board" class="board"></div>
-
-            <!-- Informations de jeu -->
             <div id="game-infos" class="game-infos">
-                <a class="container">Au tour du joueur&nbsp;<a id="player">A</a><br /></a>
-                <a class="container">tour&nbsp;<a id="turn">1</a><br /></a>
+                <!--<div class="container">Au tour du joueur <span id="player">A</span><br /></div>-->
+                <div class="container"><span id="player"></span></div>
+                <div class="countdown" id="countdown">
+                    <svg viewBox="-50 -50 100 100" stroke-width="10">
+                        <circle r="45"></circle>
+                        <circle r="45" pathLength="1"></circle>
+                    </svg>
+                </div>
+                <div class="container" id="turn-container">tour <span id="turn">1</span><br /></div>
                 <div class="final_blocker" id="final_div">
                     <div class="final_message">
                         <p id="final_message">Victoire du joueur A</p>
-                        <button id="reload">Rejouer</button>
+                        <button id="reload">Accueil</button>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
+
+        <div id="aside-right">
+            <div id="other_profile" class="profile profile_adversaire">
+                <div class="identity">
+                    <img src="/resources/persons/humain_annie.png" alt="avatar" class="avatar" />
+                    <a id="other_pseudo"></a>
+                </div>
+                <div class="profile-game-infos">
+                    <p>murs : <span class="walls" id="other_walls">0</span></p>
+                    <p>points : <span class="elo" id="other_elo"></span></p>
+                </div>
+                <div class="chat-icon" data-player="other">
+                    <img src="/resources/svg/chat.svg" alt="Chat Icon" />
+                </div>
+                <div class="emote-list" data-player="other"></div>
+            </div>
+        </div>
         <chat-global></chat-global>
+        <bottom-bar></bottom-bar>
     </body>
 </html>

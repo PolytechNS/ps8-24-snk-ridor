@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <title>Règles</title>
+        <link rel="stylesheet" href="/rules/rules.css" />
+        <script src="/rules/rules.js" type="module"></script>
+        <link rel="stylesheet" href="/chat/chat.css" />
+        <script src="/chat/chat.js" type="module" defer></script>
+        <script src="/util/guard.js" type="module"></script>
+        <script src="/bottom-bar/bottom-bar.js" type="module"></script>
+        <link rel="stylesheet" href="/bottom-bar/bottom-bar.css" />
+        <link rel="stylesheet" href="/partial-rules/partial-rules.css" />
+    </head>
+
+    <body>
+        <div class="back-button" id="back-button"></div>
+        <div class="navigation-arrow" id="paysage">
+            <img src="/resources/ui/navigation.png" id="arrow-left" />
+        </div>
+        <div class="container" id="rules">
+            <!-- filled by js -->
+        </div>
+        <div class="horizontal">
+            <div class="navigation-arrow" id="portrait">
+                <img src="/resources/ui/navigation.png" id="arrow-left-portrait" title="portrait" />
+            </div>
+            <div class="navigation-arrow">
+                <img src="/resources/ui/navigation.png" id="arrow-right" />
+            </div>
+        </div>
+        <chat-global></chat-global>
+        <bottom-bar></bottom-bar>
+    </body>
+</html>
