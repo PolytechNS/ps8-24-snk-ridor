@@ -66,3 +66,8 @@ svg {
         display: none;
     }
 }
+@media (orientation: landscape) and (max-width: 1280px){
+    .countdown{
+        display: none;
+    }
+}
